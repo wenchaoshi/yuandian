@@ -1,10 +1,10 @@
 <!-- 底部tab  页面 -->
 <template>
   <div id="tab">
-      <router-link to='/home' tag="div"><span>商机</span></router-link>
-      <router-link to='/message' tag="div"><span>消息</span></router-link>
-      <router-link to='/customer' tag="div"><span>客户</span></router-link>
-      <router-link to='/me' tag="div"><span>我的</span></router-link>
+      <router-link to='/home' tag="a"><span>商机</span></router-link>
+      <router-link to='/message' tag="a"><span>消息</span></router-link>
+      <router-link to='/customer' tag="a"><span>客户</span></router-link>
+      <router-link to='/me' tag="a"><span>我的</span></router-link>
   </div>
 </template>
 
