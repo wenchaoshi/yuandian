@@ -2,8 +2,8 @@
 <template>
   <div class="home-lists">
       <div>
-          <span class="img-box"><img src="" alt=""></span>
-          <p>dddddddddddddd</p>
+          <span class="img-box"><img :src="imgSrc" alt=""></span>
+          <p>{{text}}</p>
       </div>
   </div>
 </template>
@@ -12,9 +12,10 @@
 export default {
   data () {
     return {
+        
     };
   },
-
+  props:['imgSrc','text','text1'],
   components: {},
 
   computed: {},

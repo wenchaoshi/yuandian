@@ -2,7 +2,7 @@
 <template>
   <div class="home">
       商机
-      <lists></lists>
+      <lists :imgSrc='imgSrc' :text="text"></lists>
   </div>
 </template>
 
@@ -12,6 +12,8 @@ import Lists from '@pages/home/lists'
 export default {
   data () {
     return {
+      imgSrc:'aaaa',
+      text:'数据数据数据数据数据数据'
     };
   },
 

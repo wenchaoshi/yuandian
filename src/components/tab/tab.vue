@@ -1,10 +1,10 @@
 <!-- 底部tab  页面 -->
 <template>
   <div id="tab">
-      <router-link to='/home'><span>商机</span></router-link>
-      <router-link to='/message'><span>消息</span></router-link>
-      <router-link to='/customer'><span>客户</span></router-link>
-      <router-link to='/me'><span>我的</span></router-link>
+      <router-link to='/home' tag="div"><span>商机</span></router-link>
+      <router-link to='/message' tag="div"><span>消息</span></router-link>
+      <router-link to='/customer' tag="div"><span>客户</span></router-link>
+      <router-link to='/me' tag="div"><span>我的</span></router-link>
   </div>
 </template>
 
@@ -35,7 +35,7 @@ export default {
   height 50px
   text-align center
   line-height 50px
-  a 
+  div 
     flex 1
     border-right 1px solid #ccc
     &:nth-of-type(4) 
