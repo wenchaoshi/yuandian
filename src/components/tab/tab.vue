@@ -35,7 +35,7 @@ export default {
   height 50px
   text-align center
   line-height 50px
-  div 
+  a 
     flex 1
     border-right 1px solid #ccc
     &:nth-of-type(4) 
