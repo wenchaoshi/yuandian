@@ -1,8 +1,11 @@
 <!-- 商机  页面 -->
 <template>
+  
   <div class="home">
-      商机
-      <lists :imgSrc='imgSrc' :text="text"></lists>
+     
+      <template v-for='items in mydata'>
+        <lists :imgSrc='items.imgSrc' :text="items.text" :key='items.text'></lists>
+      </template>
   </div>
 </template>
 
@@ -12,8 +15,11 @@ import Lists from '@pages/home/lists'
 export default {
   data () {
     return {
-      imgSrc:'aaaa',
-      text:'数据数据数据数据数据数据'
+      mydata:[
+        {imgSrc:'aaaa',text:'数据一'},
+        {imgSrc:'aaaa',text:'数据二'},
+        {imgSrc:'aaaa',text:'数据三'}
+      ]
     };
   },
 
@@ -31,6 +37,10 @@ export default {
 }
 
 </script>
-<style >
-
+<style lang='stylus'>
+  .home
+    display flex
+    align-items flex-end
+    flex-wrap wrap
+    flex-direction column-reverse
 </style>

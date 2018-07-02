@@ -2,7 +2,7 @@
 <template>
   <div class="home-lists">
       <div>
-          <span class="img-box"><img :src="imgSrc" alt=""></span>
+          <span class="img-box"><img :src="imgSrc" alt="" class="el-icon-info"></span>
           <p>{{text}}</p>
       </div>
   </div>
@@ -34,7 +34,7 @@ export default {
     float left
     width 50px
     height 50px
-    background #000
+    // background #000
   p 
     overflow hidden
 
