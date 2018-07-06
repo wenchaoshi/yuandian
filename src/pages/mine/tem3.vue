@@ -1,7 +1,7 @@
-<!-- 我的   页面 -->
+<!--  -->
 <template>
   <div>
-    我的
+       <input type="text">
   </div>
 </template>
 
@@ -16,7 +16,7 @@ export default {
 
   computed: {},
 
-  mounted: function(){},
+  mounted: function () {  },
 
   methods: {}
 }

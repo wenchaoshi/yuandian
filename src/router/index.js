@@ -1,31 +1,31 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@pages/home/home'
-import Message from '@pages/message/message'
-import Customer from '@pages/customer/customer'
-import Me from '@pages/me/me'
+import Business from '@pages/business'
+import Information from '@pages/information'
+import Customer from '@pages/customer'
+import Mine from '@pages/mine'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [{
     path: '/', 
-    redirect: 'home'
+    redirect: 'business'
   },{
-    path: '/home',
-    name: 'home',
-    component: Home
+    path: '/business',
+    name: 'business',
+    component: Business
   }, {
-    path: '/message',
-    name: 'message',
-    component: Message
+    path: '/information',
+    name: 'information',
+    component: Information
   }, {
     path: '/customer',
     name: 'customer',
     component: Customer
   }, {
-    path: '/me',
-    name: 'me',
-    component: Me
+    path: '/mine',
+    name: 'mine',
+    component: Mine
   }]
 })
