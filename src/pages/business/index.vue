@@ -5,8 +5,8 @@
 
     <div class="view">
       <div class="business">
-        <template v-for='items in mydata'>
-          <lists :imgSrc='items.imgSrc' :text="items.text" :key='items.text'></lists>
+        <template v-for='(items,index) in mydata'>
+          <lists :imgSrc='items.imgSrc' :text="items.text" :key='index'></lists>
         </template>
         <div class="business-date business-lists">
           <span>4小时前</span>

@@ -157,12 +157,13 @@ export default {
       &::-webkit-input-placeholder 
         color #999 
     input[type=text]
-      width 2.85rem
+      width 2.8rem
       padding 0 .1rem
       background #f1f1f1
       margin-right .1rem
     input[type=submit]
       width .6rem
+      float right
       color #fff
       background #25B181
 
