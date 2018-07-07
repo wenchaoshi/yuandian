@@ -58,6 +58,7 @@ export default {
 
   mounted: function() {
     document.getElementsByClassName('view')[0].scrollBy(0,100000);
+    alert(document.getElementsByClassName('view')[0])
   },
 
   methods: {}
