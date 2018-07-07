@@ -1,8 +1,13 @@
 <!-- 客户  页面 -->
 <template>
-  <div>
-    客户
+  <div id="page">
+    <view-head></view-head>
+
+    <div class="view">
+     客户
+    </div>
     
+    <tab></tab>
   </div>
 </template>
 
@@ -13,7 +18,9 @@ export default {
     };
   },
 
-  components: {},
+  components: {
+    
+  },
 
   computed: {},
 

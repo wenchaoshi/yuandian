@@ -46,8 +46,11 @@ export default {
 
 </script>
 <style lang='stylus'>
+@import '../../style/mixin.styl'
 #tab 
+  border-1px(#eee)
   position fixed
+  z-index 99
   display flex
   left 0
   bottom 0
@@ -57,6 +60,9 @@ export default {
   line-height 1.1
   font-size 12px
   color #666
+  background #fff
+  &:after 
+    top 0
   .tab-items
     flex 1 
     display flex
