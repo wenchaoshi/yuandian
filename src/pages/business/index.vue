@@ -11,6 +11,7 @@
         <div class="business-date business-lists">
           <span>4小时前</span>
         </div>
+        
       </div>
     </div>
 
@@ -57,13 +58,13 @@ export default {
   computed: {},
 
   mounted: function() {
-    //document.getElementsByClassName('view')[0].scrollBy(0,100000);
-    window.alert(11)
-    alert(document.getElementsByClassName('view')[0])
+    let nowView=document.getElementsByClassName('business-lists')[0];
+    nowView.scrollIntoView(true);
   },
 
   methods: {}
 };
+
 </script>
 <style lang='stylus'>
 .business {
