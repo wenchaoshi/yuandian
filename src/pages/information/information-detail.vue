@@ -113,7 +113,7 @@ export default {
   computed: {},
 
   mounted: function () { 
-    document.getElementsByClassName('view')[0].scrollBy(0,100000);
+    //document.getElementsByClassName('view')[0].scrollBy(0,100000);
   },
 
   methods: {}
