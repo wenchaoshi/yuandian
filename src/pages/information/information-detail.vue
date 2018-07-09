@@ -1,10 +1,8 @@
 <!--详情页  -->
 <template>
   <div id="page" class="detail">
-    <view-head></view-head>
-
     <div class="view">
-      <div class="">
+      <div id="scroll-view">
         <div class="detail-lists" v-for="(item,index) in list" :key='index' :class="item.type==1?'detail-lists-type1':'detail-lists-type2'">
           <span class="img-box"><img :src="item.imgSrc" alt=""></span>
           <p>{{item.p}}</p>
@@ -113,7 +111,8 @@ export default {
   computed: {},
 
   mounted: function () { 
-    //document.getElementsByClassName('view')[0].scrollBy(0,100000);
+    let nowView=document.getElementById('scroll-view').getElementsByTagName('div')[0]
+    nowView.scrollIntoView(true)
   },
 
   methods: {}
@@ -122,6 +121,10 @@ export default {
 </script>
 
 <style lang='stylus'>
+#scroll-view
+  display flex
+  flex-direction column-reverse
+
 .detail .view 
   height 100%
   padding-bottom 60px

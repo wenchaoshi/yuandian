@@ -76,6 +76,9 @@ fieldset,
 img {
     border: none;
 }
+img {
+    vertical-align: middle
+}
 
 address,
 caption,

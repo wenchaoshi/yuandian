@@ -1,10 +1,8 @@
 <!-- 商机  页面 -->
 <template>
   <div id="page">
-    <view-head></view-head>
-
     <div class="view">
-      <div class="business">
+      <div class="business" id="scroll-view">
         <template v-for='(items,index) in mydata'>
           <lists :imgSrc='items.imgSrc' :text="items.text" :key='index'></lists>
         </template>
@@ -21,6 +19,7 @@
 
 <script>
 import Lists from "@pages/business/lists";
+import base from "@/js/base.js"
 
 export default {
   data() {
@@ -58,8 +57,8 @@ export default {
   computed: {},
 
   mounted: function() {
-    let nowView=document.getElementsByClassName('business-lists')[0];
-    nowView.scrollIntoView(true);
+    let nowView=document.getElementById('scroll-view').getElementsByTagName('div')[0]
+    nowView.scrollIntoView(true)
   },
 
   methods: {}
