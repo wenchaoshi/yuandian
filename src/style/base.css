@@ -251,10 +251,15 @@ input[type='search'] {
     box-sizing: border-box; /*所有元素以border开始计算盒子大小*/
 }
 
+.clearfix {
+    height: 0;
+    clear: both;
+}
 .clearfix:after,
 .clearfix:before {   /*清除浮动*/
     content: " ";
     display: table;
+    height: 0;
 }
 
 .clearfix:after {

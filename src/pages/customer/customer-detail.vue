@@ -4,7 +4,14 @@
     <div class="view customerDetail">
       <div class="">
           <div class="customerDetail-card">
-
+            <div class="customerDetail-information">
+              <span class="fl"><img src="" alt=""></span>
+              <h2>王梅呀  <small class="fr">客户资料</small></h2>
+              <div class="clearfix"></div>
+            </div>
+            <div class="customerDetail-tag">
+              <span v-for='items in 4' :key='items'>购买力强</span>
+            </div>
           </div>
           <div class="customerDetail-action">
             <div class="customerDetail-action-list">
@@ -58,6 +65,47 @@ export default {
   height 1.3rem
   margin 0.1rem auto
   background url('../../images/customerDetail-card.png') no-repeat 0/100% 100%
+  .customerDetail-information 
+    padding 20px
+    color #fff
+    *
+     cursor pointer
+    span 
+      width 50px
+      height 50px
+      background  #000
+      img 
+        width 100%
+        height 100%
+    h2 
+      padding-left 10px
+      line-height 50px
+      font-weight bolder
+      font-size 16px
+      overflow hidden
+      small 
+        color #bbb
+        font-weight 100
+        font-size 12px
+        &:after
+          content ""
+          display inline-block
+          width 7px
+          height 16px
+          margin-left 6px
+          vertical-align sub
+          background url(../../images/Triangle_3.png) 0/100% no-repeat
+  .customerDetail-tag
+    padding 0 20px
+    span 
+      margin-right 10px
+      padding 5px 8px
+      color #fff
+      border 1px solid
+      border-radius 2px
+      font-size 10px
+      cursor pointer
+
 
 .customerDetail-action 
   display flex

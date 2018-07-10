@@ -45,8 +45,10 @@ exports.cssLoaders = function (options) {
     // Extract CSS when that option is specified
     // (which is the case during production build)
     if (options.extract) {
+      //  publicPath:'../../' ，相对路径下（测试环境）， 解决背景图片路径错误
       return ExtractTextPlugin.extract({
         use: loaders,
+        publicPath:'../../',
         fallback: 'vue-style-loader'
       })
     } else {

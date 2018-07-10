@@ -32,6 +32,7 @@ export default {
 <style lang='stylus'>
   .business-lists
     overflow hidden 
+    cursor pointer
     .img-box 
       display inline-block
       float left

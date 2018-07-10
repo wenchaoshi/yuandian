@@ -37,7 +37,7 @@ export default {
   padding: 20px 10px;
   overflow: hidden;
   border-1px(#EEEEEE);
-
+  cursor pointer
   &:after {
     top: 0;
   }

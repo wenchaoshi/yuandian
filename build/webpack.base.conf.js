@@ -1,4 +1,5 @@
 'use strict'
+var webpack = require('webpack')
 const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
@@ -30,6 +31,14 @@ module.exports = {
       '@components': resolve('src/components'),
     }
   },
+  plugins: [
+    new webpack.optimize.CommonsChunkPlugin('common.js'),
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery",
+      jquery: "jquery"
+    })
+  ],
   module: {
     rules: [
       {

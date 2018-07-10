@@ -21,6 +21,7 @@
 </template>
 
 <script>
+import base from '@/js/base.js'
 export default {
   data () {
     return {
@@ -112,7 +113,7 @@ export default {
 
   mounted: function () { 
     let nowView=document.getElementById('scroll-view').getElementsByTagName('div')[0]
-    nowView.scrollIntoView(true)
+    base.intoView(nowView)
   },
 
   methods: {}
