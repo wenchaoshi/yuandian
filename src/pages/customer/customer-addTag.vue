@@ -1,8 +1,6 @@
-<!--  -->
+<!-- 添加标签 -->
 <template>
-  <div>
 
-  </div>
 </template>
 
 <script>
@@ -18,9 +16,15 @@ export default {
 
   mounted: function () {  },
 
-  methods: {}
+  methods: {
+    stop(){
+
+    }
+  }
 }
 
 </script>
 <style lang='stylus'>
+
+  
 </style>

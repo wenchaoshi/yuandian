@@ -67,6 +67,7 @@ export default {
     flex 1 
     display flex
     align-items center
+    cursor pointer
     &>div 
       width 100%
     &.router-link-active 

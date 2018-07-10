@@ -2,21 +2,79 @@
 <template>
   <div>
       <div class="add-follow">
-          <button></button>
+          <button @click.stop="setClass(follow)"></button>
       </div>
       <div>
-          <list :imgSrc='imgSrc' :text='text'></list>
+          <template v-for='(items,index) in lists'>
+              <list :imgSrc='items.imgSrc' :text='items.text' :key='index'></list>
+          </template>
+          
       </div>
   </div>
 </template>
 
 <script>
 import list from './customer-tab1-list'
+import $ from 'jquery'
+
 export default {
   data () {
     return {
-        imgSrc:'http://www.baidu.com/img/bd_logo1.png',
-        text:'哒哒哒哒哒对对对'
+        lists:[
+            {
+                imgSrc:'http://www.baidu.com/img/bd_logo1.png',
+                text:'哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒'
+            },
+            {
+                imgSrc:'http://www.baidu.com/img/bd_logo1.png',
+                text:'哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒'
+            },
+            {
+                imgSrc:'http://www.baidu.com/img/bd_logo1.png',
+                text:'哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒'
+            },
+            {
+                imgSrc:'http://www.baidu.com/img/bd_logo1.png',
+                text:'哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒'
+            },
+            {
+                imgSrc:'http://www.baidu.com/img/bd_logo1.png',
+                text:'哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒'
+            },
+            {
+                imgSrc:'http://www.baidu.com/img/bd_logo1.png',
+                text:'哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒'
+            },
+            {
+                imgSrc:'http://www.baidu.com/img/bd_logo1.png',
+                text:'哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒'
+            },
+            {
+                imgSrc:'http://www.baidu.com/img/bd_logo1.png',
+                text:'哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒'
+            },
+            {
+                imgSrc:'http://www.baidu.com/img/bd_logo1.png',
+                text:'哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒'
+            },
+            {
+                imgSrc:'http://www.baidu.com/img/bd_logo1.png',
+                text:'哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒'
+            },
+            {
+                imgSrc:'http://www.baidu.com/img/bd_logo1.png',
+                text:'哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒'
+            },
+            {
+                imgSrc:'http://www.baidu.com/img/bd_logo1.png',
+                text:'哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒'
+            },
+            {
+                imgSrc:'http://www.baidu.com/img/bd_logo1.png',
+                text:'哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒'
+            }
+        ],
+        follow:false
     };
   },
 
@@ -28,9 +86,16 @@ export default {
       
   },
 
-  mounted: function () {  },
+  mounted: function () { 
 
-  methods: {}
+   },
+
+  methods: {
+    setClass(target){
+      this[target]=!this[target]
+      $('.shade.follow').addClass('active')
+    },
+  }
 }
 
 </script>
@@ -40,6 +105,7 @@ export default {
   text-align center
   button 
     width 2.05rem
+    max-width 260px
     height .5rem
     background url('../../../images/btn_add_infomation.png') no-repeat 0/100%
     border none

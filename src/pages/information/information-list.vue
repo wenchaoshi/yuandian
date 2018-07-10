@@ -57,7 +57,7 @@ export default {
     h2 {
       font-size: 16px;
       color: #333;
-      font-weight: bold;
+      font-weight: 400;
     }
 
     p {

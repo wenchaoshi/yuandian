@@ -62,15 +62,15 @@ export default {
 
   .customer-img {
     float: left;
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     background: #000;
   }
   .customer-status {
     float right
-    line-height 50px
-    font-size 16px
-    color #dd5866
+    line-height 45px
+    font-size 14px
+    color #DA4B5A
     strong {
         display none
         font-weight 100
@@ -79,7 +79,7 @@ export default {
         }
     }
     strong:nth-of-type(2) {
-        color #3eba8f
+        color #25B181
     }
   }
 
@@ -91,14 +91,14 @@ export default {
     color: #999;
 
     h2 {
-      font-size: 18px;
+      font-size: 14px;
       color: #333;
-      font-weight: 100;
+      font-weight: 400;
     }
 
     p {
       margin: 8px 0 0;
-      font-size 14px
+      font-size 12px
       color #999
     }
   }

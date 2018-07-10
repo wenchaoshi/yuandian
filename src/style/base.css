@@ -15,6 +15,7 @@ html * { /*所有元素*/
 
 body,html{
     height: 100%;
+    overflow: auto;
 }
 body {
     font-size: 14px;

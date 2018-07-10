@@ -2,7 +2,7 @@
 <template>
   <div class="customer-tab1-list">
     <span class="customer-tab1-list-date">
-        16.25
+        23/6月17:00
     </span>
     <span class="img-box">
         <img :src="imgSrc" alt="">
@@ -54,37 +54,38 @@ export default {
   .customer-tab1-list
     position relative
     overflow hidden 
-    margin 15px .1rem
+    padding  15px .1rem
     font-size 0
     span 
       display inline-block
       font-size 14px
+      vertical-align middle
     .customer-tab1-list-date 
       width .65rem
       max-width 65px
-      line-height .2rem
+      line-height 20px
     .img-box 
-      width 0.4rem
-      max-width 50px
+      width 40px
       background #000
     img 
       width 100%
-      height 40px 
+      height 40px
     p 
       display inline-block
       vertical-align top
       overflow hidden
       width 2.23rem
       margin 0 .1rem
+      padding-right 15px
       font-size 14px
-      line-height .2rem
+      line-height 20px
       strong 
         color #3cb98e 
         font-weight normal
 
     .customer-controls
       position absolute
-      right 0px
+      right 0.1rem
       top calc(50% - 12.5px)
       display inline-block
       width 30px
@@ -123,5 +124,13 @@ export default {
         span 
           width 80px
           opacity 1
+
+
+@media screen and (max-width:369px)  {
+  .customer-tab1-list p {
+    width 2rem
+  }
+}
+
 
 </style>

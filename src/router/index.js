@@ -5,6 +5,7 @@ import Information from '@pages/information'
 import informationDetail from '@pages/information/information-detail'
 import Customer from '@pages/customer'
 import customerDetail from '@pages/customer/customer-detail.vue'
+import CustomerInfomation from '@pages/customer/customer-infomation.vue'
 import customerTab1 from '@pages/customer/children/customer-tab1.vue'
 import customerTab2 from '@pages/customer/children/customer-tab2.vue'
 import Mine from '@pages/mine'
@@ -56,6 +57,12 @@ export default new Router({
         redirect: 'customer-tab1',
       }
     ]
+  },
+  
+  {
+    path: '/customer-infomation',
+    name: 'customer-infomation',
+    component: CustomerInfomation
   },
   {
     path: '/mine',
