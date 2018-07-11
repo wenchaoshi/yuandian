@@ -1,7 +1,7 @@
 <!--客户资料 -->
 <template>
-  <div class="view customer-infomation">
-    <div class="customer-infomation-edit">
+  <div class="view customer-information">
+    <div class="customer-information-edit">
       <form action="">
         <ul>
           <li><label for="name"><input type="text" placeholder="真实姓名" id="name"></label></li>
@@ -32,9 +32,9 @@ export default {
 
 </script>
 <style lang='stylus'>
-.customer-infomation.view 
+.customer-information.view 
   height 100%
-  .customer-infomation-edit
+  .customer-information-edit
     ul 
       margin 10px
       border-radius 2px

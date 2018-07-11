@@ -4,7 +4,7 @@
     <div class="view customerDetail" @scroll.passive='onScroll' >
       <div class="customerDetail-scrollView">
           <div class="customerDetail-card">
-            <div class="customerDetail-information" @click.stop='navigator("/customer-infomation")'>
+            <div class="customerDetail-information" @click.stop='navigator("/customer-information")'>
               <span class="fl"><img src="" alt=""></span>
               <h2>王梅呀  <small class="fr">客户资料</small></h2>
               <div class="clearfix"></div>
@@ -65,6 +65,7 @@
       </div>
   </div>
 
+<!-- 跟进进度 -->
   <div class="shade evolve" :class="evolve?'active':''"> 
       <div class="shade-content" @click.stop="stop">
           <ul class="">
@@ -79,7 +80,7 @@
       </div>
   </div>
 
-
+<!-- 添加跟进， （留言）-->
 <div class="shade follow" > 
       <div class="shade-content" @click.stop="stop">
           <div class="tag-main">
@@ -115,11 +116,12 @@ export default {
   components: {
   },
 
-  computed: {},
+  computed: {
+  },
 
   mounted: function () {
-      let obj=$('.customerDetail-tab');
-      this.offsettop=obj.offset().top;
+    let obj=$('.customerDetail-tab');
+    this.offsettop=obj.offset().top;
   },
 
   methods: {
@@ -148,8 +150,8 @@ export default {
     cancle(){
       this.addTag=false
       this.evolve=false
-      if($('.follow').length){$('.follow').removeClass('active')
-
+      if($('.follow').length){
+        $('.follow').removeClass('active')
       }
       
     }
@@ -318,40 +320,39 @@ export default {
     display block
     .shade-content
       animation 'addTag' .6s ease-out forwards
-
-.shade-content 
-  position absolute
-  left 0
-  bottom 0
-  width 100%
-  height 222px
-  padding 20px 20px 0
-  background #fff
-  .tag-main 
-    ul li 
-      float left
-      margin 10px 10px 0 0
-      padding 6px 10px
-      background #D8D8D8
-      border-radius 1px
-      font-size 12px
-      &.active 
-        color #fff
-        background #333
-  .main 
+  .shade-content 
     position absolute
     left 0
     bottom 0
     width 100%
-    display flex
-    line-height 50px
-    text-align center
-    border-top 1px solid #eee
-    div
-      flex 1
-      &.save 
-        background #333
-        color #fff
+    height 222px
+    padding 20px 20px 0
+    background #fff
+    .tag-main 
+      ul li 
+        float left
+        margin 10px 10px 0 0
+        padding 6px 10px
+        background #D8D8D8
+        border-radius 1px
+        font-size 12px
+        &.active 
+          color #fff
+          background #333
+    .main 
+      position absolute
+      left 0
+      bottom 0
+      width 100%
+      display flex
+      line-height 50px
+      text-align center
+      border-top 1px solid #eee
+      div
+        flex 1
+        &.save 
+          background #333
+          color #fff
 
 
 .shade.evolve

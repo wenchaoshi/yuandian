@@ -5,10 +5,11 @@ import Information from '@pages/information'
 import informationDetail from '@pages/information/information-detail'
 import Customer from '@pages/customer'
 import customerDetail from '@pages/customer/customer-detail.vue'
-import CustomerInfomation from '@pages/customer/customer-infomation.vue'
+import Customerinformation from '@pages/customer/customer-information.vue'
 import customerTab1 from '@pages/customer/children/customer-tab1.vue'
 import customerTab2 from '@pages/customer/children/customer-tab2.vue'
 import Mine from '@pages/mine'
+import MineEdit from '@pages/mine/edit-card'
 
 Vue.use(Router)
 
@@ -60,13 +61,18 @@ export default new Router({
   },
   
   {
-    path: '/customer-infomation',
-    name: 'customer-infomation',
-    component: CustomerInfomation
+    path: '/customer-information',
+    name: 'customer-information',
+    component: Customerinformation
   },
   {
     path: '/mine',
     name: 'mine',
     component: Mine
+  },
+  {
+    path: '/edit-card',
+    name: 'mine-edit',
+    component: MineEdit
   }]
 })

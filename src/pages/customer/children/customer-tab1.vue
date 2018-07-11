@@ -6,7 +6,7 @@
       </div>
       <div>
           <template v-for='(items,index) in lists'>
-              <list :imgSrc='items.imgSrc' :text='items.text' :key='index'></list>
+              <list :imgSrc='items.imgSrc' :text='items.text' :key='index' :index="index" :controlOff="controlOff" @controlClick="controlOff=index"></list>
           </template>
           
       </div>
@@ -20,6 +20,7 @@ import $ from 'jquery'
 export default {
   data () {
     return {
+        controlOff:-1,
         lists:[
             {
                 imgSrc:'http://www.baidu.com/img/bd_logo1.png',
@@ -81,20 +82,22 @@ export default {
   components: {
       list
   },
-
+  props:[],
   computed: {
-      
   },
 
   mounted: function () { 
-
+      let that=this
+      $(window).on('click',function(){
+          that.controlOff=-1
+      })
    },
 
   methods: {
     setClass(target){
       this[target]=!this[target]
       $('.shade.follow').addClass('active')
-    },
+    }
   }
 }
 
@@ -107,7 +110,7 @@ export default {
     width 2.05rem
     max-width 260px
     height .5rem
-    background url('../../../images/btn_add_infomation.png') no-repeat 0/100%
+    background url('../../../images/btn_add_information.png') no-repeat 0/100%
     border none
     border-radius 2px
 </style>

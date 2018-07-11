@@ -8,8 +8,8 @@
         <img :src="imgSrc" alt="">
     </span>
     <p v-html='text'></p>
-    <div class="customer-controls" :class="off?'active':''">
-        <i @click.stop='change'></i>
+    <div class="customer-controls" :class="controlOff==index?'active':''">
+        <i @click.stop='$emit("controlClick",index)'></i>
         <span>
             <a href="">编辑</a>
             <a href="">删除</a>
@@ -25,27 +25,22 @@ export default {
         off:false
     };
   },
-  props:['imgSrc','text'],
+  props:['imgSrc','text','index','controlOff'],
   components: {},
 
   computed: {},
 
   mounted: function () { 
-      let that=this;
-      window.onclick=function(){
-          if(that.off){
-            that.off=false
-          }
-      }
+      // let that=this;
+      // $('#page').on('click',function(){
+      //   if(that.off){
+      //     that.off=false
+      //   }
+      // })
    },
 
   methods: {
-    toDetail(){
-      //console.log(this.item)
-    },
-    change(){
-        this.off=true
-    }
+  
   }
 }
 

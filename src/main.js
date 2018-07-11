@@ -8,15 +8,20 @@ import '@/style/components.styl'
 Vue.config.productionTip = false
 
 // 全局组件
+import global from './global.vue'
 import viewHead from '@components/view-head/index'
 Vue.component('view-head', viewHead)
 import Tab from "@components/tab/tab"
 Vue.component('tab', Tab)
 
+Vue.prototype.global=global;
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  data:{
+    bigData:15113
+  },
   router,
   render: h => h(App),
   mounted:function () {

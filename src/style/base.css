@@ -253,7 +253,7 @@ input[type='search'] {
 }
 
 .clearfix {
-    height: 0;
+    
     clear: both;
 }
 .clearfix:after,
