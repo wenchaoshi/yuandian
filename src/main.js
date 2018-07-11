@@ -14,22 +14,22 @@ Vue.component('view-head', viewHead)
 import Tab from "@components/tab/tab"
 Vue.component('tab', Tab)
 
-Vue.prototype.global=global;
+Vue.prototype.global = global;
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  data:{
-    bigData:15113
+  data: {
+    bigData: 15113
   },
   router,
   render: h => h(App),
-  mounted:function () {
-    var w=$(window).width();
-    $('html').css('font-size',w/3.75+'px');
-    $(window).on('resize',function () { 
-      w=$(this).width();
-      $('html').css('font-size',w/3.75+'px')
-     })
+  mounted: function () {
+    var w = $(window).width();
+    $('html').css('font-size', w / 3.75 + 'px');
+    $(window).on('resize', function () {
+      w = $(this).width();
+      $('html').css('font-size', w / 3.75 + 'px')
+    })
   }
 })
