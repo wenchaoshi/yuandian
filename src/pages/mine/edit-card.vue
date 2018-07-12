@@ -108,7 +108,7 @@ export default {
   padding 15px
   background #fff
   button 
-    display inline-block
+    display block
     background #42403E
     border-radius 2px
     width 100%
