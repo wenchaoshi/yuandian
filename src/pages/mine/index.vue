@@ -84,14 +84,16 @@ export default {
 
   },
 
-  mounted: function() {},
+  mounted: function() {
+    alert($(window).width()+'分割：'+$(window).height())
+  },
 
   methods: {
     shade(target,event){
       this[target]=true
       if(target=='productEdit'){
         let targetId=event.currentTarget.dataset.id
-        alert('产品'+targetId)
+        console.log('产品'+targetId)
       }
     },
     hideShade(){
@@ -189,7 +191,7 @@ export default {
         font-style normal
 
 
-//添加标签
+//分享窗口
 .mine-shade
   position fixed
   left 0
@@ -197,7 +199,7 @@ export default {
   z-index 100
   width 100%
   height 100%
-  padding 17.5% 10.7% 7.9%
+  padding 17.5% 10.7%
   color #fff
   background rgba(1,2,13,0.5)
   display none
@@ -256,6 +258,7 @@ export default {
   display block
 .product-edit.active .shade-content
   animation 'toBot' .3s forwards ease-out
+  -webkit-animation 'toBot' .3s forwards ease-out
 
 
 @keyframes toBot {

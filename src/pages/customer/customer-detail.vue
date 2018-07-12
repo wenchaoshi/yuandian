@@ -102,7 +102,6 @@
 </template>
 
 <script>
-import $ from 'jquery'
 export default {
   data () {
     return {
@@ -320,6 +319,7 @@ export default {
     display block
     .shade-content
       animation 'addTag' .6s ease-out forwards
+      -webkit-animation 'addTag' .6s ease-out forwards
   .shade-content 
     position absolute
     left 0
