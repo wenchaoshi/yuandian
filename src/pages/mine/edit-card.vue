@@ -92,7 +92,7 @@ export default {
     width 3.55rem
     height 120px
     padding 0 20px
-    margin 0 auto
+    margin 0 auto 30px
     border-radius 2px
     background #fff
     color #999

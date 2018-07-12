@@ -37,16 +37,16 @@
 
 
 <!-- 添加标签 -->
-  <div class="mine-shade" :class="share?'active':''" > 
+  <div class="mine-shade min-share" :class="share?'active':''" > 
       <div class="shade-content">
           <p>长按保存图片</p>
           <div class="share-box">
-            <h2>张高丽</h2>
+            <h2 :style="{padding:style30+'px'}">张高丽</h2>
             <p>上海一体丽莎</p>
-            <div class="img-box"><img src="#" alt=""></div>
-            <p><small>长按识别查看名片</small></p>
+            <div class="img-box" :style="{marginTop:style30+'px'}"><img src="#" alt=""></div>
+            <p><small :style="small">长按识别查看名片</small></p>
           </div>
-          <i @click.stop="hideShade"></i>
+          <i @click.stop="hideShade" :style="i"></i>
       </div>
   </div>
 
@@ -72,7 +72,7 @@ export default {
   data() {
     return {
       share:false,
-      productEdit:false
+      productEdit:false,
     };
   },
   props: [],
@@ -81,11 +81,24 @@ export default {
   },
 
   computed: {
-
+    style30(){
+      return  $(window).height()*(30/667)
+      
+    },
+    small(){
+      return {
+        margin: $(window).height()*(20/667)+'px'
+      }
+    },
+    i(){
+      return {
+        marginTop: $(window).height()*(47/667)+'px'
+      }
+    }
   },
 
   mounted: function() {
-    alert($(window).width()+'分割：'+$(window).height())
+    
   },
 
   methods: {
@@ -199,16 +212,16 @@ export default {
   z-index 100
   width 100%
   height 100%
-  padding 17.5% 10.7%
+  padding 0 10.7%
   color #fff
   background rgba(1,2,13,0.5)
   display none
   .shade-content
+    align-self center
     text-align center
     width 100%
-    height 100%
     .share-box 
-      height 380px
+      max-height 380px
       margin-top 10px
       color #333
       background #ffffff
@@ -255,7 +268,7 @@ export default {
         line-height  49px
 
 .mine-shade.active
-  display block
+  display flex
 .product-edit.active .shade-content
   animation 'toBot' .3s forwards ease-out
   -webkit-animation 'toBot' .3s forwards ease-out
