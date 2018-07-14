@@ -58,7 +58,7 @@ export default {
 
   mounted: function() {
     let nowView=document.getElementById('scroll-view').getElementsByTagName('div')[0]
-    base.intoView(nowView)
+    base.intoView(nowView);  //初始化时滚动到nowView元素（底部）
   },
 
   methods: {}

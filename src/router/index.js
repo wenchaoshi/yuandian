@@ -42,22 +42,22 @@ export default new Router({
     path: '/customer-detail',
     name: 'customerDetail',
     component: customerDetail,
-    children:[
-      {
-        path: 'customer-tab1',
-        name: 'customerTab1',
-        component: customerTab1,
-      },
-      {
-        path: 'customer-tab2',
-        name: 'customerTab2',
-        component: customerTab2,
-      },
-      {
-        path: '',
-        redirect: 'customer-tab1',
-      }
-    ]
+    // children:[
+    //   {
+    //     path: 'customer-tab1',
+    //     name: 'customerTab1',
+    //     component: customerTab1,
+    //   },
+    //   {
+    //     path: 'customer-tab2',
+    //     name: 'customerTab2',
+    //     component: customerTab2,
+    //   },
+    //   {
+    //     path: '',
+    //     redirect: 'customer-tab1',
+    //   }
+    // ]
   },
   
   {

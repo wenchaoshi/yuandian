@@ -2,9 +2,11 @@
 <template>
   <div id="page">
       <div class="view edit-card">
+        <form class="form-edit" enctype="multipart/form-data" role="form" id="form-edit">
           <div class="head-portrait">
-              <img src="" alt="">
-              <span>更换头像</span>
+              <img :src="imgUrl" alt="" id="img-view">
+              <input style="display:none" type="file"  accept="image/*"  id="upImg" @change="upImg">
+              <label for="upImg"><span>更换头像</span></label>
           </div>
           <div class="information-card">
               <h2>张高丽<small class="tel fr">136555555</small></h2>
@@ -22,14 +24,17 @@
           <div class="save-btn">
               <button>完成</button>
           </div>
+        </form>
       </div>
   </div>
 </template>
 
 <script>
+import uploadImg from '@/js/uploadImg.js'
 export default {
   data () {
     return {
+      imgUrl:''
     };
   },
 
@@ -37,19 +42,43 @@ export default {
 
   computed: {},
 
-  mounted: function () {  },
+  mounted: function () { 
+    
+    
+  },
 
-  methods: {}
+  methods: {
+    upImg(){
+      var options = {
+        path: '/',    // 上传图片时指定的地址路径，类似form变淡的action属性
+        onSuccess: function (res) {    // 上传成功后执行的方法，res是接收的ajax响应内容
+            console.log(res);  
+        },
+        onFailure: function (res) {    // 上传失败后执行的方法，res是接收的ajax响应内容
+            console.log(res);
+        }
+      }
+    // 执行生成图片上传插件的方法, 第一个参数是上面提到的准备生成组件的div选择器，第二个参数是设置的组件信息，执行方法后返回一个函数指针，指向执行上传功能的函数，通过把执行上传功能的函数暴露出来，用户就可以自己控制何时上传图片了。
+      var upload = uploadImg.tinyImgUpload(this,'upImg', options);
+     
+    }
+  }
 }
 
 </script>
+
 <style lang='stylus'>
 .edit-card 
   height calc(100% - 75px)
 .head-portrait
   position relative
+  width 100%
   height 260px
+  overflow hidden
   background #f00
+  text-align center
+  img 
+    max-height 100%
   span 
     position absolute
     left calc(50% - 50px)

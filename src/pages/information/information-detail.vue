@@ -1,14 +1,16 @@
 <!--详情页  -->
 <template>
   <div id="page" class="detail">
-    <div class="view">
-      <div id="scroll-view">
-        <div class="detail-lists" v-for="(item,index) in list" :key='index' :class="item.type==1?'detail-lists-type1':'detail-lists-type2'">
-          <span class="img-box"><img :src="item.imgSrc" alt=""></span>
-          <p>{{item.p}}</p>
-        </div>
-        <div class="detail-date">
-          <span>4小时前</span>
+    <div class="view" id="MiniRefresh">
+      <div class="MiniRefresh-box">
+        <div id="scroll-view">
+          <div class="detail-lists" v-for="(item,index) in list" :key='index' :class="item.type==1?'detail-lists-type1':'detail-lists-type2'">
+            <span class="img-box"><img :src="item.imgSrc" alt=""></span>
+            <p>{{item.p}}</p>
+          </div>
+          <div class="detail-date">
+            <span>4小时前</span>
+          </div>
         </div>
       </div>
       <div class="message-box">
@@ -113,10 +115,34 @@ export default {
 
   mounted: function () { 
     let nowView=document.getElementById('scroll-view').getElementsByTagName('div')[0]
-    base.intoView(nowView)
+    base.intoView(nowView);  //初始化时滚动到nowView元素（底部）
+
+    this.miniRefresh();
+
   },
 
-  methods: {}
+  methods: {
+    miniRefresh(){
+      //下拉刷新
+      var miniRefresh=new MiniRefresh({
+        container: '#MiniRefresh',
+        down: {
+            callback: function() {
+                // 下拉事件
+                miniRefresh.endDownLoading();
+            }
+        },
+        up: {
+            contentnomore:'',
+            callback: function() {
+                // 上拉事件
+                // 注意，由于默认情况是开启满屏自动加载的，所以请求失败时，请务必endUpLoading(true)，防止无限请求
+                miniRefresh.endUpLoading(true);
+            }
+        }
+      });
+    }
+  }
 }
 
 </script>
@@ -125,6 +151,7 @@ export default {
 #scroll-view
   display flex
   flex-direction column-reverse
+  background #f1f1f1
 
 .detail .view 
   height 100%
@@ -149,6 +176,7 @@ export default {
     position fixed
     left 0
     bottom 0
+    z-index 99
     width 100%
     height 60px
     padding 10px
@@ -212,4 +240,8 @@ export default {
   }
 }
   
+
+//隐藏上拉加载更多
+.detail .minirefresh-upwrap 
+  display none 
 </style>

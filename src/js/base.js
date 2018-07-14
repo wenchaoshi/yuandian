@@ -5,5 +5,5 @@ export default {
         $(function(){
             obj.scrollIntoView(true)
           })
-    }
+    },
 }

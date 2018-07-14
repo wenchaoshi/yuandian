@@ -4,6 +4,8 @@ import router from './router'
 import $ from 'jquery'
 import '@/style/base.css'
 import '@/style/components.styl'
+import MiniRefreshTools from 'minirefresh';
+import 'minirefresh/dist/debug/minirefresh.css'
 
 Vue.config.productionTip = false
 

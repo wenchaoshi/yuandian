@@ -29,12 +29,17 @@
           <div class="customerDetail-tab">
             <div :class="onTop?'on-top':''">
               <div class="customerDetail-tab-nav" >
-                <router-link to="/customer-detail/customer-tab1" tag="div"><span>互动跟进</span></router-link>
-                <router-link to="/customer-detail/customer-tab2" tag="div"><span>客户分析</span></router-link>
+                <!-- <router-link to="/customer-detail/customer-tab1" tag="div"><span>互动跟进</span></router-link>
+                <router-link to="/customer-detail/customer-tab2" tag="div"><span>客户分析</span></router-link> -->
+                <div @click="customerTabBar('customerTab1')" :class="componentId=='customerTab1'?'active':''"><span>互动跟进</span></div>
+                <div @click="customerTabBar('customerTab2')" :class="componentId=='customerTab2'?'active':''"><span>互动跟进</span></div>
               </div>
             </div>
             <div class="customerDetail-tab-view">
-              <router-view></router-view>
+              <!-- <router-view></router-view> -->
+              <keep-alive exclude="customer-tab2">
+                <component :is="componentId"></component>
+              </keep-alive>
             </div>
           </div>
       </div>
@@ -102,9 +107,12 @@
 </template>
 
 <script>
+import customerTab1 from './children/customer-tab1'
+import customerTab2 from './children/customer-tab2'
 export default {
   data () {
     return {
+      componentId:'customerTab1',
       onTop:false,
       offsettop:0,
       addTag:false,
@@ -113,6 +121,8 @@ export default {
   },
 
   components: {
+    customerTab1,
+    customerTab2
   },
 
   computed: {
@@ -136,6 +146,9 @@ export default {
         that.onTop=false
       }
      
+    },
+    customerTabBar(target){
+      this.componentId=target
     },
     navigator(path){
       this.$router.push({path:path})
@@ -250,7 +263,7 @@ export default {
   border-left none
   border-right none
   text-align center
-  height 0.5rem
+  height 50px
   background #fff
   
   &>div
@@ -259,7 +272,8 @@ export default {
     span 
       display inline-block
       position relative
-.customerDetail-tab-nav .router-link-active span 
+
+.customerDetail-tab-nav .active span 
   &:before
     content ""
     display inline-block
@@ -305,6 +319,7 @@ export default {
     margin-right 10px
 
 
+//阴影遮罩
 //添加标签
 .shade
   position fixed
@@ -354,7 +369,7 @@ export default {
           background #333
           color #fff
 
-
+//跟进进度
 .shade.evolve
   .shade-content
     height 415px
@@ -366,6 +381,7 @@ export default {
       &:nth-last-of-type(1)
         line-height 50px
 
+//添加跟进
 .shade.follow 
   textarea 
     width 100%
