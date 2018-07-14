@@ -15,64 +15,65 @@ Vue.use(Router)
 
 export default new Router({
   routes: [{
-    path: '/', 
-    redirect: '/business'
-  },
-  {
-    path: '/business',
-    name: 'business',
-    component: Business
-  }, 
-  {
-    path: '/information',
-    name: 'information',
-    component: Information,
-  }, 
-  {
-    path: '/information-detail',
-    name:'information-detail',
-    component: informationDetail
-  },
-  {
-    path: '/customer',
-    name: 'customer',
-    component: Customer
-  },
-  {
-    path: '/customer-detail',
-    name: 'customerDetail',
-    component: customerDetail,
-    // children:[
-    //   {
-    //     path: 'customer-tab1',
-    //     name: 'customerTab1',
-    //     component: customerTab1,
-    //   },
-    //   {
-    //     path: 'customer-tab2',
-    //     name: 'customerTab2',
-    //     component: customerTab2,
-    //   },
-    //   {
-    //     path: '',
-    //     redirect: 'customer-tab1',
-    //   }
-    // ]
-  },
-  
-  {
-    path: '/customer-information',
-    name: 'customer-information',
-    component: Customerinformation
-  },
-  {
-    path: '/mine',
-    name: 'mine',
-    component: Mine
-  },
-  {
-    path: '/edit-card',
-    name: 'mine-edit',
-    component: MineEdit
-  }]
+      path: '/',
+      redirect: '/business'
+    },
+    {
+      path: '/business',
+      name: 'business',
+      component: Business
+    },
+    {
+      path: '/information',
+      name: 'information',
+      component: Information,
+    },
+    {
+      path: '/information-detail',
+      name: 'information-detail',
+      component: informationDetail
+    },
+    {
+      path: '/customer',
+      name: 'customer',
+      component: Customer
+    },
+    {
+      path: '/customer-detail',
+      name: 'customerDetail',
+      component: customerDetail,
+      // children:[
+      //   {
+      //     path: 'customer-tab1',
+      //     name: 'customerTab1',
+      //     component: customerTab1,
+      //   },
+      //   {
+      //     path: 'customer-tab2',
+      //     name: 'customerTab2',
+      //     component: customerTab2,
+      //   },
+      //   {
+      //     path: '',
+      //     redirect: 'customer-tab1',
+      //   }
+      // ]
+    },
+
+    {
+      path: '/customer-information',
+      name: 'customer-information',
+      component: Customerinformation
+    },
+    {
+      path: '/mine',
+      name: 'mine',
+      component: Mine
+    },
+    {
+      path: '/edit-card',
+      name: 'mine-edit',
+      component: MineEdit
+    }
+  ]
 })

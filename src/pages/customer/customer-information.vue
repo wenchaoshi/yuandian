@@ -16,45 +16,43 @@
 
 <script>
 export default {
-  data () {
-    return {
-    };
+  data() {
+    return {};
   },
 
   components: {},
 
   computed: {},
 
-  mounted: function () {  },
+  mounted: function() {},
 
   methods: {}
-}
-
+};
 </script>
 <style lang='stylus'>
-.customer-information.view 
+.customer-information.view
   height 100%
   .customer-information-edit
-    ul 
+    ul
       margin 10px
       border-radius 2px
       overflow hidden
-      li 
+      li
         padding 0 20px
         background #fff
-      li:nth-last-of-type(2) label 
+      li:nth-last-of-type(2) label
         border none
-      li:nth-last-of-type(1) 
+      li:nth-last-of-type(1)
         margin-top 20px
         background #4F4F5C
         padding 12px 20px
-        input 
+        input
           color #fff
-      label 
+      label
         display block
         padding 20px 0
         border-bottom 1px solid #e3e3e3
-      input 
+      input
         border none
         width 100%
         height 100%

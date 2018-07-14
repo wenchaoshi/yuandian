@@ -71,56 +71,51 @@
 export default {
   data() {
     return {
-      share:false,
-      productEdit:false,
+      share: false,
+      productEdit: false
     };
   },
   props: [],
-  components: {
-    
-  },
+  components: {},
 
   computed: {
-    style30(){
-      return  $(window).height()*(30/667)
-      
+    style30() {
+      return $(window).height() * (30 / 667);
     },
-    small(){
+    small() {
       return {
-        margin: $(window).height()*(20/667)+'px'
-      }
+        margin: $(window).height() * (20 / 667) + "px"
+      };
     },
-    i(){
+    i() {
       return {
-        marginTop: $(window).height()*(47/667)+'px'
-      }
+        marginTop: $(window).height() * (47 / 667) + "px"
+      };
     }
   },
 
-  mounted: function() {
-    
-  },
+  mounted: function() {},
 
   methods: {
-    shade(target,event){
-      this[target]=true
-      if(target=='productEdit'){
-        let targetId=event.currentTarget.dataset.id
-        console.log('产品'+targetId)
+    shade(target, event) {
+      this[target] = true;
+      if (target == "productEdit") {
+        let targetId = event.currentTarget.dataset.id;
+        console.log("产品" + targetId);
       }
     },
-    hideShade(){
-      this.share=false
-      this.productEdit=false
+    hideShade() {
+      this.share = false;
+      this.productEdit = false;
     },
-    navigator(){
-      this.$router.push({path:'/edit-card'})
+    navigator() {
+      this.$router.push({ path: "/edit-card" });
     }
   }
 };
 </script>
 <style lang='stylus'>
-.mine-card 
+.mine-card
   margin 10px
   background #fff
   .card-center
@@ -130,44 +125,43 @@ export default {
       height 50px
       margin-right 10px
       background #000
-      img 
+      img
         width 100%
         height 100%
-    div 
+    div
       overflow hidden
       line-height 1
       h2
         margin-bottom 15px
         font-size 20px
-        small 
+        small
           font-size 14px
-      p 
-        color #999 
-  .card-main 
+      p
+        color #999
+  .card-main
     display flex
     line-height 45px
     text-align center
     border-top 1px solid #eee
     div
       flex 1
-      span 
+      span
         vertical-align middle
-      &:before 
-        content ""
+      &:before
+        content ''
         display inline-block
-        width 16px 
+        width 16px
         height 16px
         margin-right 10px
         vertical-align middle
-        background url(../../images/icon_card_share.png) 0/100% 100%
-      &:nth-of-type(1) 
+        background url('../../images/icon_card_share.png') 0 / 100% 100%
+      &:nth-of-type(1)
         border-right 1px solid #e7e7e7
         &:before
-          background url(../../images/icon_card_edit.png) 0/100% 100%
-
-.mine-products 
+          background url('../../images/icon_card_edit.png') 0 / 100% 100%
+.mine-products
   background #fff
-  ul li 
+  ul li
     float left
     width 50%
     padding 10px
@@ -180,31 +174,29 @@ export default {
         display block
         width 100%
         position relative
-        img 
+        img
           width 100%
-        i 
+        i
           position absolute
           width 53px
           height 53px
           left calc(50% - 27px)
           top calc(50% - 27px)
           margin 0
-          background-image url(../../images/icon_down.png)
-      h3 
+          background-image url('../../images/icon_down.png')
+      h3
         padding 10px
         text-align left
         line-height 18px
-      i 
+      i
         display inline-block
         margin 5px 0 10px
         padding 1px 3px
         font-size 10px
-        background url(../../images/img_product_label.png) 0/100% 100%
+        background url('../../images/img_product_label.png') 0 / 100% 100%
         color #fff
         font-style normal
-
-
-//分享窗口
+// 分享窗口
 .mine-shade
   position fixed
   left 0
@@ -214,13 +206,13 @@ export default {
   height 100%
   padding 0 10.7%
   color #fff
-  background rgba(1,2,13,0.5)
+  background rgba(1, 2, 13, 0.5)
   display none
   .shade-content
     align-self center
     text-align center
     width 100%
-    .share-box 
+    .share-box
       max-height 380px
       margin-top 10px
       color #333
@@ -229,29 +221,26 @@ export default {
         padding 30px 0
         font-size 20px
         font-weight bolder
-      div.img-box 
+      div.img-box
         margin 30px auto 0
         width 188px
-        img 
+        img
           width 100%
-          height 180px  
+          height 180px
           max-height 180px
-      p 
+      p
         color #999
-        small 
+        small
           display inline-block
           margin 20px 0
           font-size 12px
-
-    i 
+    i
       display inline-block
       width 55px
       height 55px
       margin-top 47px
-      background url(../../images/btn_delete.png) 0/100% 100%
-      
-
-.mine-shade.product-edit  
+      background url('../../images/btn_delete.png') 0 / 100% 100%
+.mine-shade.product-edit
   padding 0
   .shade-content
     position absolute
@@ -261,28 +250,19 @@ export default {
     height 110px
     color #333
     background #fff
-    li 
-      line-height  59px
+    li
+      line-height 59px
       border-top 1px solid #eee
       &:nth-last-of-type(1)
-        line-height  49px
-
+        line-height 49px
 .mine-shade.active
   display flex
 .product-edit.active .shade-content
-  animation 'toBot' .3s forwards ease-out
-  -webkit-animation 'toBot' .3s forwards ease-out
-
-
-@keyframes toBot {
-  0% {
+  animation 'toBot' 0.3s forwards ease-out
+  -webkit-animation 'toBot' 0.3s forwards ease-out
+@keyframes toBot
+  0%
     bottom -100%
-  }
-  100% {
+  100%
     bottom 0%
-  }
-}
-
-
-
 </style>

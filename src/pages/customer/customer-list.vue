@@ -40,67 +40,53 @@ export default {
   mounted: function() {},
 
   methods: {
-      toDetail(){
-        this.$router.push({path:'/customer-detail'})
-      }
+    toDetail() {
+      this.$router.push({ path: "/customer-detail" });
+    }
   }
 };
 </script>
 <style lang='stylus'>
-@import '../../style/mixin.styl';
-.customer-date 
+@import '../../style/mixin.styl'
+.customer-date
   margin-top 10px
   padding 10px
   color #333
-
-.customer-list {
-  position: relative;
-  padding: 10px;
-  overflow: hidden;
+.customer-list
+  position relative
+  padding 10px
+  overflow hidden
   background #fff
-  border-1px(#EEEEEE);
-
-  .customer-img {
-    float: left;
-    width: 45px;
-    height: 45px;
-    background: #000;
-  }
-  .customer-status {
+  border-1px(#EEEEEE)
+  &:hover
+    active()
+  .customer-img
+    float left
+    width 45px
+    height 45px
+    background #000
+  .customer-status
     float right
     line-height 45px
     font-size 14px
     color #DA4B5A
-    strong {
-        display none
-        font-weight 100
-        &.active {
-            display inline    
-        }
-    }
-    strong:nth-of-type(2) {
-        color #25B181
-    }
-  }
-
-    
-
-  .customer-action {
-    overflow: hidden;
-    padding-left: 10px;
-    color: #999;
-
-    h2 {
-      font-size: 14px;
-      color: #333;
-      font-weight: 400;
-    }
-
-    p {
-      margin: 8px 0 0;
+    strong
+      display none
+      font-weight 100
+      &.active
+        display inline
+    strong:nth-of-type(2)
+      color #25B181
+  .customer-action
+    overflow hidden
+    padding-left 10px
+    color #999
+    h2
+      font-size 14px
+      color #333
+      font-weight 400
+    p
+      margin 8px 0 0
       font-size 12px
       color #999
-    }
-  }
-}
 </style>

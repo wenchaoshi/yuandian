@@ -22,12 +22,10 @@
 </template>
 
 <script>
-import customerList from "@pages/customer/customer-list"
+import customerList from "@pages/customer/customer-list";
 export default {
-  data () {
-    return {
-      
-    };
+  data() {
+    return {};
   },
 
   components: {
@@ -36,15 +34,14 @@ export default {
 
   computed: {},
 
-  mounted: function(){},
+  mounted: function() {},
 
   methods: {}
-}
-
+};
 </script>
 <style lang='stylus'>
-@import '../../style/mixin.styl';
-ul.follow 
+@import '../../style/mixin.styl'
+ul.follow
   li
     padding 10px
     line-height 50px
@@ -52,12 +49,14 @@ ul.follow
     border-1px(#f1f1f1)
     overflow hidden
     background #fff
-   .img-box
-     float left
-     margin-right 10px
-     img 
+    &:hover
+      active()
+  .img-box
+    float left
+    margin-right 10px
+    img
       width 50px
-      height 50px 
-    p 
-      overflow hidden
+      height 50px
+  p
+    overflow hidden
 </style>

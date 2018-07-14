@@ -107,16 +107,16 @@
 </template>
 
 <script>
-import customerTab1 from './children/customer-tab1'
-import customerTab2 from './children/customer-tab2'
+import customerTab1 from "./children/customer-tab1";
+import customerTab2 from "./children/customer-tab2";
 export default {
-  data () {
+  data() {
     return {
-      componentId:'customerTab1',
-      onTop:false,
-      offsettop:0,
-      addTag:false,
-      evolve:false
+      componentId: "customerTab1",
+      onTop: false,
+      offsettop: 0,
+      addTag: false,
+      evolve: false
     };
   },
 
@@ -125,51 +125,44 @@ export default {
     customerTab2
   },
 
-  computed: {
-  },
+  computed: {},
 
-  mounted: function () {
-    let obj=$('.customerDetail-tab');
-    this.offsettop=obj.offset().top;
+  mounted: function() {
+    let obj = $(".customerDetail-tab");
+    this.offsettop = obj.offset().top;
   },
 
   methods: {
-    onScroll(e){
-      let that=this;
-      let offsettop=that.offsettop
-      let scrollTop=e.target.scrollTop;
+    onScroll(e) {
+      let that = this;
+      let offsettop = that.offsettop;
+      let scrollTop = e.target.scrollTop;
 
-      if(scrollTop>offsettop){
-        that.onTop=true
+      if (scrollTop > offsettop) {
+        that.onTop = true;
+      } else {
+        that.onTop = false;
       }
-      else{
-        that.onTop=false
+    },
+    customerTabBar(target) {
+      this.componentId = target;
+    },
+    navigator(path) {
+      this.$router.push({ path: path });
+    },
+    setClass(target) {
+      this[target] = !this[target];
+    },
+    stop() {},
+    cancle() {
+      this.addTag = false;
+      this.evolve = false;
+      if ($(".follow").length) {
+        $(".follow").removeClass("active");
       }
-     
-    },
-    customerTabBar(target){
-      this.componentId=target
-    },
-    navigator(path){
-      this.$router.push({path:path})
-    },
-    setClass(target){
-      this[target]=!this[target]
-    },
-    stop(){
-
-    },
-    cancle(){
-      this.addTag=false
-      this.evolve=false
-      if($('.follow').length){
-        $('.follow').removeClass('active')
-      }
-      
     }
   }
-}
-
+};
 </script>
 <style lang='stylus'>
 .view.customerDetail
@@ -177,78 +170,74 @@ export default {
   overflow auto
 .customerDetail-scrollView
   overflow auto
-.customerDetail-card 
+.customerDetail-card
   width 3.55rem
   height 1.3rem
   margin 0.1rem auto
-  background url('../../images/customerDetail-card.png') no-repeat 0/100% 100%
-  .customerDetail-information 
-    padding .2rem
+  background url('../../images/customerDetail-card.png') no-repeat 0 / 100% 100%
+  .customerDetail-information
+    padding 0.2rem
     color #fff
     *
-     cursor pointer
-    span 
-      width .5rem
-      height .5rem
-      background  #000
-      img 
+      cursor pointer
+    span
+      width 0.5rem
+      height 0.5rem
+      background #000
+      img
         width 100%
         height 100%
-    h2 
-      padding-left .1rem
-      line-height .5rem
+    h2
+      padding-left 0.1rem
+      line-height 0.5rem
       font-weight bolder
-      font-size .16rem
+      font-size 0.16rem
       overflow hidden
-      small 
+      small
         color #bbb
         font-weight 100
-        font-size .12rem
+        font-size 0.12rem
         &:after
-          content ""
+          content ''
           display inline-block
-          width .07rem
-          height .16rem
-          margin-left .06rem
+          width 0.07rem
+          height 0.16rem
+          margin-left 0.06rem
           vertical-align sub
-          background url(../../images/Triangle_3.png) 0/100% no-repeat
+          background url('../../images/Triangle_3.png') 0 / 100% no-repeat
   .customerDetail-tag
-    padding 0 .2rem
-    span 
-      margin-right .1rem
-      padding 4px .07rem
+    padding 0 0.2rem
+    span
+      margin-right 0.1rem
+      padding 4px 0.07rem
       color #fff
       border 1px solid
       border-radius 2px
       font-size 10px
       cursor pointer
-
-
-.customerDetail-action 
+.customerDetail-action
   display flex
-  padding  20px
+  padding 20px
   text-align center
   font-size 12px
   position relative
   &:after
-    display: block
-    position: absolute
-    left: 50%
-    top: calc(50% - 15px)
-    width: 0
-    height: 30px
-    border-left: 1px solid #D8D8D8
-    content: ' '
-
-  &>div 
+    display block
+    position absolute
+    left 50%
+    top calc(50% - 15px)
+    width 0
+    height 30px
+    border-left 1px solid #D8D8D8
+    content ' '
+  &>div
     flex 1
-    strong 
+    strong
       display inline-block
       font-size 20px
       line-height 1.8em
       font-weight 400
-
-.on-top 
+.on-top
   height 0.5rem
   .customerDetail-tab-nav
     position fixed
@@ -256,7 +245,6 @@ export default {
     left 0
     z-index 10
     width 100%
-
 .customerDetail-tab-nav
   display flex
   border 1px solid #eee
@@ -265,17 +253,15 @@ export default {
   text-align center
   height 50px
   background #fff
-  
   &>div
     flex 1
     line-height 48px
-    span 
+    span
       display inline-block
       position relative
-
-.customerDetail-tab-nav .active span 
+.customerDetail-tab-nav .active span
   &:before
-    content ""
+    content ''
     display inline-block
     width 70%
     height 2px
@@ -284,8 +270,8 @@ export default {
     bottom 0
     border-radius 1px
     background #000
-  &:after 
-    content ""
+  &:after
+    content ''
     display inline-block
     width 0
     height 0
@@ -294,8 +280,7 @@ export default {
     border 6px solid transparent
     border-top-color #333
     vertical-align middle
-
-.fixBot 
+.fixBot
   display flex
   position fixed
   bottom 0
@@ -312,15 +297,13 @@ export default {
     background #4F4F5C
   .fixBot-list2
     background #25B181
-  img 
+  img
     width 26px
-    height auto 
+    height auto
     vertical-align middle
     margin-right 10px
-
-
-//阴影遮罩
-//添加标签
+// 阴影遮罩
+// 添加标签
 .shade
   position fixed
   left 0
@@ -328,14 +311,14 @@ export default {
   z-index 15
   width 100%
   height 100%
-  background rgba(1,2,13,0.5)
+  background rgba(1, 2, 13, 0.5)
   display none
-  &.active 
+  &.active
     display block
     .shade-content
-      animation 'addTag' .6s ease-out forwards
-      -webkit-animation 'addTag' .6s ease-out forwards
-  .shade-content 
+      animation 'addTag' 0.6s ease-out forwards
+      -webkit-animation 'addTag' 0.6s ease-out forwards
+  .shade-content
     position absolute
     left 0
     bottom 0
@@ -343,18 +326,18 @@ export default {
     height 222px
     padding 20px 20px 0
     background #fff
-    .tag-main 
-      ul li 
+    .tag-main
+      ul li
         float left
         margin 10px 10px 0 0
         padding 6px 10px
         background #D8D8D8
         border-radius 1px
         font-size 12px
-        &.active 
+        &.active
           color #fff
           background #333
-    .main 
+    .main
       position absolute
       left 0
       bottom 0
@@ -365,38 +348,32 @@ export default {
       border-top 1px solid #eee
       div
         flex 1
-        &.save 
+        &.save
           background #333
           color #fff
-
-//跟进进度
+// 跟进进度
 .shade.evolve
   .shade-content
     height 415px
     padding 0
-    li 
+    li
       text-align center
       line-height 60px
       border-bottom 1px solid #eee
       &:nth-last-of-type(1)
         line-height 50px
-
-//添加跟进
-.shade.follow 
-  textarea 
+// 添加跟进
+.shade.follow
+  textarea
     width 100%
     height 100px
     border 1px solid #eeeeee
     border-radius 1px
     padding 10px
     margin-top 10px
-
-@keyframes addTag {
-  0% {
+@keyframes addTag
+  0%
     bottom -100%
-  }
-  100% {
+  100%
     bottom 0%
-  }
-}
 </style>

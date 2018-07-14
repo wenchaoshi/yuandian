@@ -1,6 +1,6 @@
 <!-- 消息  页面 -->
 <template>
-  <div id="page">
+  <div id="page" class="information-index">
     <div class="view" id="MiniRefresh">
       <div class="MiniRefresh-box">
         <div class="information">
@@ -16,8 +16,6 @@
 
 <script>
 import informationList from "./information-list";
-
-
 
 export default {
   data() {
@@ -70,49 +68,55 @@ export default {
   computed: {},
 
   mounted: function() {
-    this.miniRefresh()
+    this.miniRefresh(this);
   },
 
   methods: {
-    miniRefresh(){
+    miniRefresh(that) {
       //下拉刷新
-      var miniRefresh=new MiniRefresh({
-        container: '#MiniRefresh',
+      var miniRefresh = new MiniRefresh({
+        container: "#MiniRefresh",
         down: {
-            callback: function() {
-                // 下拉事件
-                //miniRefresh.endDownLoading();
-            }
+          isLock: true,
+          callback: function() {
+            // 下拉事件
+
+            miniRefresh.endDownLoading(true);
+            return false;
+          }
         },
         up: {
-            contentnomore:'',
-            callback: function() {
-                // 上拉事件
-                // 注意，由于默认情况是开启满屏自动加载的，所以请求失败时，请务必endUpLoading(true)，防止无限请求
-                miniRefresh.endUpLoading(true);
-            }
+          contentnomore: "暂无更多数据",
+          loadFull: {
+            isEnable: true
+          },
+          isAuto: false,
+          callback: function() {
+            // 上拉事件
+            // 注意，由于默认情况是开启满屏自动加载的，所以请求失败时，请务必endUpLoading(true)，防止无限请求
+            // setTimeout(function(){
+            //   miniRefresh.endUpLoading(false);
+            // },300)
+
+            //minirefresh.resetUpLoading();
+
+            setTimeout(() => {
+              miniRefresh.endUpLoading(true);
+              setTimeout(function() {
+                miniRefresh.resetUpLoading();
+              }, 5000);
+            }, 3000);
+          }
         }
       });
     }
   }
 };
-
-
-
-
-
-
-
 </script>
 <style lang='stylus'>
-@import '../../style/mixin.styl';
-
-.information {
-  background: #fff;
-}
-
-
-//隐藏上拉加载更多
-.minirefresh-upwrap 
+@import '../../style/mixin.styl'
+.information
+  background #fff
+.information-index .minirefresh-theme-default .minirefresh-upwrap
   display block
 </style>

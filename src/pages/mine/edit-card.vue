@@ -30,11 +30,11 @@
 </template>
 
 <script>
-import uploadImg from '@/js/uploadImg.js'
+import uploadImg from "@/js/uploadImg.js";
 export default {
-  data () {
+  data() {
     return {
-      imgUrl:''
+      imgUrl: ""
     };
   },
 
@@ -42,33 +42,30 @@ export default {
 
   computed: {},
 
-  mounted: function () { 
-    
-    
-  },
+  mounted: function() {},
 
   methods: {
-    upImg(){
+    upImg() {
       var options = {
-        path: '/',    // 上传图片时指定的地址路径，类似form变淡的action属性
-        onSuccess: function (res) {    // 上传成功后执行的方法，res是接收的ajax响应内容
-            console.log(res);  
+        path: "/", // 上传图片时指定的地址路径，类似form变淡的action属性
+        onSuccess: function(res) {
+          // 上传成功后执行的方法，res是接收的ajax响应内容
+          console.log(res);
         },
-        onFailure: function (res) {    // 上传失败后执行的方法，res是接收的ajax响应内容
-            console.log(res);
+        onFailure: function(res) {
+          // 上传失败后执行的方法，res是接收的ajax响应内容
+          console.log(res);
         }
-      }
-    // 执行生成图片上传插件的方法, 第一个参数是上面提到的准备生成组件的div选择器，第二个参数是设置的组件信息，执行方法后返回一个函数指针，指向执行上传功能的函数，通过把执行上传功能的函数暴露出来，用户就可以自己控制何时上传图片了。
-      var upload = uploadImg.tinyImgUpload(this,'upImg', options);
-     
+      };
+      // 执行生成图片上传插件的方法, 第一个参数是上面提到的准备生成组件的div选择器，第二个参数是设置的组件信息，执行方法后返回一个函数指针，指向执行上传功能的函数，通过把执行上传功能的函数暴露出来，用户就可以自己控制何时上传图片了。
+      var upload = uploadImg.tinyImgUpload(this, "upImg", options);
     }
   }
-}
-
+};
 </script>
 
 <style lang='stylus'>
-.edit-card 
+.edit-card
   height calc(100% - 75px)
 .head-portrait
   position relative
@@ -77,9 +74,9 @@ export default {
   overflow hidden
   background #f00
   text-align center
-  img 
+  img
     max-height 100%
-  span 
+  span
     position absolute
     left calc(50% - 50px)
     top calc(50% - 18px)
@@ -90,10 +87,9 @@ export default {
     border-radius 100px
     text-align center
     color #fff
-    background rgba(0,0,0,.7)
-
+    background rgba(0, 0, 0, 0.7)
 .information-card
-  position relative 
+  position relative
   z-index 2
   width 315px
   margin 0 auto
@@ -101,23 +97,22 @@ export default {
   padding 20px
   background #fff
   border-radius 3px
-  h2 
-    margin-bottom 10px 
+  h2
+    margin-bottom 10px
     font-size 20px
     font-weight bold
-    small 
+    small
       font-size 14px
-  .site 
-    margin 20px 0  
+  .site
+    margin 20px 0
     color #333
-
 .edit-lists
   margin-top 30px
   &>p
     margin-bottom 20px
     text-align center
     font-size 16px
-  ul 
+  ul
     width 3.55rem
     height 120px
     padding 0 20px
@@ -125,18 +120,17 @@ export default {
     border-radius 2px
     background #fff
     color #999
-    li 
+    li
       padding 20px 0
       border-bottom 1px solid #eee
-
-.save-btn 
+.save-btn
   position fixed
   left 0
   bottom 0
   width 100%
   padding 15px
   background #fff
-  button 
+  button
     display block
     background #42403E
     border-radius 2px

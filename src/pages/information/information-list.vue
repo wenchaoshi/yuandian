@@ -15,7 +15,7 @@ export default {
   data() {
     return {};
   },
-  props:['item'],
+  props: ["item"],
   components: {},
 
   computed: {},
@@ -23,50 +23,40 @@ export default {
   mounted: function() {},
 
   methods: {
-    toDetail(){
+    toDetail() {
       //console.log(this.item)
-      this.$router.push({path: '/information-detail'})
+      this.$router.push({ path: "/information-detail" });
     }
   }
 };
 </script>
 <style lang='stylus'>
-@import '../../style/mixin.styl';
-.information-list {
-  position: relative;
-  padding: 20px 10px;
-  overflow: hidden;
-  border-1px(#EEEEEE);
+@import '../../style/mixin.styl'
+.information-list
+  position relative
+  padding 20px 10px
+  overflow hidden
+  border-1px(#EEEEEE)
   cursor pointer
-  &:after {
-    top: 0;
-  }
-
-  .information-img {
-    float: left;
-    width: 50px;
-    height: 50px;
-    background: #000;
-  }
-
-  .information-action {
-    overflow: hidden;
-    padding-left: 10px;
-    color: #999;
-
-    h2 {
-      font-size: 16px;
-      color: #333;
-      font-weight: 400;
-    }
-
-    p {
-      margin: 8px 0 16px;
-    }
-
-    span {
-      font-size: 12px;
-    }
-  }
-}
+  &:after
+    top 0
+  &:hover
+    active()
+  .information-img
+    float left
+    width 50px
+    height 50px
+    background #000
+  .information-action
+    overflow hidden
+    padding-left 10px
+    color #999
+    h2
+      font-size 16px
+      color #333
+      font-weight 400
+    p
+      margin 8px 0 16px
+    span
+      font-size 12px
 </style>
