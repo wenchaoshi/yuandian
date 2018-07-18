@@ -55,12 +55,15 @@ exports.cssLoaders = function (options) {
       return ['vue-style-loader'].concat(loaders)
     }
   }
+
+  //引入全局styl变量的语句
   const stylusOptions = { 
     import: [     path.join(__dirname, "../src/style/mixin.styl")   ],  
     paths: [     path.join(__dirname, '../src/style/'), path.join(__dirname, '../')   ] 
   }
 
   // https://vue-loader.vuejs.org/en/configurations/extract-css.html
+  //引入全局styl变量的语句，以下两个也要修改
   return {
     css: generateLoaders(),
     postcss: generateLoaders(),

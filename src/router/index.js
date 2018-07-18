@@ -1,15 +1,17 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Business from '@pages/business'
-import Information from '@pages/information'
-import informationDetail from '@pages/information/information-detail'
-import Customer from '@pages/customer'
-import customerDetail from '@pages/customer/customer-detail.vue'
-import Customerinformation from '@pages/customer/customer-information.vue'
-import customerTab1 from '@pages/customer/children/customer-tab1.vue'
-import customerTab2 from '@pages/customer/children/customer-tab2.vue'
-import Mine from '@pages/mine'
-import MineEdit from '@pages/mine/edit-card'
+
+const Business = res => require(['@pages/business'],res)
+const Information = res => require(['@pages/information'],res)
+const informationDetail = res => require(['@pages/information/information-detail'],res)
+const Customer = res => require(['@pages/customer'],res)
+const customerDetail = res => require(['@pages/customer/customer-detail.vue'],res)
+const Customerinformation = res => require(['@pages/customer/customer-information.vue'],res)
+// const customerTab1 = res => require(['@pages/customer/children/customer-tab1.vue'],res)
+// const customerTab2 = res => require(['@pages/customer/children/customer-tab2.vue'],res)
+const Mine = res => require(['@pages/mine'],res)
+const MineEdit = res => require(['@pages/mine/edit-card'],res)
+
 
 Vue.use(Router)
 

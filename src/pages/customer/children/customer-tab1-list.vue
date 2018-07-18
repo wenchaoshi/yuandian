@@ -101,6 +101,7 @@ export default {
       background url('../../../images/btn_edit_delete.png') no-repeat 0 0 / 80px 25px
       opacity 0
       transition 0.5s
+      overflow hidden
       a
         display inline-block
         float left
