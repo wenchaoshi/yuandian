@@ -5,8 +5,8 @@
           <button @click.stop="setClass(follow)"></button>
       </div>
       <div>
-          <template v-for='(items,index) in lists'>
-              <list :imgSrc='items.imgSrc' :text='items.text' :key='index' :index="index" :controlOff="controlOff" @controlClick="controlOff=index"></list>
+          <template v-for='(items,index) in lists.results'>
+              <list :createTime="items.create_time" :imgSrc='items.image_url' :text='items.show_message' :key='index' :index="index" :controlOff="controlOff" @controlClick="controlOff=index"></list>
           </template>
           
       </div>
@@ -21,60 +21,7 @@ export default {
   data() {
     return {
       controlOff: -1,
-      lists: [
-        {
-          imgSrc: "http://www.baidu.com/img/bd_logo1.png",
-          text: "哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒"
-        },
-        {
-          imgSrc: "http://www.baidu.com/img/bd_logo1.png",
-          text: "哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒"
-        },
-        {
-          imgSrc: "http://www.baidu.com/img/bd_logo1.png",
-          text: "哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒"
-        },
-        {
-          imgSrc: "http://www.baidu.com/img/bd_logo1.png",
-          text: "哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒"
-        },
-        {
-          imgSrc: "http://www.baidu.com/img/bd_logo1.png",
-          text: "哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒"
-        },
-        {
-          imgSrc: "http://www.baidu.com/img/bd_logo1.png",
-          text: "哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒"
-        },
-        {
-          imgSrc: "http://www.baidu.com/img/bd_logo1.png",
-          text: "哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒"
-        },
-        {
-          imgSrc: "http://www.baidu.com/img/bd_logo1.png",
-          text: "哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒"
-        },
-        {
-          imgSrc: "http://www.baidu.com/img/bd_logo1.png",
-          text: "哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒"
-        },
-        {
-          imgSrc: "http://www.baidu.com/img/bd_logo1.png",
-          text: "哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒"
-        },
-        {
-          imgSrc: "http://www.baidu.com/img/bd_logo1.png",
-          text: "哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒"
-        },
-        {
-          imgSrc: "http://www.baidu.com/img/bd_logo1.png",
-          text: "哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒"
-        },
-        {
-          imgSrc: "http://www.baidu.com/img/bd_logo1.png",
-          text: "哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒哒哒对对对哒哒哒"
-        }
-      ],
+      lists:{results:[]},
       follow: false
     };
   },
@@ -84,7 +31,15 @@ export default {
   },
   props: [],
   computed: {},
-
+  created(){
+    let that=this;
+    that.getData('/wxemployee/customer/list/follow?shop=2013714&employee=2005503&customer=2001146&limit=15',{
+      success(res){
+        console.log(res)
+        that.lists=res
+      }
+    })
+  },
   mounted: function() {
     let that = this;
     $(window).on("click", function() {

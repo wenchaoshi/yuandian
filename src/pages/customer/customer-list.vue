@@ -2,26 +2,15 @@
 <template>
   <div class="customer-box">
     <div class="customer-date"><span>2018.12.5</span></div>
-    <div class="customer-list" @click="toDetail">
-        <span class="customer-img"><img src="" alt=""></span>
+    <div class="customer-list" @click="toDetail(item.id)" v-for="(item,index) in list" :key="index">
+        <span class="customer-img"><img :src="item.image_url" :alt="item.name"></span>
         <span class="customer-status">
-            <strong class="active">已跟进</strong>
-            <strong>未跟进</strong>
+            <strong :class="item.gen_jin_status?'active':''">已跟进</strong>
+            <strong :class="!item.gen_jin_status?'active':''">未跟进</strong>
         </span>
         <div class="customer-action">
-            <h2>黎莉莉</h2>
-            <p>最后活跃时间14：00</p>
-        </div>
-    </div>
-    <div class="customer-list" @click="toDetail">
-        <span class="customer-img"><img src="" alt=""></span>
-        <span class="customer-status">
-            <strong class="active">已跟进</strong>
-            <strong>未跟进</strong>
-        </span>
-        <div class="customer-action">
-            <h2>黎莉莉</h2>
-            <p>最后活跃时间14：00</p>
+            <h2>{{item.name}}</h2>
+            <p>最后活跃时间{{item.last_active_time}}</p>
         </div>
     </div>
   </div>
@@ -30,18 +19,36 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      list:[]
+    };
   },
 
   components: {},
 
   computed: {},
 
+  created(){
+    this.getList()
+  },
   mounted: function() {},
 
   methods: {
-    toDetail() {
-      this.$router.push({ path: "/customer-detail" });
+    toDetail(id) {
+      this.$router.push({ path: "/customer-detail/"+id });
+    },
+    getList(){
+      let that=this;
+      that.getData('/wxemployee/customer/own/list?shop=2013714&employee=2005503',{
+        success(res){
+          console.log(res)
+          that.list=res.results;
+         // that.list=res.detail.list
+        },
+        error(){
+
+        }
+      })
     }
   }
 };
@@ -65,6 +72,9 @@ export default {
     width 45px
     height 45px
     background #000
+    img 
+      width 100%
+      height 100%
   .customer-status
     float right
     line-height 45px

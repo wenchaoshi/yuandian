@@ -41,7 +41,7 @@ export default new Router({
       component: Customer
     },
     {
-      path: '/customer-detail',
+      path: '/customer-detail/:id',
       name: 'customerDetail',
       component: customerDetail,
       // children:[
@@ -63,7 +63,7 @@ export default new Router({
     },
 
     {
-      path: '/customer-information',
+      path: '/customer-information/:id',
       name: 'customer-information',
       component: Customerinformation
     },

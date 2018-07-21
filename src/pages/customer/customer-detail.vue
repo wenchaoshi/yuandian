@@ -10,18 +10,18 @@
               <div class="clearfix"></div>
             </div>
             <div class="customerDetail-tag">
-              <span v-for='items in 3' :key='items'>购买力强</span>
-              <span @click.stop="setClass('addTag')">+ 标签</span>
+              <span v-for='(items,index) in customerDetail.customer_tag' :key='index'>{{items.name}}</span>
+              <span @click.stop="setClass('tag')">+ 标签</span>
             </div>
           </div>
           <div class="customerDetail-action">
             <div class="customerDetail-action-list">
               <div>预计成交率</div>
-              <div class="customerDetail-action-data"><strong>80%</strong></div>
+              <div class="customerDetail-action-data"><strong>{{customerDetail.customer.deal_percent}}</strong></div>
             </div>
             <div class="customerDetail-action-list" @click.stop="setClass('evolve')">
               <div>实际跟进进度</div>
-              <div class="customerDetail-action-data"><strong>—</strong></div>
+              <div class="customerDetail-action-data"><strong>{{customerDetail.customer.group_type}}</strong></div>
             </div>
           </div>
 
@@ -32,7 +32,7 @@
                 <!-- <router-link to="/customer-detail/customer-tab1" tag="div"><span>互动跟进</span></router-link>
                 <router-link to="/customer-detail/customer-tab2" tag="div"><span>客户分析</span></router-link> -->
                 <div @click="customerTabBar('customerTab1')" :class="componentId=='customerTab1'?'active':''"><span>互动跟进</span></div>
-                <div @click="customerTabBar('customerTab2')" :class="componentId=='customerTab2'?'active':''"><span>互动跟进</span></div>
+                <div @click="customerTabBar('customerTab2')" :class="componentId=='customerTab2'?'active':''"><span>客户分析</span></div>
               </div>
             </div>
             <div class="customerDetail-tab-view">
@@ -51,7 +51,7 @@
     </div>
 
 <!-- 添加标签 -->
-  <div class="shade addtag" :class="addTag?'active':''"> 
+  <div class="shade tag" :class="tag?'active':''"> 
       <div class="shade-content" @click.stop="stop">
           <div class="tag-main">
             <p>添加标签</p>
@@ -65,7 +65,7 @@
           </div>
           <div class="main">
             <div class="cancle" @click='cancle'>取消</div>
-            <div class="save">保存</div>
+            <div class="save" @click="addTag">保存</div>
           </div>
       </div>
   </div>
@@ -91,12 +91,12 @@
           <div class="tag-main">
             <p>添加跟进</p>
             <div>
-              <textarea name="" id="" placeholder="输入跟进内容"></textarea>
+              <textarea name="" id="" v-model="followContent" placeholder="输入跟进内容"></textarea>
             </div>
           </div>
           <div class="main">
             <div class="cancle" @click='cancle'>取消</div>
-            <div class="save">保存</div>
+            <div class="save" @click="addFollow">保存</div>
           </div>
       </div>
   </div>
@@ -115,8 +115,16 @@ export default {
       componentId: "customerTab1",
       onTop: false,
       offsettop: 0,
-      addTag: false,
-      evolve: false
+      tag: false,
+      evolve: false,
+      id:0,
+      customerDetail:{
+        customer:{
+          group_type:'',
+          deal_percent:''
+        }
+      },
+      followContent:''
     };
   },
 
@@ -126,7 +134,9 @@ export default {
   },
 
   computed: {},
-
+  created(){
+    this.get_deal_percent()
+  },
   mounted: function() {
     let obj = $(".customerDetail-tab");
     this.offsettop = obj.offset().top;
@@ -148,18 +158,62 @@ export default {
       this.componentId = target;
     },
     navigator(path) {
-      this.$router.push({ path: path });
+      console.log(this.$router.params)
+      if(path=='/customer-information'){
+        this.$router.push({ path: path+'/' });
+      }else{
+        this.$router.push({ path: path });
+      }
     },
     setClass(target) {
       this[target] = !this[target];
     },
     stop() {},
     cancle() {
-      this.addTag = false;
+      this.tag = false;
       this.evolve = false;
       if ($(".follow").length) {
         $(".follow").removeClass("active");
       }
+    },
+    get_deal_percent(){
+      //预计成交率和实际跟进进度
+      let that=this;
+      that.getData('/wxemployee/customer/detail?shop=2013714&employee=2005503&customer=2001146',{
+        success(res){
+          console.log(res)
+          that.customerDetail=res.detail
+        },
+        error(res){
+
+        }
+      })
+    },
+    addFollow(){
+      //添加跟进
+      let that=this;
+      that.getData('/wxemployee/customer/follow?shop=2013714&employee=2005503&customer=2001146',{
+        type:'POST',
+        data:{
+          content:that.followContent
+        },
+        success(res){
+
+        },
+        error(res){
+
+        }
+      })
+    },
+    addTag(){
+      let that=this;
+      var arr="dsadsad*fasdfas*sfasdfa";
+      that.getData('/wxemployee/customer/tag/operate?shop=2013714&employee=2005503&customer=2001146&tag=2006468',{
+        type:'post',
+        data:{
+          ids:arr
+        }
+      })
     }
   }
 };
@@ -172,7 +226,7 @@ export default {
   overflow auto
 .customerDetail-card
   width 3.55rem
-  height 1.3rem
+  padding-bottom 10px
   margin 0.1rem auto
   background url('../../images/customerDetail-card.png') no-repeat 0 / 100% 100%
   .customerDetail-information
@@ -208,7 +262,9 @@ export default {
   .customerDetail-tag
     padding 0 0.2rem
     span
+      display inline-block
       margin-right 0.1rem
+      margin-bottom 10px
       padding 4px 0.07rem
       color #fff
       border 1px solid
@@ -316,8 +372,8 @@ export default {
   &.active
     display block
     .shade-content
-      animation 'addTag' 0.6s ease-out forwards
-      -webkit-animation 'addTag' 0.6s ease-out forwards
+      animation 'tag' 0.6s ease-out forwards
+      -webkit-animation 'tag' 0.6s ease-out forwards
   .shade-content
     position absolute
     left 0
@@ -371,7 +427,7 @@ export default {
     border-radius 1px
     padding 10px
     margin-top 10px
-@keyframes addTag
+@keyframes tag
   0%
     bottom -100%
   100%

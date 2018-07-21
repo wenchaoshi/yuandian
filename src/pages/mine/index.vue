@@ -6,28 +6,22 @@
       <div class="card-center">
         <span class="img-box fl"><img src="" alt=""></span>
         <div>
-          <h2>张高丽<small class="fr">美容师</small></h2>
-          <p>上海市上海市上海市上海市</p>
+          <h2>{{mineDetail.name}}<small class="fr">{{mineDetail.position}}</small></h2>
+          <p>{{mineDetail.address}}</p>
         </div>
       </div>
       <div class="card-main">
         <div class="edit" @click="navigator"><span>编辑名片</span></div>
         <div class="share" @click.stop='shade("share")'><span>分享名片</span></div>
       </div>
+
     </div>
     <div class="mine-products">
       <ul class="clearfix">
-        <li data-id='1' @click.stop='shade("productEdit",$event)'>
+        <li v-for="(item,index) in productList" :key="index" :data-index="index" :data-id='item.id' @click.stop='shade("productEdit",$event)'>
           <div>
-            <span class="img-box"><img src="" alt=""><i></i></span>
-            <h3>花蕊极致驻颜美肤王牌项目体验套餐</h3>
-            <i>主打产品</i>
-          </div>
-        </li>
-       <li data-id='2' @click.stop='shade("productEdit",$event)'>
-          <div>
-            <span class="img-box"><img src="" alt=""><i></i></span>
-            <h3>花蕊极致驻颜美肤王牌项目体验套餐</h3>
+            <span class="img-box"><img :src="item.image_url" alt=""><i v-show="!item.shelve"></i></span>
+            <h3>{{item.title}}</h3>
             <i>主打产品</i>
           </div>
         </li>
@@ -53,9 +47,9 @@
 
   <div class="mine-shade product-edit" :class="productEdit?'active':''" > 
       <div class="shade-content">
-          <ul>
-            <li>上架</li>
-            <li @click.stop="hideShade">取消</li>
+          <ul @click.stop="hideShade">
+            <li @click="setShelve">{{nowShelve==true?'上架':'下架'}}</li>
+            <li>取消</li>
           </ul>
       </div>
   </div>
@@ -68,11 +62,19 @@
 </template>
 
 <script>
+// import getData from '@/js/getData.js'
+
+
 export default {
   data() {
     return {
       share: false,
-      productEdit: false
+      productEdit: false,
+      mineDetail:{},
+      productList:[],
+      nowIndex:0,
+      nowShelve:true,
+      nowShelveId:0
     };
   },
   props: [],
@@ -94,15 +96,38 @@ export default {
     }
   },
 
-  mounted: function() {},
+  mounted: function() {
+    let that= this;
+    //获取员工商品列表
+    this.getData('/wxemployee/employee/product/list?shop=2013714&employee=2005503',{
+      success(res){
+        that.productList=res.detail
+      },
+      erro(res){
+        console.log('erro')
+      }
+    })
+
+    this.mineDetail=this.global.mineDetail
+
+
+  },
 
   methods: {
     shade(target, event) {
       this[target] = true;
       if (target == "productEdit") {
-        let targetId = event.currentTarget.dataset.id;
-        console.log("产品" + targetId);
+        let index=event.currentTarget.dataset.index;
+        this.nowIndex=index;
+        this.nowShelveId=parseInt( this.productList[index].id );
+        let shelve = this.productList[index].shelve||'';
+        if(shelve){
+          this.nowShelve=true
+        }else if(shelve==false){
+          this.nowShelve=false
+        }
       }
+      
     },
     hideShade() {
       this.share = false;
@@ -110,6 +135,21 @@ export default {
     },
     navigator() {
       this.$router.push({ path: "/edit-card" });
+    },
+
+    setShelve(){
+      console.log(this.productList[this.nowIndex].shelve);
+      let that=this;
+      //上下架 接口
+      this.getData('/wxemployee/employee/product/operate?shop=2013714&employee=2005503',{
+        type:'post',
+        data:{
+          product:that.productList[that.nowIndex].id
+        },
+        success(res){
+          that.productList[that.nowIndex].shelve=!that.productList[that.nowIndex].shelve
+        }
+      })
     }
   }
 };
@@ -173,6 +213,8 @@ export default {
       .img-box
         display block
         width 100%
+        height 99px
+        overflow hidden
         position relative
         img
           width 100%

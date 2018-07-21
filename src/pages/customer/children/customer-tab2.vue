@@ -44,7 +44,8 @@ function canvasPie() {
   var option = {
     tooltip: {
       trigger: "item",
-      formatter: "{a} <br/>{b} : {c} ({d}%)"
+      formatter: "{a} <br/>{b} "
+      //formatter: "{a} <br/>{b} : {c} ({d}%)"
     },
     //图例 旁边显示出来的对应小类目
     // legend: {

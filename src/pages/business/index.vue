@@ -12,7 +12,6 @@
         
       </div>
     </div>
-
     <tab></tab>
   </div>
 </template>
@@ -63,6 +62,7 @@ export default {
     base.intoView(nowView); //初始化时滚动到nowView元素（底部）
 
     this.miniRefresh(this);
+
   },
 
   methods: {

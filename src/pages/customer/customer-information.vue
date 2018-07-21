@@ -2,14 +2,11 @@
 <template>
   <div class="view customer-information">
     <div class="customer-information-edit">
-      <form action="">
         <ul>
-          <li><label for="name"><input type="text" placeholder="真实姓名" id="name"></label></li>
-          <li><label for="tel"><input type="text" placeholder="联系方式" id="tel"></label></li>
-          
-          <li><input type="submit" value="编辑" id="submit"></li>
+          <li><label for="name"><input type="text" placeholder="真实姓名" v-model="name" id="name"></label></li>
+          <li><label for="tel"><input type="text" placeholder="联系方式" v-model="phone" id="tel"></label></li>
+          <li><input type="submit" value="编辑" id="submit" @click="submit"></li>
         </ul>
-      </form>
     </div>
   </div>
 </template>
@@ -17,16 +14,32 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      name:'',
+      phone:''
+    };
   },
-
   components: {},
 
   computed: {},
 
-  mounted: function() {},
+  mounted: function() {
+    console.log(this.$route.params.id)
+    console.log(this.$route.params)
+  },
 
-  methods: {}
+  methods: {
+    submit(){
+      let that=this;
+      that.getData('/wxemployee/customer/detail?shop='+this.$router.params.id+'&employee=2005503&customer=2001146',{
+        type:'POST',
+        data:{
+          name:that.name,
+          phone:that.phone
+        }
+      })
+    }
+  }
 };
 </script>
 <style lang='stylus'>

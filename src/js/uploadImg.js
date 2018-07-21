@@ -15,15 +15,13 @@ export default {
     tinyImgUpload
 }
 
-function tinyImgUpload(self,el, options) {
+function tinyImgUpload(self,el,options) {
     // 判断容器元素合理性并且添加基础元素
  
 
     var el = document.getElementById(el);
     //el.value=null;
-    var ele={};
-    ele.files = [];   // 当前上传的文件数组
-
+    var ele=this;
 
     // 预览图片
     //处理input选择的图片
@@ -43,7 +41,7 @@ function tinyImgUpload(self,el, options) {
             reader.onload = (function (theFile) {
                 return function (e) {
                     // 向图片容器里添加元素
-                    self.imgUrl=e.target.result
+                    self.mineDetail.image_url=e.target.result
                 };
             })(f);
 
@@ -55,32 +53,29 @@ function tinyImgUpload(self,el, options) {
 
 
     // 上传图片
-    function uploadImg() {
+    this.uploadImg=function () {
         console.log(ele.files);
-
-        var xhr = new XMLHttpRequest();
         var formData = new FormData();
 
         for(var i=0, f; f=ele.files[i]; i++){
             formData.append('files', f);
         }
-
-        console.log('1',ele.files);
-        console.log('2',formData);
-
-        xhr.onreadystatechange = function (e) {
-            if(xhr.readyState == 4){
-                if(xhr.status == 200){
-                    options.onSuccess(xhr.responseText);
-                }else {
-                    options.onFailure(xhr.responseText);
-                }
+        $.ajax({
+            url:options.path,
+            type:'post',
+            processData : false,
+            contentType : false,
+            async:false,
+            data:formData,
+            beforeSend: function (req) {
+                req.setRequestHeader("X-CSRFToken",'MH1ocoxyws9DSGLwlj2rme3PRlbfc2JtFU8zFvYlxKAeTaHEJ5TXA7QM3nqxVUkZ');
+            },
+            success:function(res){
+                options.onSuccess(res);
+            },
+            error:function(res){
+                options.onFailure(res);
             }
-        }
-
-        xhr.open('POST', options.path, true);
-        xhr.send(formData);
-
+        })
     }
-    return uploadImg;
 }

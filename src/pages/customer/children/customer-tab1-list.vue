@@ -2,7 +2,7 @@
 <template>
   <div class="customer-tab1-list">
     <span class="customer-tab1-list-date">
-        23/6月17:00
+        {{createTime}}
     </span>
     <span class="img-box">
         <img :src="imgSrc" alt="">
@@ -25,7 +25,7 @@ export default {
       off: false
     };
   },
-  props: ["imgSrc", "text", "index", "controlOff"],
+  props: ["createTime","imgSrc", "text", "index", "controlOff"],
   components: {},
 
   computed: {},
@@ -52,6 +52,7 @@ export default {
     display inline-block
     font-size 14px
     vertical-align middle
+    word-break break-all
   .customer-tab1-list-date
     width 0.65rem
     max-width 65px

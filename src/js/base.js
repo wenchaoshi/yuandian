@@ -6,4 +6,13 @@ export default {
             obj.scrollIntoView(true)
           })
     },
-}
+}  
+
+
+
+
+
+
+
+
+
