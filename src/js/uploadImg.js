@@ -12,70 +12,38 @@
  */
 
 export default {
-    tinyImgUpload
+    uploadImg
 }
 
-function tinyImgUpload(self,el,options) {
-    // 判断容器元素合理性并且添加基础元素
- 
+function uploadImg(evt,onSuccess,onError) {
 
-    var el = document.getElementById(el);
-    //el.value=null;
-    var ele=this;
+    //创建FormData对象
+    var data = new FormData();
+    //为FormData对象添加数据
+    //
+    // $.each(obj_select[0].files, function (i, file) {
+    //     data.append('file', evt.target.files[0]);
+    // });
 
-    // 预览图片
-    //处理input选择的图片
-    function handleFileSelect(evt) {
-        var files = evt.files;
-        ele.files=[];
-        for(var i=0, f; f=files[i];i++){
-            // 过滤掉非图片类型文件
-            if(!f.type.match('image.*')){
-                continue;
+    data.append('file', evt.target.files[0]);
+    data.append('bucket', 'show');
+    data.append('csrfmiddlewaretoken', $.cookie("csrftoken"));
+    $.ajax({
+        url: '/product/api/upload',
+        type: 'post',
+        data: data,
+        cache: false,
+        contentType: false,    //不可缺
+        processData: false,    //不可缺
+        success: function (data) {
+            if (data['status'] == 0) {
+                //console.log(data)
+                if(onSuccess&& typeof (onSuccess)=='function')
+                onSuccess(data);
             }
-            // 过滤掉重复上传的图片
-            
-            ele.files.push(f);
-
-            var reader = new FileReader();
-            reader.onload = (function (theFile) {
-                return function (e) {
-                    // 向图片容器里添加元素
-                    self.mineDetail.image_url=e.target.result
-                };
-            })(f);
-
-            reader.readAsDataURL(f);
-        }
-        console.log(ele.files)
-    }
-    handleFileSelect(el)
-
-
-    // 上传图片
-    this.uploadImg=function () {
-        console.log(ele.files);
-        var formData = new FormData();
-
-        for(var i=0, f; f=ele.files[i]; i++){
-            formData.append('files', f);
-        }
-        $.ajax({
-            url:options.path,
-            type:'post',
-            processData : false,
-            contentType : false,
-            async:false,
-            data:formData,
-            beforeSend: function (req) {
-                req.setRequestHeader("X-CSRFToken",'MH1ocoxyws9DSGLwlj2rme3PRlbfc2JtFU8zFvYlxKAeTaHEJ5TXA7QM3nqxVUkZ');
-            },
-            success:function(res){
-                options.onSuccess(res);
-            },
-            error:function(res){
-                options.onFailure(res);
+            else {
+                alert(data['detail'])
             }
-        })
-    }
+        }
+    });
 }

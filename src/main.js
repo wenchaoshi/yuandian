@@ -5,10 +5,17 @@ import $ from 'jquery'
 import '@/style/base.css'
 import '@/style/components.styl'
 import '@/style/mixin.styl'
-import getData from '@/js/getData.js'
+import base from '@/js/base.js'
 import global from '@/components/global.js'
+import moment from 'moment'
+import FastClick from 'fastclick'
 
 
+if ('addEventListener' in document) {
+  document.addEventListener('DOMContentLoaded', function() {
+      FastClick.attach(document.body);
+  }, false);
+}
 
 //MiniRefreshTools下拉刷新组件
 import MiniRefreshTools from 'minirefresh'
@@ -24,16 +31,40 @@ Vue.config.devtools = true;
 import Tab from "@components/tab/tab"
 Vue.component('tab', Tab)
 
-Vue.prototype.global = global.global;
-Vue.prototype.getData = getData.getData;
+Vue.prototype.global = global.global;  //全局的公用数据
+Vue.prototype.base = base;
+Vue.prototype.getData = base.getData; //全局定义的公用方法
+Vue.prototype.moment = moment; //全局定义的公用方法
+
+//转换时间的全局过滤器
+Vue.filter("gmtDate",function(value,type){
+  if (!value) return '';
+  type = type || 'YYYY-MM-DD HH:mm';
+
+  let nowDate=Number(moment().format('YYYYMMDD'));
+  let valueDate=Number(moment(value).format('YYYYMMDD'));
+  if(nowDate>valueDate){
+    //不是今天，至少是昨天之前
+    //return moment(value).format(type)
+  }else if(nowDate==valueDate){
+    //是今天
+    type='HH:mm'
+  }else if(nowDate-valueDate==1){
+    //是昨天
+    type='昨天 HH:mm'
+  }
+  return moment(value).format(type)
+})
 
 /* eslint-disable no-new */
-var Vm=new Vue({
+new Vue({
   el: '#app',
   data: {
   },
   router,
   render: h => h(App),
+  created(){
+  },
   mounted: function () {
     this.onresize();  //  给html标签加上resize函数， 改变页面大小时改变文字
   },

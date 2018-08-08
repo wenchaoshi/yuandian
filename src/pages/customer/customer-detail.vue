@@ -5,19 +5,19 @@
       <div class="customerDetail-scrollView">
           <div class="customerDetail-card">
             <div class="customerDetail-information" @click.stop='navigator("/customer-information")'>
-              <span class="fl"><img src="" alt=""></span>
-              <h2>王梅呀  <small class="fr">客户资料</small></h2>
+              <span class="fl"><img :src="customerDetail.customer.image_url" alt=""></span>
+              <h2>{{customerDetail.customer.name}}  <small class="fr">客户资料</small></h2>
               <div class="clearfix"></div>
             </div>
             <div class="customerDetail-tag">
-              <span v-for='(items,index) in customerDetail.customer_tag' :key='index'>{{items.name}}</span>
+              <span v-for='(items,index) in nowTag.nowTagList' :key='index'>{{items.name}}</span>
               <span @click.stop="setClass('tag')">+ 标签</span>
             </div>
           </div>
           <div class="customerDetail-action">
             <div class="customerDetail-action-list">
               <div>预计成交率</div>
-              <div class="customerDetail-action-data"><strong>{{customerDetail.customer.deal_percent}}</strong></div>
+              <div class="customerDetail-action-data"><strong>{{customerDetail.customer_deal_percent}}%</strong></div>
             </div>
             <div class="customerDetail-action-list" @click.stop="setClass('evolve')">
               <div>实际跟进进度</div>
@@ -38,7 +38,7 @@
             <div class="customerDetail-tab-view">
               <!-- <router-view></router-view> -->
               <keep-alive exclude="customer-tab2">
-                <component :is="componentId"></component>
+                <component :is="componentId" :customerDetail="customerDetail" :scrollTop="scrollTop" :contentHeight="contentHeight"></component>
               </keep-alive>
             </div>
           </div>
@@ -46,8 +46,8 @@
     </div>
     
     <div class="fixBot">
-      <div class="fixBot-list1"><img src="../../images/icon_phone.png" alt="">打电话</div>
-      <div class="fixBot-list2"><img src="../../images/icon_chat.png" alt="">发信息</div>
+      <div class="fixBot-list1"><a :href="telphone" @click="telphonetest"><img src="../../images/icon_phone.png" alt="">打电话</a></div>
+      <div class="fixBot-list2" @click="navigator('/information-detail',query)"><img src="../../images/icon_chat.png" alt="">发信息</div>
     </div>
 
 <!-- 添加标签 -->
@@ -56,15 +56,11 @@
           <div class="tag-main">
             <p>添加标签</p>
             <ul>
-              <li class="active">购买意向强</li>
-              <li>购买意向强</li>
-              <li>购买意向强</li>
-              <li>购买意向强</li>
-              <li>购买意向强</li>
+              <li @click="active_tag_list" :class="tagList.length?{'active':nowTag.activeTagList[item.id]}:''" v-for="(item,index) in tagList" :key="index" :data-id="item.id">{{item.name}}</li>
             </ul>
           </div>
           <div class="main">
-            <div class="cancle" @click='cancle'>取消</div>
+            <div class="cancle" @click.stop='cancle("keep")'>取消</div>
             <div class="save" @click="addTag">保存</div>
           </div>
       </div>
@@ -73,33 +69,19 @@
 <!-- 跟进进度 -->
   <div class="shade evolve" :class="evolve?'active':''"> 
       <div class="shade-content" @click.stop="stop">
-          <ul class="">
-            <li>20%</li>
-            <li>40%</li>
-            <li>60%</li>
-            <li>80%</li>
-            <li>成交</li>
-            <li>无法签单</li>
-            <li @click='cancle'>取消</li>
+          <ul class="" @click="setEvolve">
+            <li data-value="20%" data-index='1'>20%</li>
+            <li data-value="40%" data-index='2'>40%</li>
+            <li data-value="60%" data-index='3'>60%</li>
+            <li data-value="80%" data-index='4'>80%</li>
+            <li data-value="跟单放弃" data-index='5'>跟单放弃</li>
+            <li data-value="跟单成交" data-index='6'>跟单成交</li>
+            <li @click.stop='cancle'>取消</li>
           </ul>
       </div>
   </div>
 
-<!-- 添加跟进， （留言）-->
-<div class="shade follow" > 
-      <div class="shade-content" @click.stop="stop">
-          <div class="tag-main">
-            <p>添加跟进</p>
-            <div>
-              <textarea name="" id="" v-model="followContent" placeholder="输入跟进内容"></textarea>
-            </div>
-          </div>
-          <div class="main">
-            <div class="cancle" @click='cancle'>取消</div>
-            <div class="save" @click="addFollow">保存</div>
-          </div>
-      </div>
-  </div>
+
 
 
 
@@ -109,6 +91,7 @@
 <script>
 import customerTab1 from "./children/customer-tab1";
 import customerTab2 from "./children/customer-tab2";
+var that;
 export default {
   data() {
     return {
@@ -116,15 +99,26 @@ export default {
       onTop: false,
       offsettop: 0,
       tag: false,
+      tagList:[],
+      nowTag:{
+        nowTagList:[],
+        activeTagList:{
+
+        }
+      },
+      oldList:{},      
       evolve: false,
-      id:0,
+      customerId:0,
+      name:'',
       customerDetail:{
         customer:{
           group_type:'',
           deal_percent:''
         }
       },
-      followContent:''
+      followContent:'',
+      scrollTop:0,
+      contentHeight:0
     };
   },
 
@@ -133,20 +127,38 @@ export default {
     customerTab2
   },
 
-  computed: {},
+  computed: {
+    telphone(){
+      if(!this.customerDetail.customer.phone==''){
+        return 'tel:'+this.customerDetail.customer.phone
+      }else{
+        return 'javascript:;'
+      }
+      
+    }
+  },
   created(){
-    this.get_deal_percent()
+    that=this;
+    this.customerId=this.$route.query.customerId;
+    this.name=this.$route.query.name;
+    this.get_customerDetail();
+    this.get_tag_list();
   },
   mounted: function() {
     let obj = $(".customerDetail-tab");
     this.offsettop = obj.offset().top;
-  },
 
+  },
+  watch:{
+    
+  },
   methods: {
     onScroll(e) {
-      let that = this;
       let offsettop = that.offsettop;
       let scrollTop = e.target.scrollTop;
+      let contentHeight=$('.customerDetail-scrollView').height();
+      this.contentHeight=contentHeight;
+      this.scrollTop=scrollTop;
 
       if (scrollTop > offsettop) {
         that.onTop = true;
@@ -158,62 +170,121 @@ export default {
       this.componentId = target;
     },
     navigator(path) {
-      console.log(this.$router.params)
       if(path=='/customer-information'){
-        this.$router.push({ path: path+'/' });
+        this.$router.push({ path: path, query:{customerId:this.customerDetail.customer.id,name:this.customerDetail.customer.name,phone:this.customerDetail.customer.phone} });
       }else{
-        this.$router.push({ path: path });
+        this.$router.push({ path: path, query:{customer_id:this.customerDetail.customer.id} });
       }
     },
+    //设置遮罩的class，切换状态
     setClass(target) {
       this[target] = !this[target];
-    },
-    stop() {},
-    cancle() {
-      this.tag = false;
-      this.evolve = false;
-      if ($(".follow").length) {
-        $(".follow").removeClass("active");
+      if(target=='tag'){
+        for(let key in this.nowTag.activeTagList) {
+          this.oldList[key]=this.nowTag.activeTagList[key]
+        }
       }
     },
-    get_deal_percent(){
-      //预计成交率和实际跟进进度
-      let that=this;
-      that.getData('/wxemployee/customer/detail?shop=2013714&employee=2005503&customer=2001146',{
+    stop() {},
+    cancle(keep) {
+      this.tag = false;
+      this.evolve = false;
+      if(keep=='keep'){
+        //this.$set(this.nowTag,'activeTagList',this.oldList)
+        for(let key in this.oldList) {
+          this.nowTag.activeTagList[key]=this.oldList[key]
+        }
+      }
+    },
+    telphonetest(){
+      if(this.customerDetail.customer.phone==''){
+        $('.load').addClass('text').text('顾客暂未设置电话！');
+        setTimeout(()=>{
+          $('.load').removeClass('text')
+        },500)
+      }
+    },
+    get_customerDetail(){
+      //获取顾客详情，（预计成交率和实际跟进进度）
+      that.getData('/wxemployee/customer/detail?shop=2013714&employee=2005503&customer='+that.customerId,{
         success(res){
           console.log(res)
-          that.customerDetail=res.detail
+          that.customerDetail=res.detail;
         },
         error(res){
 
         }
       })
     },
-    addFollow(){
-      //添加跟进
-      let that=this;
-      that.getData('/wxemployee/customer/follow?shop=2013714&employee=2005503&customer=2001146',{
-        type:'POST',
-        data:{
-          content:that.followContent
-        },
+    
+    get_tag_list(){
+      //获取总标签（店铺标签）
+      that.getData('/wxemployee/company/tag/list?shop=2013714&employee=2005503&customer='+this.customerId,{
         success(res){
-
-        },
-        error(res){
-
+          that.tagList=res.detail;
+          for(var i=0;i<that.tagList.length;i++){
+            that.$set(that.nowTag.activeTagList, that.tagList[i].id, false);
+          }
+          that.get_now_tag_list();
         }
       })
+    },
+    get_now_tag_list(){
+      //获取顾客的标签
+      that.getData('/wxemployee/customer/tag/operate?shop=2013714&employee=2005503&customer='+this.customerId,{
+        success(res){
+          that.nowTag.nowTagList=res.detail
+          for(var i=0;i<res.detail.length;i++){
+            that.nowTag.activeTagList[res.detail[i].shop_tag_id]=true
+          }
+        },
+      })
+    },
+    active_tag_list(e){
+      //选中标签
+      let id=e.target.dataset.id;
+      that.nowTag.activeTagList[id]=!that.nowTag.activeTagList[id]
     },
     addTag(){
-      let that=this;
-      var arr="dsadsad*fasdfas*sfasdfa";
-      that.getData('/wxemployee/customer/tag/operate?shop=2013714&employee=2005503&customer=2001146&tag=2006468',{
+      //添加标签
+      let arr=[];
+      let nowList=that.nowTag.activeTagList;
+      for(let id in nowList){
+        if(nowList[id]){
+          arr.push(id);
+        }
+      }
+      let activeTagList=arr.join('*');
+      that.getData('/wxemployee/customer/tag/operate?shop=2013714&employee=2005503&tag=2006468&customer='+this.customerId,{
         type:'post',
         data:{
-          ids:arr
+          ids:activeTagList
+        },
+        success(res){
+          if(res.status==0) that.get_now_tag_list();
+          that.cancle()
         }
       })
+    },
+    setEvolve(e){
+      //修改'跟进'进度
+      if (e.target.nodeName.toLowerCase() === 'li') {
+        let index = e.target.dataset.index;
+        let theVlaue = e.target.dataset.value;
+        //可获取事件委托中，响应事件的元素
+        
+        that.getData('/wxemployee/customer/fact/follow?shop=2013714&employee=2005503&&customer='+that.customerId,{
+          type:'post',
+          data:{
+            group_id:index
+          },
+          success(res){
+            that.customerDetail.customer.group_type=theVlaue;
+            that.cancle()
+          }
+        })
+        
+      }
     }
   }
 };
@@ -260,12 +331,13 @@ export default {
           vertical-align sub
           background url('../../images/Triangle_3.png') 0 / 100% no-repeat
   .customerDetail-tag
-    padding 0 0.2rem
+    padding 0 20px
     span
       display inline-block
       margin-right 0.1rem
       margin-bottom 10px
-      padding 4px 0.07rem
+      padding 0 0.07rem
+      line-height 22px
       color #fff
       border 1px solid
       border-radius 2px
@@ -353,6 +425,8 @@ export default {
     background #4F4F5C
   .fixBot-list2
     background #25B181
+  a 
+    color inherit
   img
     width 26px
     height auto
@@ -379,14 +453,14 @@ export default {
     left 0
     bottom 0
     width 100%
-    height 222px
-    padding 20px 20px 0
+    padding 20px 20px 70px
     background #fff
     .tag-main
       ul li
         float left
         margin 10px 10px 0 0
-        padding 6px 10px
+        padding 0 10px
+        line-height 30px
         background #D8D8D8
         border-radius 1px
         font-size 12px
@@ -410,7 +484,6 @@ export default {
 // 跟进进度
 .shade.evolve
   .shade-content
-    height 415px
     padding 0
     li
       text-align center

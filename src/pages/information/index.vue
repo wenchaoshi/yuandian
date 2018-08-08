@@ -5,7 +5,16 @@
       <div class="MiniRefresh-box">
         <div class="information">
           <div class="information-view">
-            <information-list v-for='(items,index) in informationLists' :key='index' :item='items'></information-list>
+
+            <div v-for='(item,index) in informationLists' :key='index' class="information-list" @click="toDetail(item.customer_id)">
+              <span class="information-img el-icon-info"><img :src="item.customer_image" alt=""></span>
+              <div class="information-action">
+                  <h2>{{item.customer_name}}</h2>
+                  <p>{{item.content}}</p>
+                  <span>{{item.create_time | gmtDate}}</span>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
@@ -15,78 +24,72 @@
 </template>
 
 <script>
-import informationList from "./information-list";
-
+var that;
 export default {
   data() {
     return {
       informationLists: [
-        {
-          imgSrc: "aaa",
-          h2: "张晓丽",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          imgSrc: "aaa",
-          h2: "张",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          imgSrc: "aaa",
-          h2: "张张",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          imgSrc: "aaa",
-          h2: "张晓晓丽",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          imgSrc: "aaa",
-          h2: "张晓丽张晓丽",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          imgSrc: "aaa",
-          h2: "张晓丽",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        }
-      ]
+       
+      ],
+      offset:0,
+      count:0
     };
   },
 
   components: {
-    informationList
+    
   },
 
   computed: {},
 
+  created(){
+    that=this;
+  },
   mounted: function() {
+    that.getList();
     this.miniRefresh(this);
   },
 
   methods: {
+    toDetail(customer_id) {
+      //console.log(this.item)
+      this.$router.push({ path: "/information-detail" , query:{customer_id:customer_id}});
+    },
+    getList(successFn){
+      that.getData('/wxemployee/customer/leave/list?shop=2013714&employee=2005503&limit=20&offset='+that.offset,{
+        type:'get',
+        success(res){
+          that.count=res.count;
+          that.informationLists.push(...res.detail);
+          if(successFn) successFn()
+        }
+      })
+    },
     miniRefresh(that) {
       //下拉刷新
       var miniRefresh = new MiniRefresh({
         container: "#MiniRefresh",
         down: {
-          isLock: true,
           callback: function() {
             // 下拉事件
-
-            miniRefresh.endDownLoading(true);
+            let timer=setTimeout(()=>{
+              miniRefresh.endDownLoading();
+            },4000)
+            that.informationLists=[];
+            that.offset=0;
+            that.getList(
+              function(){
+                miniRefresh.endDownLoading(true);
+                clearTimeout(timer)
+              }
+            )
             return false;
           }
         },
         up: {
-          contentnomore: "暂无更多数据",
+          contentnomore: "没有更多数据了",
+          contentdown:'上啦显示更多',
+          contentrefresh:'加载中...',
           loadFull: {
             isEnable: true
           },
@@ -99,13 +102,16 @@ export default {
             // },300)
 
             //minirefresh.resetUpLoading();
-
-            setTimeout(() => {
+            
+            if(that.informationLists.length>=that.count){
               miniRefresh.endUpLoading(true);
-              setTimeout(function() {
-                miniRefresh.resetUpLoading();
-              }, 5000);
-            }, 3000);
+              return
+            }
+            that.offset+=20;
+            that.getList(()=>{
+              miniRefresh.endUpLoading(false);
+            })
+            
           }
         }
       });
@@ -115,8 +121,47 @@ export default {
 </script>
 <style lang='stylus'>
 @import '../../style/mixin.styl'
+.information-index .MiniRefresh-box 
+  position relative
+  padding-bottom 30px
 .information
-  background #fff
+  background #f1f1f1
+  min-height 35px
+  .information-view
+    background #fff
 .information-index .minirefresh-theme-default .minirefresh-upwrap
   display block
+
+.information-list
+  position relative
+  padding 20px 10px
+  overflow hidden
+  border-1px(#EEEEEE)
+  cursor pointer
+  &:after
+    top 0
+  &:hover
+    active()
+  .information-img
+    float left
+    width 50px
+    height 50px
+    img 
+      width 100%
+      height 100%
+  .information-action
+    overflow hidden
+    padding-left 10px
+    color #999
+    h2
+      font-size 16px
+      color #333
+      font-weight 400
+    p
+      margin 8px 0 16px
+      white-space nowrap
+      overflow hidden
+      text-overflow ellipsis
+    span
+      font-size 12px
 </style>

@@ -3,19 +3,23 @@
   <div id="page" class="detail">
     <div class="view" id="MiniRefresh">
       <div class="MiniRefresh-box">
-        <div id="scroll-view">
-          <div class="detail-lists" v-for="(item,index) in list" :key='index' :class="item.type==1?'detail-lists-type1':'detail-lists-type2'">
-            <span class="img-box"><img :src="item.imgSrc" alt=""></span>
-            <p>{{item.p}}</p>
-          </div>
-          <div class="detail-date">
-            <span>4小时前</span>
-          </div>
-        </div>
+        <ul id="scroll-view">
+
+          <li v-for="(item,index) in list" :key='index' :data-id="item.id">
+            <div class="detail-date" v-if="item.showTime">
+              <span>{{item.create_time | gmtDate}}</span>
+            </div>
+            <div class="detail-lists" :class="!item.one_man_send?'detail-lists-type1':'detail-lists-type2'">
+              <span class="img-box"><img v-if="!item.one_man_send" :src="item.two_image" alt=""><img v-if="item.one_man_send" :src="item.one_image" alt=""></span>
+              <p>{{item.content}}</p>
+            </div>
+          </li>
+
+        </ul>
       </div>
       <div class="message-box">
-        <input type="text" placeholder="想跟TA说点什么呢">
-        <input type="submit" value="发送">
+        <input type="text" placeholder="想跟TA说点什么呢" v-model="content">
+        <input type="submit" value="发送" @click="sendInformation">
       </div>
     </div>
 
@@ -24,88 +28,18 @@
 
 <script>
 import base from "@/js/base.js";
+var that;
 export default {
   data() {
     return {
+      content:'',
       list: [
-        {
-          type: 1,
-          imgSrc: "aaa",
-          h2: "张晓丽",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          type: 2,
-          imgSrc: "aaa",
-          h2: "张",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          type: 2,
-          imgSrc: "aaa",
-          h2: "张张",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          type: 1,
-          imgSrc: "aaa",
-          h2: "张晓晓丽",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          type: 1,
-          imgSrc: "aaa",
-          h2: "张晓丽张晓丽",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          type: 2,
-          imgSrc: "aaa",
-          h2: "张晓丽",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          type: 1,
-          imgSrc: "aaa",
-          h2: "张晓丽张晓丽",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          type: 1,
-          imgSrc: "aaa",
-          h2: "张晓丽张晓丽",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          type: 2,
-          imgSrc: "aaa",
-          h2: "张晓丽",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          type: 2,
-          imgSrc: "aaa",
-          h2: "张晓丽",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        },
-        {
-          type: 2,
-          imgSrc: "aaa",
-          h2: "张晓丽",
-          p: "文字文字文字文字文字文字文字文字文字文字文字文字",
-          date: "5小时前"
-        }
-      ]
+        
+      ],
+      offset:0,//当前请求的第一条数据下标
+      count:0,
+      intoViewId:0,
+      contentover:'释放刷新'
     };
   },
 
@@ -113,16 +47,73 @@ export default {
 
   computed: {},
 
-  mounted: function() {
-    let nowView = document
-      .getElementById("scroll-view")
-      .getElementsByTagName("div")[0];
-    base.intoView(nowView); //初始化时滚动到nowView元素（底部）
-
-    this.miniRefresh();
+  created(){
+    that=this;
   },
 
+  mounted: function() {
+    this.offset=0;
+    this.miniRefresh();
+    this.getContent();
+  },
+
+
   methods: {
+    sendInformation(){
+      this.getData('/wxemployee/talk/send/leave?two_man_id='+this.$route.query.customer_id+'&shop=2013714',{
+        type:'post',
+        data:{
+          content:that.content
+        },
+        success(res){
+          console.log('发送成功');
+          that.content='';
+          that.list=[];
+          that.getContent();
+        }
+      })
+    },
+    getContent(successCallback,obj){
+      that.getData('/wxemployee/talk/send/leave?two_man_id='+this.$route.query.customer_id+'&shop=2013714&limit=20&offset='+that.offset,{
+        success(res){
+          if(res.status==0){
+            var newList=res.detail;
+            that.count=res.count;
+            var oldTime=0;
+            //处理时间显示问题
+            let len=newList.length;
+            for(let i=0; i<len; i++){
+              newList[i].showTime=false;
+              if(i<len-1){
+                oldTime=that.moment(newList[i+1].create_time).format('YYYYMMDDHHmm');
+              }else{
+                oldTime=0;
+              }
+              
+              let thisTime=that.moment(newList[i].create_time).format('YYYYMMDDHHmm');
+              newList[i].new_create_time=thisTime;
+              if(thisTime-oldTime>5){
+                newList[i].showTime=true;
+              }
+            }
+
+            that.list.push(...newList)
+            that.$nextTick(()=>{
+              if(obj){
+                base.intoView($(obj))
+                console.log(obj)
+              }else {
+                if($('#scroll-view li').length){
+                  base.intoView($('#scroll-view li:nth-of-type(1)'))
+                }
+              }
+            })
+            if(successCallback)successCallback()
+          }
+        }
+      })
+    },
+
     miniRefresh() {
       //下拉刷新
       var miniRefresh = new MiniRefresh({
@@ -130,16 +121,35 @@ export default {
         down: {
           callback: function() {
             // 下拉事件
-            miniRefresh.endDownLoading();
+            if(that.list.length>=that.count){
+              miniRefresh.endDownLoading();
+              $('.load').text('已加载全部数据').addClass('active success');
+              setTimeout(()=>{
+                $('.load').removeClass('active success')
+              },500)
+              return 
+            }
+            
+            let timer=setTimeout(()=>{
+              miniRefresh.endDownLoading();
+            },4000)
+
+            that.offset+=20;
+            that.getContent(function(){
+              miniRefresh.endDownLoading();
+              clearTimeout(timer)
+            },'#scroll-view li:nth-of-type('+that.list.length+')')
           }
         },
         up: {
-          isLock: true,
-          contentnomore: "",
+          isLock:true,
+          contentnomore: "没有更多数据了",
+          contentdown:'上啦显示更多',
+          contentrefresh:'加载中。。。',
           callback: function() {
             // 上拉事件
             // 注意，由于默认情况是开启满屏自动加载的，所以请求失败时，请务必endUpLoading(true)，防止无限请求
-            miniRefresh.endUpLoading(true);
+            miniRefresh.endUpLoading();
           }
         }
       });
@@ -149,10 +159,15 @@ export default {
 </script>
 
 <style lang='stylus'>
+.detail .minirefresh-totop 
+  display none !important
 #scroll-view
   display flex
   flex-direction column-reverse
   background #f1f1f1
+  min-height 35px
+ul#scroll-view
+  padding-bottom 0
 .detail .view
   height 100%
   padding-bottom 60px
@@ -164,14 +179,19 @@ export default {
       width 40px
       height 40px
       background #000
+      img 
+       width 100%
+       height 100%
     p
       display inline-block
       margin 0 10px
       padding 10px
       line-height 20px
       overflow hidden
-      max-width 2.23rem
+      max-width 2.25rem
+      word-break break-all
       border-radius 2px
+      text-align justify
   .message-box
     position fixed
     left 0

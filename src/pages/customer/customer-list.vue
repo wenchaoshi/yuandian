@@ -1,8 +1,8 @@
 <!--  -->
 <template>
   <div class="customer-box">
-    <div class="customer-date"><span>2018.12.5</span></div>
-    <div class="customer-list" @click="toDetail(item.id)" v-for="(item,index) in list" :key="index">
+    <!-- <div class="customer-date"><span>2018.12.5</span></div> -->
+    <div class="customer-list" @click="toDetail(item.id,item.name)" v-for="(item,index) in list" :key="index">
         <span class="customer-img"><img :src="item.image_url" :alt="item.name"></span>
         <span class="customer-status">
             <strong :class="item.gen_jin_status?'active':''">已跟进</strong>
@@ -10,7 +10,7 @@
         </span>
         <div class="customer-action">
             <h2>{{item.name}}</h2>
-            <p>最后活跃时间{{item.last_active_time}}</p>
+            <p>最后活跃时间{{item.last_active_time | gmtDate}}</p>
         </div>
     </div>
   </div>
@@ -34,8 +34,8 @@ export default {
   mounted: function() {},
 
   methods: {
-    toDetail(id) {
-      this.$router.push({ path: "/customer-detail/"+id });
+    toDetail(id,name) {
+      this.$router.push({ path: "/customer-detail",query:{customerId:id,name:name}});
     },
     getList(){
       let that=this;

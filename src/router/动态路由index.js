@@ -1,19 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// const Business = res => require(['@pages/business'],res)
-import Business from '@pages/business'
-// const Information = res => require(['@pages/information'],res)
-import Information from '@pages/information'
+const Business = res => require(['@pages/business'],res)
+const Information = res => require(['@pages/information'],res)
 const informationDetail = res => require(['@pages/information/information-detail'],res)
-// const Customer = res => require(['@pages/customer'],res)
-import Customer from '@pages/customer'
+const Customer = res => require(['@pages/customer'],res)
 const customerDetail = res => require(['@pages/customer/customer-detail.vue'],res)
 const Customerinformation = res => require(['@pages/customer/customer-information.vue'],res)
 // const customerTab1 = res => require(['@pages/customer/children/customer-tab1.vue'],res)
 // const customerTab2 = res => require(['@pages/customer/children/customer-tab2.vue'],res)
-// const Mine = res => require(['@pages/mine'],res)
-import Mine from '@pages/mine'
+const Mine = res => require(['@pages/mine'],res)
 const MineEdit = res => require(['@pages/mine/edit-card'],res)
 
 

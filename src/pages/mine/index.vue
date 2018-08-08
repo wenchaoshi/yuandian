@@ -4,10 +4,10 @@
   <div class="view">
     <div class="mine-card">
       <div class="card-center">
-        <span class="img-box fl"><img src="" alt=""></span>
+        <span class="img-box fl"><img :src="mineDetail.image_url" alt=""></span>
         <div>
           <h2>{{mineDetail.name}}<small class="fr">{{mineDetail.position}}</small></h2>
-          <p>{{mineDetail.address}}</p>
+          <p>{{mineDetail.shop_name}}</p>
         </div>
       </div>
       <div class="card-main">
@@ -20,7 +20,7 @@
       <ul class="clearfix">
         <li v-for="(item,index) in productList" :key="index" :data-index="index" :data-id='item.id' @click.stop='shade("productEdit",$event)'>
           <div>
-            <span class="img-box"><img :src="item.image_url" alt=""><i v-show="!item.shelve"></i></span>
+            <span class="img-box"><img :src="item.image_url" alt=""><i v-show="!item.shelve"></i><b class="recommend" v-show="item.recommend">推荐</b></span>
             <h3>{{item.title}}</h3>
             <i>主打产品</i>
           </div>
@@ -30,14 +30,14 @@
   </div>
 
 
-<!-- 添加标签 -->
+<!-- 分享名片 -->
   <div class="mine-shade min-share" :class="share?'active':''" > 
       <div class="shade-content">
           <p>长按保存图片</p>
           <div class="share-box">
-            <h2 :style="{padding:style30+'px'}">张高丽</h2>
-            <p>上海一体丽莎</p>
-            <div class="img-box" :style="{marginTop:style30+'px'}"><img src="#" alt=""></div>
+            <h2 :style="{padding:style30+'px'}">{{mineDetail.name}}</h2>
+            <p>{{mineDetail.shop_name}}</p>
+            <div class="img-box" :style="{marginTop:style30+'px'}"><img @click="preViewImg" :src="mineDetail.scene_image" alt=""></div>
             <p><small :style="small">长按识别查看名片</small></p>
           </div>
           <i @click.stop="hideShade" :style="i"></i>
@@ -45,10 +45,12 @@
   </div>
 
 
-  <div class="mine-shade product-edit" :class="productEdit?'active':''" > 
+<!-- 上下架弹窗 -->
+  <div  @click.stop="hideShade" class="mine-shade product-edit" :class="productEdit?'active':''" > 
       <div class="shade-content">
-          <ul @click.stop="hideShade">
-            <li @click="setShelve">{{nowShelve==true?'上架':'下架'}}</li>
+          <ul>
+            <li @click="setShelve">{{nowShelve==true?'下架':'上架'}}</li>
+            <li @click="setCommend" v-show="nowShelve">{{recommendtext}}</li>
             <li>取消</li>
           </ul>
       </div>
@@ -64,17 +66,18 @@
 <script>
 // import getData from '@/js/getData.js'
 
-
+var that;
 export default {
   data() {
     return {
       share: false,
       productEdit: false,
-      mineDetail:{},
-      productList:[],
-      nowIndex:0,
-      nowShelve:true,
-      nowShelveId:0
+      mineDetail: {},
+      productList: [],
+      nowIndex: 0,
+      nowShelve: true,
+      nowShelveId: 0,
+      nowCommend: true
     };
   },
   props: [],
@@ -93,41 +96,80 @@ export default {
       return {
         marginTop: $(window).height() * (47 / 667) + "px"
       };
+    },
+    recommendtext() {
+      if (this.productList.length > 0) {
+        if (this.productList[this.nowIndex].recommend) {
+          return "取消推荐";
+        } else {
+          return "推荐";
+        }
+      } else {
+        return "";
+      }
     }
   },
 
+  created() {
+    that = this;
+    this.getUser();
+  },
   mounted: function() {
-    let that= this;
+    let that = this;
     //获取员工商品列表
-    this.getData('/wxemployee/employee/product/list?shop=2013714&employee=2005503',{
-      success(res){
-        that.productList=res.detail
-      },
-      erro(res){
-        console.log('erro')
+    this.getData(
+      "/wxemployee/employee/product/list?shop=2013714&employee=2005503",
+      {
+        success(res) {
+          that.productList = res.detail;
+        },
+        erro(res) {
+          console.log("erro");
+        }
       }
-    })
-
-    this.mineDetail=this.global.mineDetail
-
-
+    );
   },
 
   methods: {
+    //预览图片
+    preViewImg() {
+      let img=that.mineDetail.scene_image;
+      wx.previewImage({
+        current: img.replace('https','http'), // 当前显示图片的http链接
+        urls: [img.replace('https','http')] // 需要预览的图片http链接列表
+      });
+    },
+    getUser() {
+      this.getData(
+        "/wxemployee/employee/detail?shop=2013714&employee=2005503",
+        {
+          async: true,
+          success(res) {
+            that.base.setCookie("mineDetail", res.detail);
+            that.global.mineDetail = res.detail;
+            that.mineDetail = that.global.mineDetail;
+            console.log("获取用户信息成功");
+            console.log(that.global.mineDetail);
+          },
+          error(res) {
+            console.log("获取用户信息失败");
+          }
+        }
+      );
+    },
     shade(target, event) {
       this[target] = true;
       if (target == "productEdit") {
-        let index=event.currentTarget.dataset.index;
-        this.nowIndex=index;
-        this.nowShelveId=parseInt( this.productList[index].id );
-        let shelve = this.productList[index].shelve||'';
-        if(shelve){
-          this.nowShelve=true
-        }else if(shelve==false){
-          this.nowShelve=false
+        let index = event.currentTarget.dataset.index;
+        this.nowIndex = index;
+        this.nowShelveId = parseInt(this.productList[index].id);
+        let shelve = this.productList[index].shelve || "";
+        if (shelve) {
+          this.nowShelve = true;
+        } else if (shelve == false) {
+          this.nowShelve = false;
         }
       }
-      
     },
     hideShade() {
       this.share = false;
@@ -137,19 +179,39 @@ export default {
       this.$router.push({ path: "/edit-card" });
     },
 
-    setShelve(){
-      console.log(this.productList[this.nowIndex].shelve);
-      let that=this;
+    setShelve() {
       //上下架 接口
-      this.getData('/wxemployee/employee/product/operate?shop=2013714&employee=2005503',{
-        type:'post',
-        data:{
-          product:that.productList[that.nowIndex].id
-        },
-        success(res){
-          that.productList[that.nowIndex].shelve=!that.productList[that.nowIndex].shelve
+      this.getData(
+        "/wxemployee/employee/product/operate?shop=2013714&employee=2005503",
+        {
+          type: "post",
+          data: {
+            product: that.productList[that.nowIndex].id
+          },
+          success(res) {
+            that.productList[that.nowIndex].shelve = !that.productList[
+              that.nowIndex
+            ].shelve;
+          }
         }
-      })
+      );
+    },
+    setCommend() {
+      //推荐与取消推荐 接口
+      this.getData(
+        "/wxemployee/employee/product/recommend/operate?shop=2013714&employee=2005503",
+        {
+          type: "post",
+          data: {
+            id: that.productList[that.nowIndex].id
+          },
+          success(res) {
+            that.productList[that.nowIndex].recommend = !that.productList[
+              that.nowIndex
+            ].recommend;
+          }
+        }
+      );
     }
   }
 };
@@ -164,7 +226,6 @@ export default {
       width 50px
       height 50px
       margin-right 10px
-      background #000
       img
         width 100%
         height 100%
@@ -176,6 +237,7 @@ export default {
         font-size 20px
         small
           font-size 14px
+          line-height 1.2
       p
         color #999
   .card-main
@@ -213,11 +275,14 @@ export default {
       .img-box
         display block
         width 100%
-        height 99px
+        height 100px
+        border-bottom 1px solid #f4f4f4
         overflow hidden
         position relative
         img
           width 100%
+          height auto !important
+          max-height none
         i
           position absolute
           width 53px
@@ -226,10 +291,25 @@ export default {
           top calc(50% - 27px)
           margin 0
           background-image url('../../images/icon_down.png')
+        b.recommend
+          display inline-block
+          position absolute
+          left 5px
+          top 5px
+          width 40px
+          height 20px
+          color #fff
+          font-size 12px
+          line-height 20px
+          text-align center
+          background url('http://image.show.xuemei99.com/show_share_card_bg.png') no-repeat 0 / 100% 100%
       h3
-        padding 10px
+        margin 10px
+        height 36px
+        overflow hidden
         text-align left
         line-height 18px
+        word-break break-all
       i
         display inline-block
         margin 5px 0 10px
@@ -264,10 +344,12 @@ export default {
         font-size 20px
         font-weight bolder
       div.img-box
-        margin 30px auto 0
+        margin 20px auto 0
         width 188px
+        a
+          display inline
         img
-          width 100%
+          width auto
           height 180px
           max-height 180px
       p
@@ -289,7 +371,6 @@ export default {
     left 0
     bottom 0
     width 100%
-    height 110px
     color #333
     background #fff
     li

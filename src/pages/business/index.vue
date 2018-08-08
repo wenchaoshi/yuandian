@@ -3,11 +3,17 @@
   <div id="page">
     <div class="view" id="MiniRefresh">
       <div class="business" id="scroll-view">
-        <template v-for='(items,index) in mydata'>
-          <lists :imgSrc='items.imgSrc' :text="items.text" :key='index'></lists>
-        </template>
-        <div class="business-date business-lists">
-          <span>4小时前</span>
+        <div v-for='(items,index) in list' :key='index' :data-id="items.id">
+
+          <div class="business-date business-lists">
+            <span>{{items.create_time | gmtDate}}</span>
+          </div>
+
+          <div :data-id='items.id' class="business-lists" @click="toDetail(items.customer_id)">
+            <span class="img-box el-icon-info"><img :src="items.image_url" alt=""></span>
+            <p v-html='items.show_message'></p>
+          </div>
+
         </div>
         
       </div>
@@ -17,52 +23,32 @@
 </template>
 
 <script>
-import Lists from "@pages/business/lists";
-import base from "@/js/base.js";
-
+var that;
 export default {
   data() {
     return {
-      mydata: [
-        {
-          imgSrc: "aaaa",
-          text: `数据一<strong>数据一</strong>数据一数据一数据一数据一数据一数据一数据一数据一`
-        },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据二" },
-        { imgSrc: "aaaa", text: "数据三" }
-      ]
+      list:[],
+      offset:0,//当前请求的第一条数据下标
+      count:0,
+      intoViewId:0,
+      upOff:true
     };
   },
 
   components: {
-    Lists
   },
 
-  computed: {},
+  computed: {
+  },
+  
 
+  created(){
+    that=this;
+  },
   mounted: function() {
-    let nowView = document
-      .getElementById("scroll-view")
-      .getElementsByTagName("div")[0];
-    base.intoView(nowView); //初始化时滚动到nowView元素（底部）
-
+    let that=this;
+    this.getList()
     this.miniRefresh(this);
-
   },
 
   methods: {
@@ -73,19 +59,64 @@ export default {
         down: {
           callback: function() {
             // 下拉事件
-            miniRefresh.endDownLoading();
+            let timer=setTimeout(()=>{
+              miniRefresh.endDownLoading();
+            },4000)
+            that.list=[];
+            that.offset=0,//当前请求的第一条数据下标
+            that.getList(()=>{
+              miniRefresh.endDownLoading();
+              clearTimeout(timer)
+            })
           }
         },
         up: {
-          isLock: true,
-          contentnomore: "",
+          contentnomore: "没有更多数据了",
+          contentdown:'上啦显示更多',
+          contentrefresh:'加载中...',
+          offset:90,
+          loadFull: {
+            isEnable: false
+          },
+          isAuto: false,
           callback: function() {
             // 上拉事件
             // 注意，由于默认情况是开启满屏自动加载的，所以请求失败时，请务必endUpLoading(true)，防止无限请求
-            miniRefresh.endUpLoading(true);
+
+            if(that.upOff){
+              if(that.list.length>=that.count){
+                miniRefresh.endUpLoading(true);
+                return
+              }
+              that.upOff=false;
+              that.offset+=20;
+              var top=miniRefresh.getPosition();
+              
+              that.getList(()=>{
+                miniRefresh.scrollTo(top||0, 0);
+                that.upOff=true;
+                miniRefresh.endUpLoading(false);
+              })
+            }
           }
         }
       });
+    },
+    toDetail(customer_id) {
+      //console.log(this.item)
+      this.$router.push({ path: "/information-detail" , query:{customer_id:customer_id}});
+    },
+    getList(successCallback){
+      that.getData('/wxemployee/business/list?shop=2013714&employee=2005503&limit=20&offset='+that.offset,{
+        success(res){
+          //that.$set(that.mydata,'list',res.detail)
+          that.count=res.count;
+          that.list.push(...res.detail);
+          that.$nextTick(()=>{
+            if (successCallback) successCallback()
+          })
+        }
+      })
     }
   }
 };
@@ -94,12 +125,12 @@ export default {
 .business
   display flex
   // flex-wrap wrap-reverse
-  flex-direction column-reverse
+  flex-direction column !important
   background inherit
   .business-date
     width 100%
-    margin-top 15px
-    margin-bottom 5px
+    margin-top 20px
+    margin-bottom 10px
     text-align center
     span
       display inline-block
@@ -112,7 +143,7 @@ export default {
   .business-lists:not(.business-date)
     position relative
     width 3.55rem
-    margin 0.05rem auto
+    margin 10px auto
     padding 0.1rem
     border-radius 3px
     background #fff
@@ -127,6 +158,34 @@ export default {
       background url('../../images/Triangle_3.png') 0 / 100% 100%
     &:hover
       active()
-.minirefresh-theme-default .minirefresh-upwrap
-  display none
+
+
+#scroll-view 
+  min-height 35px
+  background #f1f1f1  
+
+
+.business-lists
+  overflow hidden
+  cursor pointer
+  .img-box
+    display inline-block
+    float left
+    width 0.4rem
+    height auto
+    margin-right 0.1rem
+    background #000
+  img
+    width 100%
+    height 40px
+  p
+    overflow hidden
+    width 2.26rem
+    strong
+      color #3cb98e
+      font-weight normal
+
+
+
+
 </style>

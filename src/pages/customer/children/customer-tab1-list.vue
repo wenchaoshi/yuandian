@@ -2,17 +2,17 @@
 <template>
   <div class="customer-tab1-list">
     <span class="customer-tab1-list-date">
-        {{createTime}}
+        {{createTime | gmtDate('DD/MM月 HH:mm')}}
     </span>
     <span class="img-box">
         <img :src="imgSrc" alt="">
     </span>
     <p v-html='text'></p>
-    <div class="customer-controls" :class="controlOff==index?'active':''">
+    <div class="customer-controls" v-if="canEdit" :class="controlOff==index?'active':''">
         <i @click.stop='$emit("controlClick",index)'></i>
         <span>
-            <a href="">编辑</a>
-            <a href="">删除</a>
+            <a href="javascript:;" @click.stop='$emit("edit")'>编辑</a>
+            <a href="javascript:;" @click='$emit("delete",index)'>删除</a>
         </span>
     </div>
   </div>
@@ -25,7 +25,7 @@ export default {
       off: false
     };
   },
-  props: ["createTime","imgSrc", "text", "index", "controlOff"],
+  props: ["createTime","imgSrc", "text", "index", "controlOff","canEdit"],
   components: {},
 
   computed: {},
@@ -47,8 +47,12 @@ export default {
   position relative
   overflow hidden
   padding 15px 0.1rem
+  height 70px
   font-size 0
-  span
+  &>*
+    height 100%
+    overflow hidden
+  span 
     display inline-block
     font-size 14px
     vertical-align middle
@@ -56,6 +60,7 @@ export default {
   .customer-tab1-list-date
     width 0.65rem
     max-width 65px
+    padding-right 10px
     line-height 20px
   .img-box
     width 40px
@@ -77,12 +82,13 @@ export default {
       font-weight normal
   .customer-controls
     position absolute
-    right 0.1rem
+    right .1rem
     top calc(50% - 12.5px)
     display inline-block
     width 30px
     height 25px
     line-height 25px
+    overflow visible
     i
       position relative
       z-index 2

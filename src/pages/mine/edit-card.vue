@@ -3,20 +3,20 @@
   <div id="page">
       <div class="view edit-card">
           <div class="head-portrait">
-              <img :src="mineDetail.image_url" alt="" id="img-view">
-              <input style="display:none" type="file"  accept="image/*" id="upImg" @change="upImg">
+              <a :href="mineDetail.image_url" :download="mineDetail.name"><img :src="mineDetail.image_url" alt="" id="img-view"></a>
+              <input style="display:none" type="file"  accept="image/*" id="upImg" @change="upImg($event)">
               <label for="upImg"><span>更换头像</span></label>
           </div>
           <div class="information-card">
               <h2>{{mineDetail.name}}<small class="tel fr">{{mineDetail.phone}}</small></h2>
               <p class="job">{{mineDetail.position}}</p>
-              <p class="site">{{mineDetail.address}}</p>
+              <p class="shop-name">{{mineDetail.shop_name}}</p>
           </div>
           <div class="edit-lists">
-              <p class="textcenter">详细信息</p>
+              <p class="textcenter"><span>详细信息</span></p>
               <ul>
-                  <li><input type="text" id="wx_number" v-model="mineDetail.wx_number" placeholder="微信号"></li>
-                  <li><input type="text" id="desc" v-model="mineDetail.desc" placeholder="个人描述"></li>
+                  <li class="clearfix"><span>微信号</span><input type="text" id="wx_number" v-model="mineDetail.wx_number" placeholder="请输入微信号"></li>
+                  <li class="clearfix"><span>个人描述</span><input type="text" id="desc" v-model="mineDetail.desc" placeholder="请输入个人描述"></li>
               </ul>
           </div>
 
@@ -28,8 +28,6 @@
 </template>
 
 <script>
-import uploadImg from "@/js/uploadImg.js";
-
 
 export default {
   data() {
@@ -43,51 +41,56 @@ export default {
   computed: {},
 
   mounted: function() {
-    this.mineDetail=this.global.mineDetail;
+    
+    if(this.global.mineDetail){
+      this.mineDetail=this.global.mineDetail;
+    }else{
+      this.getUser();
+    }
+  
   },
 
   methods: {
-
-    upImg(){
-      var options={
-        path:'https://wx.yun.xuemei99.com/wxemployee/employee/detail?shop=2013714&employee=2005503',
-        onSuccess(res){
-
+    getUser(){
+      let that=this;
+      that.getData('/wxemployee/employee/detail?shop=2013714&employee=2005503',{
+        successtext:'加载成功',
+        success(res){
+          that.global.mineDetail=res.detail;  //全局变量
+          that.mineDetail=that.global.mineDetail;  //当前页面数据
+          
+          console.log('获取用户信息成功')
+          console.log(that.global.mineDetail)
         },
-        onFailure(res){
-
+        erro(res){
+          console.log('获取用户信息失败')
         }
-      }
-      var upload = new uploadImg.tinyImgUpload(this, "upImg",options);
-      upload.uploadImg()
+      })
     },
-
     submit(){
       let that=this;
       that.getData('/wxemployee/employee/detail?shop=2013714&employee=2005503',{
         type:'POST',
         data:{
+          image:that.mineDetail.image_url,
           wx_number:that.mineDetail.wx_number,
           desc:that.mineDetail.desc
         },
+        successtext:'更新信息成功',
         success(res){
-          (()=>{
-            that.getData('/wxemployee/employee/detail?shop=2013714&employee=2005503',{
-              success(res){
-                that.global.mineDetail=res.detail;  //全局变量
-                that.mineDetail=that.global.mineDetail;  //当前页面数据
-                console.log('获取用户信息成功')
-                console.log(that.global.mineDetail)
-              },
-              erro(res){
-                console.log('获取用户信息失败')
-              }
-            })
-          })()
+          // that.getUser();
+          that.$router.go(-1)
         },
         error:function(res){
 
         }
+      })
+    },
+
+    upImg(e){
+      this.base.uploadImg(e,(res)=>{
+        console.log(res)
+        this.mineDetail.image_url = res.path;
       })
     }
     
@@ -96,18 +99,19 @@ export default {
 </script>
 
 <style lang='stylus'>
-.edit-card
+.view.edit-card
   height calc(100% - 75px)
 .head-portrait
   position relative
   width 100%
-  height 260px
+  max-height 260px
   overflow hidden
-  background #f00
   text-align center
+  a
+    display inline
   img
     max-height 100%
-    height 100%
+    width 100%
     max-width none
   span
     position absolute
@@ -130,21 +134,36 @@ export default {
   padding 20px
   background #fff
   border-radius 3px
+  box-shadow 0 0 10px rgba(138, 136, 136, 0.59)
   h2
     margin-bottom 10px
     font-size 20px
     font-weight bold
     small
       font-size 14px
-  .site
+  .shop-name
     margin 20px 0
-    color #333
+    color #999
 .edit-lists
   margin-top 30px
   &>p
     margin-bottom 20px
     text-align center
     font-size 16px
+    font-weight 600
+    &:before
+      display block
+      line-height 1
+      position relative
+      content "DETAILED"
+      font-size 24px
+      opacity .1
+      letter-spacing 0
+      font-weight 400
+    span 
+      line-height 1
+      position relative
+      top -16px
   ul
     width 3.55rem
     height 120px
@@ -153,11 +172,19 @@ export default {
     border-radius 2px
     background #fff
     color #999
-    li input
-      width 100%
+    li 
       padding 20px 0
-      border none
       border-bottom 1px solid #eee
+      span 
+        width 5em
+        float left
+        line-height 20px
+      input
+        float left
+        width calc(100% - 5em)
+        border none
+        line-height 20px
+      
 .save-btn
   position fixed
   left 0

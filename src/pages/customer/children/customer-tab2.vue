@@ -25,20 +25,37 @@ export default {
     return {};
   },
 
+  props:['customerDetail'],
+
   components: {},
 
   computed: {},
 
   mounted: function() {
-    canvasBar();
-    canvasPie();
+    let pie=[];
+    let bar=[];
+
+    pie.push(
+      {value:(this.customerDetail.interest_product*100).toFixed(2),name:(this.customerDetail.interest_product*100).toFixed(2)+'%'},
+      {value:(this.customerDetail.interest_company*100).toFixed(2),name:(this.customerDetail.interest_company*100).toFixed(2)+'%'},
+      {value:(this.customerDetail.interest_card*100).toFixed(2),name:(this.customerDetail.interest_card*100).toFixed(2)+'%'}
+    )
+    bar.push(
+      this.customerDetail.see_company_value,
+      this.customerDetail.see_product_value,
+      this.customerDetail.share_card_value,
+      this.customerDetail.see_card_value
+    )
+
+    canvasPie(pie);
+    canvasBar(bar);
   },
 
   methods: {}
 };
 
 //圆形统计图
-function canvasPie() {
+function canvasPie(data) {
   var myChart = echarts.init(document.getElementById("canvas-pie"));
 
   var option = {
@@ -90,11 +107,12 @@ function canvasPie() {
         // funnelAlign: "left",
         // max: 100,
 
-        data: [
-          { value: 20, name: "20%" },
-          { value: 30, name: "30%" },
-          { value: 50, name: "50%" }
-        ]
+        // data: [
+        //   { value: 20, name: "20%" },
+        //   { value: 30, name: "30%" },
+        //   { value: 50, name: "50%" }
+        // ]
+        data: data
       }
     ]
   };
@@ -102,8 +120,14 @@ function canvasPie() {
 }
 
 //柱状统计图
-function canvasBar() {
+function canvasBar(data) {
   // 基于准备好的dom，初始化echarts实例
+  var max=6;
+  for(var i=0;i<data.length;i++){
+    if(data[i]>=6){
+      max=null;
+    }
+  }
   var myChart = echarts.init(document.getElementById("canvas-bar"));
   // 指定图表的配置项和数据
   var option = {
@@ -130,6 +154,7 @@ function canvasBar() {
     xAxis: [
       {
         type: "value",
+        max:max,
         //boundaryGap : [0, 0.01],
         position: "top",
         axisTick: {
@@ -185,7 +210,8 @@ function canvasBar() {
             color: "#57BC99"
           }
         },
-        data: [5, 25, 46, 10],
+        // data: [5, 25, 46, 10],
+        data: data,
         barCategoryGap: "60%" //柱间距离
       }
     ]
