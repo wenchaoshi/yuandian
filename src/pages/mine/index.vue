@@ -30,8 +30,8 @@
   </div>
 
 
-<!-- 分享名片 -->
-  <div class="mine-shade min-share" :class="share?'active':''" > 
+<!-- 分享名片1 -->
+  <!-- <div class="mine-shade min-share" :class="share?'active':''" > 
       <div class="shade-content">
           <p>长按保存图片</p>
           <div class="share-box">
@@ -39,6 +39,18 @@
             <p>{{mineDetail.shop_name}}</p>
             <div class="img-box" :style="{marginTop:style30+'px'}"><img @click="preViewImg" :src="mineDetail.scene_image" alt=""></div>
             <p><small :style="small">长按识别查看名片</small></p>
+          </div>
+          <i @click.stop="hideShade" :style="i"></i>
+      </div>
+  </div> -->
+
+<!-- 分享名片2 -->
+  <div class="mine-shade min-share" :class="share?'active':''" > 
+      <div class="shade-content">
+          <p>长按保存图片</p>
+          <div class="share-box share-box-canvas">
+            <img :src="canvas_card" alt="" width="100%" v-if="!canvas_card==''">
+            <canvas id="canvas"></canvas>
           </div>
           <i @click.stop="hideShade" :style="i"></i>
       </div>
@@ -77,7 +89,8 @@ export default {
       nowIndex: 0,
       nowShelve: true,
       nowShelveId: 0,
-      nowCommend: true
+      nowCommend: true,
+      canvas_card:''
     };
   },
   props: [],
@@ -143,7 +156,7 @@ export default {
       this.getData(
         "/wxemployee/employee/detail?shop=2013714&employee=2005503",
         {
-          async: true,
+          async: true,  //同步请求
           success(res) {
             that.base.setCookie("mineDetail", res.detail);
             that.global.mineDetail = res.detail;
@@ -169,6 +182,8 @@ export default {
         } else if (shelve == false) {
           this.nowShelve = false;
         }
+      }else if(target == "share"){
+        this.share_card_canvas();
       }
     },
     hideShade() {
@@ -212,6 +227,107 @@ export default {
           }
         }
       );
+    },
+    share_card_canvas(){
+      //绘制名片
+        let w=801,h=954;
+        let options=that.mineDetail;
+
+        let canvas=document.getElementById('canvas');
+        canvas.width=w;
+        canvas.height=h;
+        let ctx=canvas.getContext('2d');
+        
+        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle='#999';
+
+        //填入背景图
+        let bgImg=new Image();
+        bgImg.setAttribute('crossOrigin','anonymous');
+        bgImg.onload=function(){
+            ctx.drawImage(bgImg, 0, 0, w, h);
+            header_image();
+        }
+        bgImg.src='http://image.show.xuemei99.com/bg_code.png';
+
+        function header_image(){
+            //绘制圆形头像
+            let img1=new Image();
+            img1.setAttribute("crossOrigin",'anonymous');
+            img1.width=150;
+            img1.height=150;
+            img1.onload=()=>{
+                let img1_w=img1.width;
+                let img1_h=img1.height;
+                let x=567+img1_w/2;
+                let y=96+img1_h/2;
+                ctx.save();
+                ctx.beginPath();
+
+                ctx.arc(x,y,img1_w/2,0,2*Math.PI);
+                ctx.clip();
+                ctx.drawImage(img1,567,96,img1_w,img1_h);
+                ctx.restore();
+                ctx.save();
+
+                wxCode();
+            }
+            img1.src=options.image_url;
+        }
+
+        function wxCode() { 
+            //绘制二维码
+            let img2=new Image();
+            img2.setAttribute('crossOrigin','anonymous');
+            img2.width=166;
+            img2.height=161;
+            img2.onload=()=>{
+                let img2_w=img2.width;
+                let img2_h=img2.height;
+                let x=565+img2_w/2;
+                let y=744+img2_h/2;
+                ctx.save();
+                ctx.beginPath();
+
+                ctx.arc(x,y,img2_w/2,0,2*Math.PI);
+                ctx.clip();
+                ctx.drawImage(img2,565,744,img2_w,img2_h);
+                ctx.restore();
+                ctx.save();
+
+                
+                //绘制文字
+                text();
+                ctx.save();
+                let img=canvas.toDataURL("image/jpeg", 1);
+                that.canvas_card=img
+            }
+            img2.src=options.scene_image;
+        }
+
+        function text() { 
+            //绘制文字
+            ctx.fillStyle='#fff';
+            ctx.font="normal bolder 54px/54px 'Microsoft YaHei',Arial";
+            ctx.fillText(options.name||'张高丽',84,146);
+            
+            ctx.fillStyle='#C8C8CF';
+            ctx.font="normal 100 36px/36px 'Microsoft YaHei',Arial";
+            ctx.fillText(options.position||'销售经理',84,210);
+
+            ctx.fillStyle='rgba(200,200,207,1)';
+            ctx.font="normal 100 36px/36px 'Microsoft YaHei',Arial";
+            ctx.fillText(options.shop_name||'上海伊莎美尔美容SPA会所',84,345);
+
+            ctx.fillStyle='#656673';
+            ctx.font="normal bolder 54px/54px 'Microsoft YaHei',Arial";
+            ctx.fillText('了解一下',258,546);
+
+            ctx.fillStyle='#999';
+            ctx.font="normal 100 27px/27px 'Microsoft YaHei',Arial";
+            ctx.fillText('长按识别查看名片',258,639);
+        }
+
     }
   }
 };
@@ -334,11 +450,16 @@ export default {
     align-self center
     text-align center
     width 100%
+    &.share-box-canvas img 
+      width 100%
+      max-height none
     .share-box
       max-height 380px
       margin-top 10px
       color #333
       background #ffffff
+      #canvas 
+        display none
       h2
         padding 30px 0
         font-size 20px

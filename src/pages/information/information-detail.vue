@@ -3,6 +3,13 @@
   <div id="page" class="detail">
     <div class="view" id="MiniRefresh">
       <div class="MiniRefresh-box">
+        <div class="product-fixTop" v-show="product.isShow">
+          <span><img :src="'https://show.qnssl.xuemei99.com/'+product.detail.product_image" :alt="product.detail.product_title"></span>
+          <div>
+            <h3>{{product.detail.product_title}}</h3>
+            <p><i>热销产品</i><strong>￥{{product.detail.price_discount}}</strong></p>
+          </div>
+        </div>
         <ul id="scroll-view">
 
           <li v-for="(item,index) in list" :key='index' :data-id="item.id">
@@ -14,15 +21,14 @@
               <p>{{item.content}}</p>
             </div>
           </li>
-
+          
         </ul>
       </div>
       <div class="message-box">
-        <input type="text" placeholder="想跟TA说点什么呢" v-model="content">
+        <input type="text" placeholder="想跟TA说点什么呢"  @focus="inputFocus($event)" v-model="content">
         <input type="submit" value="发送" @click="sendInformation">
       </div>
     </div>
-
   </div>
 </template>
 
@@ -39,7 +45,20 @@ export default {
       offset:0,//当前请求的第一条数据下标
       count:0,
       intoViewId:0,
-      contentover:'释放刷新'
+      contentover:'释放刷新',
+      MiniRefreshBox:0,
+      scrollView:0,
+      MiniRefresh:0,
+      product:{
+        isShow:false,
+        detail:{
+          content:'',
+          product_image:'',
+          desc:'',
+          price_discount:'',
+          product_title:''
+        }
+      },
     };
   },
 
@@ -55,11 +74,28 @@ export default {
     this.offset=0;
     this.miniRefresh();
     this.getContent();
+    let product_id=this.$route.query.product_id;
+    if(product_id){
+      that.product.isShow=true;
+      this.getData('/wxemployee/message/product/'+product_id+'?product_id='+product_id,{
+        success(res){
+          that.$set(that.product,'detail',res.detail)
+        },
+        error(res){
+        }
+      })
+    }
   },
-
+  updated(){
+    this.MiniRefreshBox=$('.MiniRefresh-box').height();
+    this.scrollView=$('#scroll-view').height();
+  },
 
   methods: {
     sendInformation(){
+      if(that.content===''){
+        return
+      }
       this.getData('/wxemployee/talk/send/leave?two_man_id='+this.$route.query.customer_id+'&shop=2013714',{
         type:'post',
         data:{
@@ -100,10 +136,12 @@ export default {
             that.list.push(...newList)
             that.$nextTick(()=>{
               if(obj){
+                //不是第一次加载的情况下会有obj参数，obj即为当前需要滚动到的元素
                 base.intoView($(obj))
                 console.log(obj)
               }else {
                 if($('#scroll-view li').length){
+                  //如果第一次进来，那么就滚动到第一个元素（元素个数不为0的情况下）
                   base.intoView($('#scroll-view li:nth-of-type(1)'))
                 }
               }
@@ -153,6 +191,18 @@ export default {
           }
         }
       });
+    },
+    inputFocus(e){
+
+      // var u = navigator.userAgent, app = navigator.appVersion;
+      // var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+      window.setTimeout(()=>{
+        window.scrollTo(0, $('body').height());
+        if($('#scroll-view li').length){
+          base.intoView($('#scroll-view li:nth-of-type(1)'));
+        }
+        base.intoView($('.message-box'));
+      }, 500);
     }
   }
 };
@@ -161,6 +211,62 @@ export default {
 <style lang='stylus'>
 .detail .minirefresh-totop 
   display none !important
+  
+.MiniRefresh-box 
+  min-height 100%
+
+.product-fixTop 
+  position fixed
+  top 10px
+  left 10px
+  width calc(100% - 20px)
+  height 84px
+  padding 10px 15px
+  background #fff
+  border-radius 2px
+  z-index 9999
+  span 
+    float left 
+    width 64px
+    height 64px
+    img 
+      width 100%
+      height 100%
+  div 
+    margin-left 79px
+    overflow hidden
+    position relative
+    height 100%
+    h3 
+      font-size 16px
+      font-weight 900
+      line-height 18px
+      white-space nowrap
+      overflow hidden
+      text-overflow ellipsis
+    p
+      position absolute
+      width 100%
+      bottom 0
+      left 0
+      i 
+        display inline-block
+        padding 1px 3px
+        font-size 10px
+        line-height 18px
+        background url('../../images/img_product_label.png') no-repeat 0 center/ 100% 16px
+        color #fff
+        font-style normal
+        float left
+
+      strong 
+        color #F24C5E
+        font-weight bold
+        font-size 18px
+        line-height 18px
+        float right 
+
+
 #scroll-view
   display flex
   flex-direction column-reverse
@@ -193,10 +299,10 @@ ul#scroll-view
       border-radius 2px
       text-align justify
   .message-box
-    position fixed
+    position absolute
     left 0
     bottom 0
-    z-index 99
+    z-index 9999
     width 100%
     height 60px
     padding 10px
@@ -220,8 +326,8 @@ ul#scroll-view
       background #25B181
 // 时间
 .detail-date
-  margin-top 15px
   margin-bottom 5px
+  margin-top 15px
   text-align center
   span
     display inline-block

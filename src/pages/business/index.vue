@@ -9,7 +9,7 @@
             <span>{{items.create_time | gmtDate}}</span>
           </div>
 
-          <div :data-id='items.id' class="business-lists" @click="toDetail(items.customer_id)">
+          <div :data-id='items.id' class="business-lists" @click="toDetail(items.customer_id,$event)">
             <span class="img-box el-icon-info"><img :src="items.image_url" alt=""></span>
             <p v-html='items.show_message'></p>
           </div>
@@ -21,6 +21,7 @@
     <tab></tab>
   </div>
 </template>
+
 
 <script>
 var that;
@@ -102,9 +103,11 @@ export default {
         }
       });
     },
-    toDetail(customer_id) {
+    toDetail(customer_id,e) {
       //console.log(this.item)
-      this.$router.push({ path: "/information-detail" , query:{customer_id:customer_id}});
+      let el=e.currentTarget;
+      let product_id=$(el).find('b').text()||null;
+      this.$router.push({ path: "/information-detail" , query:{customer_id:customer_id,product_id:product_id}});
     },
     getList(successCallback){
       that.getData('/wxemployee/business/list?shop=2013714&employee=2005503&limit=20&offset='+that.offset,{
@@ -184,6 +187,8 @@ export default {
     strong
       color #3cb98e
       font-weight normal
+    b 
+      display none  //这个b标签是后台用来传递product_id用的
 
 
 

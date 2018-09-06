@@ -59,8 +59,9 @@ function getData(url, option){
     function get_data_fn(url, option){
         $('#app .load').text('正在加载...').addClass('active');
         let type=option.type||'get';
+        let _url='https://wx.yun.xuemei99.com'+url+'&csrfmiddlewaretoken='+getCookie('csrftoken')
         let ajaxTimeOut=$.ajax({
-            url: 'https://wx.yun.xuemei99.com'+url+'&csrfmiddlewaretoken='+getCookie('csrftoken'),
+            url: _url,
             type: type,
             async:option.async?option.async:false,
             timeout:2000,
