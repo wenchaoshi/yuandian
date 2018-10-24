@@ -6,16 +6,24 @@
       <div class="card-center">
         <span class="img-box fl"><img :src="mineDetail.image_url" alt=""></span>
         <div>
-          <h2>{{mineDetail.name}}<small class="fr">{{mineDetail.position}}</small></h2>
+          <h2>{{mineDetail.name}}<small class="fr">{{permission}}</small></h2>
           <p>{{mineDetail.shop_name}}</p>
         </div>
       </div>
       <div class="card-main">
-        <div class="edit" @click="navigator"><span>编辑名片</span></div>
-        <div class="share" @click.stop='shade("share")'><span>分享名片</span></div>
+        <div class="edit" @click="navigator('/edit-card')"><span>编辑名片</span></div>
+        <div class="share" @click="navigator('/card-box',false,mineDetail)"><span>分享名片</span></div>
       </div>
-
     </div>
+
+    <div class="employee-manage" v-if="permissionId!=3" @click="navigator(permissionId==5?'/employee-manage':'/employee-all',permissionId)">
+      <div><img src="../../images/employee_manage.png" alt=""></div>
+      <div>
+        <h3>员工管理</h3>
+        <p>查看下属员工各项数据</p>
+      </div>
+    </div>
+
     <div class="mine-products">
       <ul class="clearfix">
         <li v-for="(item,index) in productList" :key="index" :data-index="index" :data-id='item.id' @click.stop='shade("productEdit",$event)'>
@@ -44,18 +52,6 @@
       </div>
   </div> -->
 
-<!-- 分享名片2 -->
-  <div class="mine-shade min-share" :class="share?'active':''" > 
-      <div class="shade-content">
-          <p>长按保存图片</p>
-          <div class="share-box share-box-canvas">
-            <img :src="canvas_card" alt="" width="100%" v-if="!canvas_card==''">
-            <canvas id="canvas"></canvas>
-          </div>
-          <i @click.stop="hideShade" :style="i"></i>
-      </div>
-  </div>
-
 
 <!-- 上下架弹窗 -->
   <div  @click.stop="hideShade" class="mine-shade product-edit" :class="productEdit?'active':''" > 
@@ -80,6 +76,7 @@
 
 var that;
 export default {
+  name:'mine',
   data() {
     return {
       share: false,
@@ -90,7 +87,8 @@ export default {
       nowShelve: true,
       nowShelveId: 0,
       nowCommend: true,
-      canvas_card:''
+      canvas_card:'',
+      permissionId:0
     };
   },
   props: [],
@@ -120,14 +118,28 @@ export default {
       } else {
         return "";
       }
+    },
+    permission(){
+      let permissionId=this.permissionId;
+      if(this.permissionId==1){
+        return '主管';
+      }
+      else if(this.permissionId==3){
+        return '员工';
+      }
+      else if(this.permissionId==5){
+        return '老板';
+      }else {
+        return ''
+      }
     }
   },
 
   created() {
     that = this;
-    this.getUser();
   },
   mounted: function() {
+    this.getUser();
     let that = this;
     //获取员工商品列表
     this.getData(
@@ -141,17 +153,10 @@ export default {
         }
       }
     );
+    this.share_card_canvas();
   },
 
   methods: {
-    //预览图片
-    preViewImg() {
-      let img=that.mineDetail.scene_image;
-      wx.previewImage({
-        current: img.replace('https','http'), // 当前显示图片的http链接
-        urls: [img.replace('https','http')] // 需要预览的图片http链接列表
-      });
-    },
     getUser() {
       this.getData(
         "/wxemployee/employee/detail?shop=2013714&employee=2005503",
@@ -169,6 +174,16 @@ export default {
           }
         }
       );
+      this.getData('/wxapp/employee/permission?shop=2013714',{
+        async: true,  //同步请求
+        successtext:'',
+        success(res) {
+          that.permissionId=res.detail;
+        },
+        error(res) {
+
+        }
+      })
     },
     shade(target, event) {
       this[target] = true;
@@ -183,17 +198,19 @@ export default {
           this.nowShelve = false;
         }
       }else if(target == "share"){
-        this.share_card_canvas();
+        //取消之前版本的弹出分享模态框
+
       }
     },
     hideShade() {
       this.share = false;
       this.productEdit = false;
     },
-    navigator() {
-      this.$router.push({ path: "/edit-card" });
+    navigator(target,permissionId,mineDetail){
+      let permission=permissionId||'';
+      let detail=mineDetail||'';
+      this.$router.push({path:target,query:{'permission':permission,'detail':detail}})
     },
-
     setShelve() {
       //上下架 接口
       this.getData(
@@ -227,107 +244,6 @@ export default {
           }
         }
       );
-    },
-    share_card_canvas(){
-      //绘制名片
-        let w=801,h=954;
-        let options=that.mineDetail;
-
-        let canvas=document.getElementById('canvas');
-        canvas.width=w;
-        canvas.height=h;
-        let ctx=canvas.getContext('2d');
-        
-        ctx.clearRect(0, 0, w, h);
-        ctx.fillStyle='#999';
-
-        //填入背景图
-        let bgImg=new Image();
-        bgImg.setAttribute('crossOrigin','anonymous');
-        bgImg.onload=function(){
-            ctx.drawImage(bgImg, 0, 0, w, h);
-            header_image();
-        }
-        bgImg.src='http://image.show.xuemei99.com/bg_code.png';
-
-        function header_image(){
-            //绘制圆形头像
-            let img1=new Image();
-            img1.setAttribute("crossOrigin",'anonymous');
-            img1.width=150;
-            img1.height=150;
-            img1.onload=()=>{
-                let img1_w=img1.width;
-                let img1_h=img1.height;
-                let x=567+img1_w/2;
-                let y=96+img1_h/2;
-                ctx.save();
-                ctx.beginPath();
-
-                ctx.arc(x,y,img1_w/2,0,2*Math.PI);
-                ctx.clip();
-                ctx.drawImage(img1,567,96,img1_w,img1_h);
-                ctx.restore();
-                ctx.save();
-
-                wxCode();
-            }
-            img1.src=options.image_url;
-        }
-
-        function wxCode() { 
-            //绘制二维码
-            let img2=new Image();
-            img2.setAttribute('crossOrigin','anonymous');
-            img2.width=166;
-            img2.height=161;
-            img2.onload=()=>{
-                let img2_w=img2.width;
-                let img2_h=img2.height;
-                let x=565+img2_w/2;
-                let y=744+img2_h/2;
-                ctx.save();
-                ctx.beginPath();
-
-                ctx.arc(x,y,img2_w/2,0,2*Math.PI);
-                ctx.clip();
-                ctx.drawImage(img2,565,744,img2_w,img2_h);
-                ctx.restore();
-                ctx.save();
-
-                
-                //绘制文字
-                text();
-                ctx.save();
-                let img=canvas.toDataURL("image/jpeg", 1);
-                that.canvas_card=img
-            }
-            img2.src=options.scene_image;
-        }
-
-        function text() { 
-            //绘制文字
-            ctx.fillStyle='#fff';
-            ctx.font="normal bolder 54px/54px 'Microsoft YaHei',Arial";
-            ctx.fillText(options.name||'张高丽',84,146);
-            
-            ctx.fillStyle='#C8C8CF';
-            ctx.font="normal 100 36px/36px 'Microsoft YaHei',Arial";
-            ctx.fillText(options.position||'销售经理',84,210);
-
-            ctx.fillStyle='rgba(200,200,207,1)';
-            ctx.font="normal 100 36px/36px 'Microsoft YaHei',Arial";
-            ctx.fillText(options.shop_name||'上海伊莎美尔美容SPA会所',84,345);
-
-            ctx.fillStyle='#656673';
-            ctx.font="normal bolder 54px/54px 'Microsoft YaHei',Arial";
-            ctx.fillText('了解一下',258,546);
-
-            ctx.fillStyle='#999';
-            ctx.font="normal 100 27px/27px 'Microsoft YaHei',Arial";
-            ctx.fillText('长按识别查看名片',258,639);
-        }
-
     }
   }
 };
@@ -358,11 +274,13 @@ export default {
         color #999
   .card-main
     display flex
+    width 100%
     line-height 45px
     text-align center
     border-top 1px solid #eee
     div
       flex 1
+      width 50%
       span
         vertical-align middle
       &:before
@@ -377,6 +295,26 @@ export default {
         border-right 1px solid #e7e7e7
         &:before
           background url('../../images/icon_card_edit.png') 0 / 100% 100%
+
+.employee-manage 
+  display flex
+  width 3.55rem
+  height .75rem 
+  margin 10px auto 
+  padding 12px .45rem
+  background #fff
+  border-radius 4px
+  div 
+    flex 1
+    height 50px
+    h3 
+      margin: 3px 0 5px;
+      color #333
+      font-weight 600
+    p 
+      font-size 12px
+      color #999
+
 .mine-products
   background #fff
   ul li

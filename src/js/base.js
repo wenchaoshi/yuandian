@@ -48,7 +48,12 @@ function getData(url, option){
     // }else{
     //     get_data_fn(url, option);
     // }
-    get_data_fn(url, option);
+    $('#app .load').text('正在加载...').addClass('active');
+    setTimeout(()=>{
+        get_data_fn(url, option);
+    },10)
+    
+    
     function load_error(text){
         text=text||'加载失败，请重试';
         $('#app .load').text(text);
@@ -57,9 +62,11 @@ function getData(url, option){
         },1000)
     }
     function get_data_fn(url, option){
-        $('#app .load').text('正在加载...').addClass('active');
         let type=option.type||'get';
-        let _url='https://wx.yun.xuemei99.com'+url+'&csrfmiddlewaretoken='+getCookie('csrftoken')
+        let token=getCookie('csrftoken');
+        //let token='E1YQP8cnuiqsThpxB8PF5xKhewCm8AiGifpV00izSgnb3iczXqs4ubXacVRis6Pw';
+        // let _url=''+url+'?csrfmiddlewaretoken='+token
+        let _url=''+url
         let ajaxTimeOut=$.ajax({
             url: _url,
             type: type,
@@ -67,7 +74,7 @@ function getData(url, option){
             timeout:2000,
             data: option.data?option.data:{},
             beforeSend: function (req) {
-                req.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                req.setRequestHeader("X-CSRFToken", token);
             },
             success: function (data) {
                 if(!data.status==0){
@@ -76,12 +83,14 @@ function getData(url, option){
                 }
                 if(data.status==0){
                     //请求成功返回数据
-                    if(option.success) option.success(data);
+                    setTimeout(()=>{
+                        if(option.success) option.success(data,token);
+                    },30)
                     let successtext=option.successtext||'加载成功';
                     $('#app .load').text(successtext).addClass('success')
                     setTimeout(()=>{
                         $('#app .load').removeClass('active success');
-                    },500)
+                    },200)
                 }
             },
             error: function (data) {

@@ -19,10 +19,21 @@
               <div>预计成交率</div>
               <div class="customerDetail-action-data"><strong>{{customerDetail.customer_deal_percent}}%</strong></div>
             </div>
+            <div class="customerDetail-action-list" @click="setTalkCountState">
+              <div>沟通次数({{talkCount.state?'总':'周'}})</div>
+              <div class="customerDetail-action-data"><strong>{{talkCount.state?talkCount.talkCount:talkCount.total_talkcount_week}}</strong></div>
+            </div>
             <div class="customerDetail-action-list" @click.stop="setClass('evolve')">
               <div>实际跟进进度</div>
               <div class="customerDetail-action-data"><strong>{{customerDetail.customer.group_type}}</strong></div>
             </div>
+          </div>
+
+          <!-- 产品查看次数统计 -->
+          <div class="product-cuont">
+              <ul :style="{'margin-top':productCuontMargin+'px'}">
+                <li v-for="(item , index) in productCount" :key="index"><strong>{{item.customer_name}}</strong>{{item.send_tupe==2?'浏览了':'分享了'}}{{item.employee_name}}的<strong>{{item.product_name}}</strong></li>
+              </ul>
           </div>
 
 
@@ -118,7 +129,14 @@ export default {
       },
       followContent:'',
       scrollTop:0,
-      contentHeight:0
+      contentHeight:0,
+      productCount:[],
+      productCuontMargin:0,
+      talkCount:{
+        state:true,
+        talkCount:'',
+        total_talkcount_week:''
+      }
     };
   },
 
@@ -140,14 +158,24 @@ export default {
   created(){
     that=this;
     this.customerId=this.$route.query.customerId;
+    let employeeId=this.$route.query.employeeId||null;
+    this.employeeId=employeeId;
+    if(employeeId){
+      this.employee_id='&employee_id='+employeeId
+    }else{
+      this.employee_id=''
+    }
+
     this.name=this.$route.query.name;
-    this.get_customerDetail();
-    this.get_tag_list();
+    
   },
   mounted: function() {
+    this.get_customerDetail();
+    this.get_tag_list();
     let obj = $(".customerDetail-tab");
     this.offsettop = obj.offset().top;
-
+    this.product_count();
+    this.get_talkcount()
   },
   watch:{
     
@@ -168,6 +196,28 @@ export default {
     },
     customerTabBar(target) {
       this.componentId = target;
+    },
+
+    // 产品查看次数统计
+    productCuontFn(count){
+      //count为要循环的数据的length
+      let num=0;
+      setInterval(()=>{
+        num++;
+        if(num>=count){
+          num=0;
+        }
+        this.productCuontMargin=-38*num
+      },2200)
+    },
+    product_count(){
+      //获取查看商品列表的接口
+      that.getData('/wxapp/roll/message?customer_id='+that.customerId+that.employee_id,{
+        success(res){
+          that.productCount.push(...res.detail);
+          that.productCuontFn(res.detail.length);
+        }
+      })
     },
     navigator(path) {
       if(path=='/customer-information'){
@@ -206,7 +256,7 @@ export default {
     },
     get_customerDetail(){
       //获取顾客详情，（预计成交率和实际跟进进度）
-      that.getData('/wxemployee/customer/detail?shop=2013714&employee=2005503&customer='+that.customerId,{
+      that.getData('/wxemployee/customer/detail?shop=2013714&employee=2005503&customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
         success(res){
           console.log(res)
           that.customerDetail=res.detail;
@@ -219,7 +269,7 @@ export default {
     
     get_tag_list(){
       //获取总标签（店铺标签）
-      that.getData('/wxemployee/company/tag/list?shop=2013714&employee=2005503&customer='+this.customerId,{
+      that.getData('/wxemployee/company/tag/list?shop=2013714&employee=2005503&customer='+this.customerId+'&customer_id='+that.customerId+that.employee_id,{
         success(res){
           that.tagList=res.detail;
           for(var i=0;i<that.tagList.length;i++){
@@ -231,7 +281,7 @@ export default {
     },
     get_now_tag_list(){
       //获取顾客的标签
-      that.getData('/wxemployee/customer/tag/operate?shop=2013714&employee=2005503&customer='+this.customerId,{
+      that.getData('/wxemployee/customer/tag/operate?shop=2013714&employee=2005503&customer='+this.customerId+'&customer_id='+that.customerId+that.employee_id,{
         success(res){
           that.nowTag.nowTagList=res.detail
           for(var i=0;i<res.detail.length;i++){
@@ -255,7 +305,7 @@ export default {
         }
       }
       let activeTagList=arr.join('*');
-      that.getData('/wxemployee/customer/tag/operate?shop=2013714&employee=2005503&tag=2006468&customer='+this.customerId,{
+      that.getData('/wxemployee/customer/tag/operate?shop=2013714&employee=2005503&tag=2006468&customer='+this.customerId+'&customer_id='+that.customerId+that.employee_id,{
         type:'post',
         data:{
           ids:activeTagList
@@ -273,7 +323,7 @@ export default {
         let theVlaue = e.target.dataset.value;
         //可获取事件委托中，响应事件的元素
         
-        that.getData('/wxemployee/customer/fact/follow?shop=2013714&employee=2005503&&customer='+that.customerId,{
+        that.getData('/wxemployee/customer/fact/follow?shop=2013714&employee=2005503&&customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
           type:'post',
           data:{
             group_id:index
@@ -285,6 +335,18 @@ export default {
         })
         
       }
+    },
+    get_talkcount(){
+      //获取沟通次数（总和周）
+      that.getData('/wxapp/customer/talkcount?customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
+        success(res){
+          that.talkCount.talkCount=res.detail;
+          that.talkCount.total_talkcount_week=res.total_talkcount_week
+        }
+      })
+    },
+    setTalkCountState(){
+      that.talkCount.state=!that.talkCount.state
     }
   }
 };
@@ -313,12 +375,19 @@ export default {
         width 100%
         height 100%
     h2
-      padding-left 0.1rem
-      line-height 0.5rem
-      font-weight bolder
-      font-size 0.16rem
-      overflow hidden
+      padding-left: 0.1rem;
+      padding-right: 4.5em;
+      line-height: 0.5rem;
+      font-weight: bolder;
+      font-size: 0.16rem;
+      overflow: hidden;
+      text-overflow: ellipsis; 
+      white-space: nowrap; 
+      position: relative;
       small
+        position absolute
+        right 0
+        top 0
         color #bbb
         font-weight 100
         font-size 0.12rem
@@ -343,23 +412,49 @@ export default {
       border-radius 2px
       font-size 10px
       cursor pointer
+
+.product-cuont 
+  width 90%
+  height 38px
+  margin 0 auto 10px
+  padding 0 20px
+  line-height 38px
+  border-radius 19px
+  background #F1F1F1
+  overflow hidden
+  ul 
+    transition .6s
+    margin-top 0
+    li 
+      height 38px
+      white-space nowrap
+      overflow hidden
+      text-overflow ellipsis
+      strong
+        vertical-align middle
+        color #3cb98e
+        font-weight normal
+
 .customerDetail-action
   display flex
   padding 20px
   text-align center
   font-size 12px
   position relative
-  &:after
-    display block
-    position absolute
-    left 50%
-    top calc(50% - 15px)
-    width 0
-    height 30px
-    border-left 1px solid #D8D8D8
-    content ' '
   &>div
     flex 1
+    position relative
+    &:after
+      display block
+      position absolute
+      right -0.5px 
+      top calc(50% - 15px)
+      width 0
+      height 30px
+      border-left 1px solid #D8D8D8
+      content ' '
+    &:nth-last-of-type(1):after 
+      display none
     strong
       display inline-block
       font-size 20px

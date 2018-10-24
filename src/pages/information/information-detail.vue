@@ -1,8 +1,9 @@
 <!--详情页  -->
 <template>
+<div style="height:100%;">
   <div id="page" class="detail">
     <div class="view" id="MiniRefresh">
-      <div class="MiniRefresh-box">
+      <div class="MiniRefresh-box" :style="product.isShow?{'padding-top': '100px'}:''">
         <div class="product-fixTop" v-show="product.isShow">
           <span><img :src="'https://show.qnssl.xuemei99.com/'+product.detail.product_image" :alt="product.detail.product_title"></span>
           <div>
@@ -24,12 +25,13 @@
           
         </ul>
       </div>
-      <div class="message-box">
-        <input type="text" placeholder="想跟TA说点什么呢"  @focus="inputFocus($event)" v-model="content">
-        <input type="submit" value="发送" @click="sendInformation">
-      </div>
     </div>
   </div>
+  <div class="message-box">
+    <input type="text" placeholder="想跟TA说点什么呢"  @focus="inputFocus($event)" v-model="content">
+    <input type="submit" value="发送" @click="sendInformation">
+  </div>
+</div>
 </template>
 
 <script>
@@ -172,11 +174,13 @@ export default {
               miniRefresh.endDownLoading();
             },4000)
 
-            that.offset+=20;
-            that.getContent(function(){
-              miniRefresh.endDownLoading();
-              clearTimeout(timer)
-            },'#scroll-view li:nth-of-type('+that.list.length+')')
+            setTimeout(() => {
+              that.offset+=20;
+              that.getContent(function(){
+                miniRefresh.endDownLoading();
+                clearTimeout(timer)
+              },'#scroll-view li:nth-of-type('+that.list.length+')')
+            }, 300);
           }
         },
         up: {
@@ -207,6 +211,7 @@ export default {
   }
 };
 </script>
+
 
 <style lang='stylus'>
 .detail .minirefresh-totop 
@@ -266,7 +271,6 @@ export default {
         line-height 18px
         float right 
 
-
 #scroll-view
   display flex
   flex-direction column-reverse
@@ -298,32 +302,32 @@ ul#scroll-view
       word-break break-all
       border-radius 2px
       text-align justify
-  .message-box
-    position absolute
-    left 0
-    bottom 0
-    z-index 9999
-    width 100%
-    height 60px
-    padding 10px
-    background #fff
-    input
-      vertical-align middle
-      height 100%
-      float left
-      border none
-      &::-webkit-input-placeholder
-        color #999
-    input[type=text]
-      width 2.8rem
-      padding 0 0.1rem
-      background #f1f1f1
-      margin-right 0.1rem
-    input[type=submit]
-      width 0.6rem
-      float right
-      color #fff
-      background #25B181
+.message-box
+  position absolute
+  left 0
+  bottom 0
+  z-index 9999
+  width 100%
+  height 60px
+  padding 10px
+  background #fff
+  input
+    vertical-align middle
+    height 100%
+    float left
+    border none
+    &::-webkit-input-placeholder
+      color #999
+  input[type=text]
+    width 2.8rem
+    padding 0 0.1rem
+    background #f1f1f1
+    margin-right 0.1rem
+  input[type=submit]
+    width 0.6rem
+    float right
+    color #fff
+    background #25B181
 // 时间
 .detail-date
   margin-bottom 5px

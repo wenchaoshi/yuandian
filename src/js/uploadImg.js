@@ -17,6 +17,14 @@ export default {
 
 function uploadImg(evt,onSuccess,onError) {
 
+    var myProxyTable={
+        'target':'ddd',
+        'changeOrigin':true,
+        'pathRewrite':{
+            '^/aaa':'/dsada'
+        }
+    }
+
     //创建FormData对象
     var data = new FormData();
     //为FormData对象添加数据

@@ -80,6 +80,8 @@ export default {
     strong
       color #3cb98e
       font-weight normal
+    b 
+      display none
   .customer-controls
     position absolute
     right .1rem

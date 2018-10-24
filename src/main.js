@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import store from './store'
 import $ from 'jquery'
 import '@/style/base.css'
 import '@/style/components.styl'
@@ -23,7 +24,7 @@ import 'minirefresh/dist/debug/minirefresh.css'
 
 Vue.config.productionTip = false
 Vue.config.devtools = true;
-
+Vue.config.debug = true;
 
 // 全局组件
 // import viewHead from '@components/view-head/index'
@@ -62,6 +63,7 @@ new Vue({
   data: {
   },
   router,
+  store,
   render: h => h(App),
   created(){
   },

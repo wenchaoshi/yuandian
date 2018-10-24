@@ -13,10 +13,11 @@ module.exports = {
     proxyTable: {
       // '/wxemployee/employee/detail?shop=2013714&employee=2005503',
       
-      '/wxemployee': {		//这里是我配置的名字
+      '/wxapp': {		//这里是我配置的名字
 		    target: 'https://wx.yun.xuemei99.com', //这个路径是我代理到本地的php服务器,即你要请求的第三方接口
-		    changeOrigin: false, //开启代理：在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
-		    pathRewrite: {'^/wxemployee': '/wxemployee'}	//这里重写路径运行后就代理到对应地址
+        changeOrigin: true, //开启代理：在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
+        secure:false,  //使用https时需要配置
+		    pathRewrite: {'^/wxapp': '/wxapp'}	//这里重写路径运行后就代理到对应地址
 		  }
     },
 
@@ -49,8 +50,8 @@ module.exports = {
 
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
-    assetsSubDirectory: 'static/wxapp/mobile',
-    assetsPublicPath: '/',
+    assetsSubDirectory: 'mobile',
+    assetsPublicPath: '/static/wxapp/',
 
     /**
      * Source Maps

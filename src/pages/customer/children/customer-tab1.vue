@@ -62,11 +62,21 @@ export default {
   created(){
     that=this;
     that.customerId=that.$route.query.customerId;
+    let employeeId=this.$route.query.employeeId||null;
+    this.employeeId=employeeId;
+    if(employeeId){
+      this.employee_id='&employee_id='+employeeId
+    }else{
+      this.employee_id=''
+    }
+
+    
+  },
+  mounted: function() {
     that.count=0;
     that.offset=0;
     that.getList();
-  },
-  mounted: function() {
+    
     that.winH=$(window).height()
     $(window).on("click", function() {
       that.controlOff = -1;
@@ -87,7 +97,8 @@ export default {
   },
   methods: {
     getList(successcallback){
-      that.getData('/wxemployee/customer/list/follow?shop=2013714&employee=2005503&customer='+that.customerId+'&limit=20&offset='+that.offset,{
+      //获取跟进列表
+      that.getData('/wxemployee/customer/list/follow?shop=2013714&employee=2005503&customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id+'&limit=20&offset='+that.offset,{
         success(res){
           that.count=res.count;
           that.lists.results.push(...res.results);
@@ -123,7 +134,7 @@ export default {
       this.shadeFollow = false;
     },
     doAdd(){
-      that.getData('/wxemployee/customer/follow?shop=2013714&employee=2005503&customer='+that.customerId,{
+      that.getData('/wxemployee/customer/follow?shop=2013714&employee=2005503&customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
         type:'POST',
         data:{
           content:that.followContent
@@ -141,7 +152,7 @@ export default {
     doEdit(){
       let index=this.controlOff;
       let follow_id=that.lists.results[index].follow_id;
-      that.getData('/wxemployee/customer/follow?shop=2013714&employee=2005503&customer='+that.customerId,{
+      that.getData('/wxemployee/customer/follow?shop=2013714&employee=2005503&customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
         type:'POST',
         data:{
           follow_id:follow_id,
@@ -154,7 +165,7 @@ export default {
     },
     doDelete(index){
       let follow_id=that.lists.results[index].follow_id;
-      that.getData('/wxemployee/customer/follow?shop=2013714&employee=2005503&customer='+that.customerId+'&follow_id='+follow_id,{
+      that.getData('/wxemployee/customer/follow?shop=2013714&employee=2005503&customer='+that.customerId+'&follow_id='+follow_id+'&customer_id='+that.customerId+that.employee_id,{
         type:'delete',
         successtext:'删除成功',
         success(){

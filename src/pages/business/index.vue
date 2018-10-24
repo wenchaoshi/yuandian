@@ -18,14 +18,19 @@
         
       </div>
     </div>
+
+    <Card-btn-icon></Card-btn-icon>
+
     <tab></tab>
   </div>
 </template>
 
 
 <script>
+import CardBtnIcon from '@/pages/mine/card/card-btn-icon'
 var that;
 export default {
+  name:'business',
   data() {
     return {
       list:[],
@@ -37,6 +42,7 @@ export default {
   },
 
   components: {
+    CardBtnIcon
   },
 
   computed: {
@@ -53,6 +59,9 @@ export default {
   },
 
   methods: {
+    navigator(target){
+      this.$router.push({path:target})
+    },
     miniRefresh(that) {
       //下拉刷新
       var miniRefresh = new MiniRefresh({
@@ -62,13 +71,17 @@ export default {
             // 下拉事件
             let timer=setTimeout(()=>{
               miniRefresh.endDownLoading();
-            },4000)
-            that.list=[];
-            that.offset=0,//当前请求的第一条数据下标
-            that.getList(()=>{
-              miniRefresh.endDownLoading();
-              clearTimeout(timer)
-            })
+            },4000);
+
+            //用定时器延时加载，防止请求接口太快而导致下拉刷新功能的显示问题
+            setTimeout(()=>{
+              that.list=[];
+              that.offset=0;//当前请求的第一条数据下标
+              that.getList(()=>{
+                miniRefresh.endDownLoading();
+                clearTimeout(timer)
+              })
+            },300)
           }
         },
         up: {
@@ -118,6 +131,9 @@ export default {
           that.$nextTick(()=>{
             if (successCallback) successCallback()
           })
+        },
+        error(res){
+          console.log(res)
         }
       })
     }

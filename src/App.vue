@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <keep-alive :include="['business','customer','information','mine']">
+      <router-view></router-view>
+    </keep-alive>
     <div class="load">正在加载...</div>
   </div>
 </template>

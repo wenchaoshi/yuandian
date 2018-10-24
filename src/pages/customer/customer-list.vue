@@ -29,9 +29,13 @@ export default {
   computed: {},
 
   created(){
+    
+
+
+  },
+  mounted: function() {
     this.getList()
   },
-  mounted: function() {},
 
   methods: {
     toDetail(id,name) {
@@ -39,7 +43,7 @@ export default {
     },
     getList(){
       let that=this;
-      that.getData('/wxemployee/customer/own/list?shop=2013714&employee=2005503',{
+      that.getData('/web/Zhushoulogin',{
         success(res){
           console.log(res)
           that.list=res.results;

@@ -37,6 +37,7 @@
 <script>
 var that;
 export default {
+  name:'customer',
   data() {
     return {
       list:[],
@@ -53,9 +54,10 @@ export default {
 
   created(){
     that=this;
-    this.getList()
+    
   },
   mounted: function() {
+    this.getList();
     this.miniRefresh()
   },
 
@@ -86,14 +88,17 @@ export default {
             let timer=setTimeout(()=>{
               miniRefresh.endDownLoading();
             },4000)
-            that.list=[];
-            that.offset=0;
-            that.getList(
-              function(){
-                miniRefresh.endDownLoading(true);
-                clearTimeout(timer)  
-              }
-            )
+
+            setTimeout(() => {
+              that.list=[];
+              that.offset=0;
+              that.getList(
+                function(){
+                  miniRefresh.endDownLoading(true);
+                  clearTimeout(timer)  
+                }
+              )
+            }, 300);
             return false;
           }
         },

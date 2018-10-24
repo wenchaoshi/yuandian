@@ -26,6 +26,7 @@
 <script>
 var that;
 export default {
+  name:'information',
   data() {
     return {
       informationLists: [
@@ -75,14 +76,17 @@ export default {
             let timer=setTimeout(()=>{
               miniRefresh.endDownLoading();
             },4000)
-            that.informationLists=[];
-            that.offset=0;
-            that.getList(
-              function(){
-                miniRefresh.endDownLoading(true);
-                clearTimeout(timer)
-              }
-            )
+            
+            setTimeout(() => {
+              that.informationLists=[];
+              that.offset=0;
+              that.getList(
+                function(){
+                  miniRefresh.endDownLoading(true);
+                  clearTimeout(timer)
+                }
+              )
+            }, 300);
             return false;
           }
         },
