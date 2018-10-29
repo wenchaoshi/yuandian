@@ -13,6 +13,7 @@ import customerDetail from '@pages/customer/customer-detail.vue'
 // import Customerinformation from '@pages/customer/customer-information.vue'
 // const customerDetail = res => require(['@pages/customer/customer-detail.vue'],res)
 const Customerinformation = res => require(['@pages/customer/customer-information.vue'],res)
+const CustomerAdd = res => require(['@pages/customer/customer-add.vue'],res)
 // const customerTab1 = res => require(['@pages/customer/children/customer-tab1.vue'],res)
 // const customerTab2 = res => require(['@pages/customer/children/customer-tab2.vue'],res)
 
@@ -110,6 +111,14 @@ const router=new Router({
       component: Customerinformation,
       meta: {
         title: '客户资料'
+      }
+    },
+    {
+      path:'/customer-add',
+      name:'customer-add',
+      component:CustomerAdd,
+      meta:{
+        title:'新增客户'
       }
     },
     {

@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <!-- keep-alive  缓存组件。需要在单文件组件中定义name -->
     <keep-alive :include="['business','customer','information','mine']">
       <router-view></router-view>
     </keep-alive>

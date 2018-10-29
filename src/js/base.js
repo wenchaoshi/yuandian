@@ -79,7 +79,12 @@ function getData(url, option){
             success: function (data) {
                 if(!data.status==0){
                     //请求成功，但参数错误
-                    load_error('加载失败。'+ data.status);
+                    if(option.other){
+                        option.other(data)
+                        $('#app .load').removeClass('active');
+                    }else{
+                        load_error('加载失败。'+ data.status);
+                    }
                 }
                 if(data.status==0){
                     //请求成功返回数据
@@ -92,6 +97,7 @@ function getData(url, option){
                         $('#app .load').removeClass('active success');
                     },200)
                 }
+                
             },
             error: function (data) {
                 if(option.error){

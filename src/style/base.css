@@ -159,6 +159,7 @@ input::-webkit-outer-spin-button {
 
 textarea {
     vertical-align: top;
+    resize: none
 }
 
 button,
