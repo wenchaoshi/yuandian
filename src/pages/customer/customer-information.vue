@@ -5,7 +5,7 @@
         <ul>
           <!-- <li><input type="text" v-model="token"></li> -->
           <li><label for="name"><span>真实姓名</span><input type="text" v-model="customerDetail.customer.name" id="name"></label></li>
-          <li><label for="tel"><span>联系方式</span><input type="number" v-model="phone" id="tel"></label></li>
+          <li><label for="tel"><span>联系方式</span><input type="number" readonly v-model="phone" id="tel"></label></li>
           <li><label for="wx"><span>微信号</span><input type="text" v-model="customerDetail.customer.wx_number" id="wx"></label></li>
           <li><label for="job"><span>从事工作</span><input type="text" v-model="customerDetail.customer.position" id="job"></label></li>
           <li><label for="note"><span>备注</span><input type="text" v-model="customerDetail.customer.remarks" id="note"></label></li>
@@ -56,11 +56,11 @@ export default {
   methods: {
     get_customerDetail(){
       //获取顾客详情，（预计成交率和实际跟进进度）
-      that.getData('/wxemployee/customer/detail?shop=2013714&employee=2005503&customer='+that.customerId,{
+      that.getData('/wxemployee/customer/detail?customer='+that.customerId,{
         success(res,token){
           console.log(res)
           that.$set(that.customerDetail,'customer',res.detail.customer);
-          that.phone=res.detail.customer.phone;
+          that.phone=res.detail.customer.wx_phone;
           that.token=token
         },
         error(res){
@@ -77,7 +77,7 @@ export default {
         },500)
         return 
       }
-      that.getData('/wxemployee/customer/detail?shop=2013714&employee=2005503&customer='+this.customerId,{
+      that.getData('/wxemployee/customer/detail?customer='+this.customerId,{
         type:'POST',
         data:{
           name:customer.name,

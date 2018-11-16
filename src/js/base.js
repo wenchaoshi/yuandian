@@ -64,7 +64,7 @@ function getData(url, option){
     function get_data_fn(url, option){
         let type=option.type||'get';
         let token=getCookie('csrftoken');
-        //let token='E1YQP8cnuiqsThpxB8PF5xKhewCm8AiGifpV00izSgnb3iczXqs4ubXacVRis6Pw';
+        //let token='LeEnp9QrGqaWMeUpGC4ar0H25NskKlKVOnxn4r6v4Mx9WwmA5LmNHkMaJ2WGEDAZ';
         // let _url=''+url+'?csrfmiddlewaretoken='+token
         let _url=''+url
         let ajaxTimeOut=$.ajax({

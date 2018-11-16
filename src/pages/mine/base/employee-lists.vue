@@ -13,15 +13,20 @@
             </div>
             <div class="employee-list-right">
                 <span>
-                <h4>{{item.customer_number}}人</h4>
-                <p>客户总数</p>
+                  <h4>{{item.customer_number}}人</h4>
+                  <p>客户总数</p>
                 </span>
-                <span>
-                <h4>{{item.forward_number}}次</h4>
-                <p>转发数/周</p>
+                <span v-if="!statistics">
+                  <h4>{{item.forward_number}}次</h4>
+                  <p>转发数/周</p>
+                </span>
+                <span class="statistics" v-else  @click.stop="navigator('/employee-statistics',item.id)">
+                  <img src="../../../images/employee_manage-icon.png" width="36px" alt="">
+                  <p style="text-align:center;">统计</p>
                 </span>
             </div>
           </li>
+
           <!-- <li>
             <div class="employee-list-left">
                 <span class="img-box"><img src="/static/img/employee-manage-menu.af4246c.png" alt=""></span>
@@ -32,15 +37,16 @@
             </div>
             <div class="employee-list-right">
                 <span>
-                <h4>8人</h4>
-                <p>客户总数</p>
+                  <h4>8人</h4>
+                  <p>客户总数</p>
                 </span>
-                <span>
-                <h4>200次</h4>
-                <p>转发数/周</p>
+                <span class="statistics" @click.stop="navigator('/employee-statistics',item.id)">
+                  <img src="../../../images/employee_manage-icon.png" width="36px" alt="">
+                  <p style="text-align:center;">统计</p>
                 </span>
             </div>
           </li> -->
+          
         </ul>
     </div>
 </template>
@@ -54,7 +60,7 @@ export default {
   },
 
   props:[
-
+    'statistics'
   ],
   components: {},
 	filters:{
@@ -141,5 +147,14 @@ export default {
           span 
             width 50%
             text-align right
+            &.statistics
+              img 
+                width 36px
+                height auto 
+                position relative
+                top -5px
+              p 
+                line-height 14px
+                text-indent 2em
 
 </style>

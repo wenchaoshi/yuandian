@@ -10,7 +10,7 @@
               <span class="information-img el-icon-info"><img :src="item.customer_image" alt=""></span>
               <div class="information-action">
                   <h2>{{item.customer_name}}</h2>
-                  <p>{{item.content}}</p>
+                  <p>{{item.mssage_type==2?'[我要咨询产品]':item.content}}</p>
                   <span>{{item.create_time | gmtDate}}</span>
               </div>
             </div>
@@ -57,7 +57,7 @@ export default {
       this.$router.push({ path: "/information-detail" , query:{customer_id:customer_id}});
     },
     getList(successFn){
-      that.getData('/wxemployee/customer/leave/list?shop=2013714&employee=2005503&limit=20&offset='+that.offset,{
+      that.getData('/wxemployee/customer/leave/list?limit=20&offset='+that.offset,{
         type:'get',
         success(res){
           that.count=res.count;

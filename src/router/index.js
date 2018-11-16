@@ -13,6 +13,7 @@ import customerDetail from '@pages/customer/customer-detail.vue'
 // import Customerinformation from '@pages/customer/customer-information.vue'
 // const customerDetail = res => require(['@pages/customer/customer-detail.vue'],res)
 const Customerinformation = res => require(['@pages/customer/customer-information.vue'],res)
+const CustomerSearch = res => require(['@pages/customer/customer-search.vue'],res)
 const CustomerAdd = res => require(['@pages/customer/customer-add.vue'],res)
 // const customerTab1 = res => require(['@pages/customer/children/customer-tab1.vue'],res)
 // const customerTab2 = res => require(['@pages/customer/children/customer-tab2.vue'],res)
@@ -33,6 +34,7 @@ import Mine from '@pages/mine'
 const MineEdit = res => require(['@pages/mine/edit-card'],res)
 const CardBox = res => require(['@pages/mine/card/card-box'],res)
 const EmployeeManage = res => require(['@pages/mine/employee-manage'],res)
+const employeeStatistics = res => require(['@pages/mine/employee-statistics'],res)
 const EmployeeAll = res => require(['@pages/mine/employee-all'],res)
 const DirectorAll = res => require(['@pages/mine/director-all'],res)
 const director_employee = res => require(['@pages/mine/director_employee'],res)
@@ -114,6 +116,14 @@ const router=new Router({
       }
     },
     {
+      path: '/customer-search',
+      name: 'customer-search',
+      component: CustomerSearch,
+      meta: {
+        title: '客户搜索'
+      }
+    },
+    {
       path:'/customer-add',
       name:'customer-add',
       component:CustomerAdd,
@@ -143,6 +153,14 @@ const router=new Router({
       component: EmployeeManage,
       meta: {
         title: '员工管理'
+      }
+    },
+    {
+      path: '/employee-statistics',
+      name: 'employee-statistics',
+      component: employeeStatistics,
+      meta: {
+        title: '员工统计'
       }
     },
     {

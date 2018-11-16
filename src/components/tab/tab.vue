@@ -60,7 +60,7 @@ export default {
   line-height 1.1
   font-size 12px
   color #666
-  background #fff
+  background #f1f1f1
   &:after 
     top 0
   .tab-items
@@ -68,6 +68,7 @@ export default {
     display flex
     align-items center
     cursor pointer
+    background #fff
     &>div 
       width 100%
     &.router-link-active 

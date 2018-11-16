@@ -98,7 +98,7 @@ export default {
   methods: {
     getList(successcallback){
       //获取跟进列表
-      that.getData('/wxemployee/customer/list/follow?shop=2013714&employee=2005503&customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id+'&limit=20&offset='+that.offset,{
+      that.getData('/wxemployee/customer/list/follow?customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id+'&limit=20&offset='+that.offset,{
         success(res){
           that.count=res.count;
           that.lists.results.push(...res.results);
@@ -134,7 +134,7 @@ export default {
       this.shadeFollow = false;
     },
     doAdd(){
-      that.getData('/wxemployee/customer/follow?shop=2013714&employee=2005503&customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
+      that.getData('/wxemployee/customer/follow?customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
         type:'POST',
         data:{
           content:that.followContent
@@ -152,7 +152,7 @@ export default {
     doEdit(){
       let index=this.controlOff;
       let follow_id=that.lists.results[index].follow_id;
-      that.getData('/wxemployee/customer/follow?shop=2013714&employee=2005503&customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
+      that.getData('/wxemployee/customer/follow?customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
         type:'POST',
         data:{
           follow_id:follow_id,
@@ -165,7 +165,7 @@ export default {
     },
     doDelete(index){
       let follow_id=that.lists.results[index].follow_id;
-      that.getData('/wxemployee/customer/follow?shop=2013714&employee=2005503&customer='+that.customerId+'&follow_id='+follow_id+'&customer_id='+that.customerId+that.employee_id,{
+      that.getData('/wxemployee/customer/follow?customer='+that.customerId+'&follow_id='+follow_id+'&customer_id='+that.customerId+that.employee_id,{
         type:'delete',
         successtext:'删除成功',
         success(){

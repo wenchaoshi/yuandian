@@ -79,7 +79,7 @@ export default {
             this.share_card_canvas();
         }else {
             this.getData(
-                "/wxemployee/employee/detail?shop=2013714&employee=2005503",
+                "/wxemployee/employee/detail",
                 {
                 async: true,  //同步请求
                 success(res) {

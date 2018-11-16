@@ -3,7 +3,7 @@
   <div id="page">
     <div class="view" id="MiniRefresh">
       <div class="business" id="scroll-view">
-        <div v-for='(items,index) in list' :key='index' :data-id="items.id">
+        <div v-for='(items,index) in list' :key='index' :data-id="items.id" v-if="items.show_message!=''">
 
           <div class="business-date business-lists">
             <span>{{items.create_time | gmtDate}}</span>
@@ -123,7 +123,7 @@ export default {
       this.$router.push({ path: "/information-detail" , query:{customer_id:customer_id,product_id:product_id}});
     },
     getList(successCallback){
-      that.getData('/wxemployee/business/list?shop=2013714&employee=2005503&limit=20&offset='+that.offset,{
+      that.getData('/wxemployee/business/list?limit=20&offset='+that.offset,{
         success(res){
           //that.$set(that.mydata,'list',res.detail)
           that.count=res.count;

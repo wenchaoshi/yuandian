@@ -2,11 +2,17 @@
 <template>
   <div id="page">
     <div class="view" id="MiniRefresh">
+      <div class="follow-box">
+        <div class="search">
+          <form action="" @submit.prevent="searchSubmit()">
+            <input @focus="inpFocus" @blur="inpBlur" type="number" placeholder="输入手机号搜索" v-model.trim="search" />
+          </form>
+        </div>
       <ul class="follow">
         <li :class="{'active':head1}">
           <div class="head" @click="setHead(1)">
             <span class="img-box"><img src="../../images/icon_unfollow.png" alt=""></span>
-            <p>潜在客户（{{ potential.total_number }}）</p>
+            <p>潜在客户（{{ potential.total_number==''?0:potential.total_number }}）</p>
           </div>
           <div class="content">
             <div class="customer-list" @click="toDetail(item.id,item.name)" v-for="(item,index) in potential.detail" :key="index">
@@ -27,13 +33,15 @@
         <li :class="{'active':head2}">
           <div class="head" @click="setHead(2)">
             <span class="img-box"><img src="../../images/icon_follow.png" alt=""></span>
-            <p>客户（{{ normal.total_number }}）</p>
+            <p>客户（{{ normal.total_number==''?0:normal.total_number }}）</p>
           </div>
           <div class="content">
-            <div class="customer-list" @click="toDetail(item.id,item.name)" v-for="(item,index) in normal.detail" :key="index">
+            <div class="customer-list" @click="toDetail(item.id,item.name)" v-for="(item,index) in normal.detail" :key="index"
+               :style="{'transform':'translateX('+(touch.touchIndex==index?touchMove_cp:0)+'px)'}" @touchstart="s($event)" @touchmove="m($event)" :data-index="index">
+
               <div class="customer-img"><img :src="item.image!=''?item.image:'https://wx.yun.xuemei99.com/static/wxapp/img/default.png'" :alt="item.name"></div>
               <div class="customer-action">
-                  <i class="icon-new">新</i>
+                  <i class="icon-new" :class="item.customer_type!=1?'green':''">{{item.customer_type==1?'新':'微'}}</i>
                   <h2>{{item.name}}</h2>
               </div>
               <div class="customer-status">
@@ -41,11 +49,47 @@
                   <strong :class="item.status?'active':''">已跟进</strong>
                   <strong :class="!item.status?'active':''">未跟进</strong>
               </div>
+              <div class="del" @click.stop="delNormal(item.id,index)">删除</div>
             </div>
+
+
+
+
+
+            <!-- <div class="customer-list">
+              <div class="customer-img"><img :src="'https://wx.yun.xuemei99.com/static/wxapp/img/default.png'"></div>
+              <div class="customer-action">
+                  <i class="icon-new">新</i>
+                  <h2>原点</h2>
+              </div>
+              <div class="customer-status">
+                  <p>最后活跃时间2018-10-10</p>
+                  <strong class="active">已跟进</strong>
+                  <strong>未跟进</strong>
+              </div>
+              <div class="del">删除</div>
+            </div> -->
+              
+           <!-- <div v-for="item in 30" :key="item" class="customer-list" :style="{'transform':'translateX('+(touch.touchIndex==item?touchMove_cp:0)+'px)'}" @touchstart="s($event)" @touchmove="m($event)" :data-index="item">
+              <div class="customer-img"><img :src="'https://wx.yun.xuemei99.com/static/wxapp/img/default.png'"></div>
+              <div class="customer-action">
+                  <i class="icon-new">新</i>
+                  <h2>测试数据</h2>
+              </div>
+              <div class="customer-status">
+                  <p>最后活跃时间2018-10-10</p>
+                  <strong class="active">已跟进</strong>
+                  <strong>未跟进</strong>
+              </div>
+              <div class="del">删除</div>
+            </div> -->
+
+
           </div>
           <div class="more" @click="getMore('normal')"><span>{{normalPage>=normal.page_number?'没有更多了':'+点击加载更多'}}</span></div>
         </li>
       </ul>
+      </div>
 
        <!-- <div class="customer-date"><span>2018.12.5</span></div> -->
       <!-- <div class="customer MiniRefresh-box">
@@ -64,13 +108,12 @@
           </div>
         </div>
       </div> -->
-
-      <div class="add-btn" @click="navigator('/customer-add')">
-        <span>新加客户</span>
-      </div>
-     
     </div>
     <tab></tab>
+    <div class="add-btn" @click="navigator('/customer-add')">
+      <span>新加客户</span>
+    </div>
+    <div class="searchShade" v-show="searchFocus"></div>
   </div>
 </template>
 
@@ -107,7 +150,18 @@ export default {
       count:0,
       offset:0,
       head1:false,
-      head2:false
+      head2:false,
+      touch:{
+        off:true,
+        showDel:null,
+        touchIndex:0,
+        touchStartX:0,
+        touchMove:0,
+        target:0,
+        touchStartY:0
+      },
+      search:'',
+      searchFocus:false
     };
   },
 
@@ -115,7 +169,20 @@ export default {
 
   },
 
-  computed: {},
+  computed: {
+    touchMove_cp(){
+      if(!this.touch.target&&this.touch.touchMove<-90){
+        return -90
+      }
+      if (this.touch.target&&this.touch.touchMove>0) {
+        return 0
+      }
+      if(!this.touch.off){
+        return 0
+      }
+      return this.touch.touchMove
+    }
+  },
 
   created(){
     that=this;
@@ -123,18 +190,66 @@ export default {
   },
   mounted: function() {
     // this.getList();
-    // this.miniRefresh()
+    this.miniRefresh()
     this.getPotential()
     this.getNormal()
   },
 
+
   methods: {
+    s(e){
+      this.touch.touchMove=0;
+      this.touch.target=0;
+      this.touch.off=true;
+      //以上两个是重置
+
+      this.touch.touchIndex=e.currentTarget.dataset.index;
+      this.touch.touchStartX=e.changedTouches[0].pageX;
+      this.touch.touchStartY=e.changedTouches[0].pageY;
+    },
+    m(e){
+      let touchMoveY=e.changedTouches[0].pageY-this.touch.touchStartY;
+      if(this.touch.off&&Math.abs(touchMoveY)>35){
+        this.touch.off=false;
+      }
+      if(!this.touch.off){
+        this.touch.touchMove=0;
+        return false;
+      }
+      //判断是上下滑动，如果是， 则return false
+
+      // let target=e.changedTouches[0].pageX-this.touch.touchStartX;
+      let touchMove=this.touch.touchMove;
+      let newTouchMove=e.changedTouches[0].pageX-this.touch.touchStartX;
+      if(newTouchMove>0&&touchMove>0){
+        this.touch.target=1;
+        return
+      }
+      if (newTouchMove<0&&touchMove<-90){
+        this.touch.target=0;
+        return
+      }
+      this.touch.touchMove=touchMove+newTouchMove;
+    },
+    e(e){
+      // console.log(e)
+      this.m(e);
+    },
     setHead(tag){
       if(tag==1){
         this.head1=!this.head1
       }else{
         this.head2=!this.head2
       }
+    },
+    searchSubmit(){
+      this.$router.push({path:'/customer-search',query:{phone:this.search}})
+    },
+    inpFocus(){
+      this.searchFocus=true;
+    },
+    inpBlur(){
+      this.searchFocus=false
     },
     navigator(target){
       this.$router.push({path:target})
@@ -181,9 +296,22 @@ export default {
       }
     },
 
+    delNormal(id,index){
+      this.getData('/wxapp/customer/delete/api',{
+        type:'post',
+        data:{
+          customer_id:id
+        },
+        successtext:'删除成功',
+        success(res){
+          that.normal.detail.splice(index,1);
+        }
+      })
+    },
+
     getList(successCallback){
       let that=this;
-      that.getData('/wxemployee/customer/own/list?shop=2013714&employee=2005503',{
+      that.getData('/wxemployee/customer/own/list',{
         success(res){
           that.count=res.count
           that.list.push(...res.results);
@@ -196,30 +324,28 @@ export default {
       })
     },
     miniRefresh(){
-      return
       var miniRefresh = new MiniRefresh({
         container: "#MiniRefresh",
         down: {
           callback: function() {
             // 下拉事件刷新
-            let timer=setTimeout(()=>{
-              miniRefresh.endDownLoading();
-            },4000)
 
-            setTimeout(() => {
-              that.list=[];
-              that.offset=0;
-              that.getList(
-                function(){
-                  miniRefresh.endDownLoading(true);
-                  clearTimeout(timer)  
-                }
-              )
-            }, 300);
-            return false;
+            that.potential.detail=[];
+            that.normal.detail=[];
+            that.potentialPage=1;
+            that.normalPage=1;
+
+            that.getPotential()
+            that.getNormal()
+
+            setTimeout(()=>{
+              miniRefresh.endDownLoading(true);
+            },700)
+            return false
           }
         },
         up: {
+          isLock:true,
           contentnomore: "没有更多数据了",
           contentdown:'上啦显示更多',
           contentrefresh:'加载中...',
@@ -235,15 +361,15 @@ export default {
             // },300)
 
             //minirefresh.resetUpLoading();
-            
-            if(that.list.length>=that.count){
-              miniRefresh.endUpLoading(true);
-              return
-            }
-            that.offset+=20;
-            that.getList(()=>{
-              miniRefresh.endUpLoading(false);
-            })
+            // return
+            // if(that.list.length>=that.count){
+            //   miniRefresh.endUpLoading(true);
+            //   return
+            // }
+            // that.offset+=20;
+            // that.getList(()=>{
+            //   miniRefresh.endUpLoading(false);
+            // })
           }
         }
       });
@@ -251,9 +377,19 @@ export default {
   }
 };
 </script>
+<style lang="stylus">
+html, body, #app, #page 
+  position static
+  overflow visible
+body 
+  overflow-x hidden
+  background #f1f1f1
+</style>
+
 <style lang='stylus' scoped>
 @import '../../style/mixin.styl'
-
+.view 
+  background #f1f1f1
 .more 
   line-height 36px
   text-align center
@@ -263,15 +399,35 @@ export default {
     padding 3px 15px
     color #666
     border-radius 3px
-.view 
-  position relative
-ul.follow 
+.follow-box 
+  padding-top 64px
+  background #F1F1F1
+  .search 
+    position fixed
+    top 0
+    left 0
+    width 100%
+    z-index 15
+    padding 10px
+    input 
+      width 100%
+      height 44px
+      padding-left 55px
+      border none
+      border-radius 8px
+      background #fff url('../../images/search.png') no-repeat 18px center/16px auto
+.searchShade 
   position absolute
   left 0
-  top 0
+  top 64px
   width 100%
-  height 100%
-  -webkit-overflow-scrolling touch
+  height calc(100% - 64px)
+  background rgba(0,0,0,.3)
+  z-index 10
+ul.follow 
+  width 100%
+  &>div 
+    display none
 ul.follow>li
   margin-bottom 6px
   height 70px
@@ -321,18 +477,34 @@ ul.follow>li
   display flex
   justify-content center
   align-items center
+  width 100%
   line-height initial
-  overflow hidden
+  // overflow hidden
   background #fff
+  transition .4s
   border-1px(#EEEEEE)
   &:hover
     active()
   &>div 
     flex 1
+  .del 
+    flex none
+    position absolute
+    right -90px
+    top 0
+    width 90px
+    height 100%
+    color #fff
+    background #f00
+    line-height 64px
+    text-align center
+    font-size 18px
+
   .customer-img 
     flex 0 0 44px
     margin-right 10px
   .customer-action 
+    flex none
     i 
       display inline-block
       width 19px
@@ -346,6 +518,8 @@ ul.follow>li
       font-size 12px
       border-radius 2px
       opacity .8
+      &.green
+        background #25B181
   .customer-status
     text-align right 
     p

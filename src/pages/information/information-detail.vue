@@ -18,12 +18,23 @@
               <span>{{item.create_time | gmtDate}}</span>
             </div>
             <div class="detail-lists" :class="!item.one_man_send?'detail-lists-type1':'detail-lists-type2'">
-              <span class="img-box"><img v-if="!item.one_man_send" :src="item.two_image" alt=""><img v-if="item.one_man_send" :src="item.one_image" alt=""></span>
-              <p>{{item.content}}</p>
+              <span class="img-box"><img v-if=  "!item.one_man_send" :src="item.two_image" alt=""><img v-if="item.one_man_send" :src="item.one_image" alt=""></span>
+              <div class="detail-lists-content" v-if="item.mssage_type==2&&item.content_arr">
+                <h3>来自：{{ item.content_arr[3] }}</h3>
+                <div>
+                  <img :src="item.content_arr[2]" :alt="item.content_arr[0]">
+                  <div>
+                    <p>产品：{{ item.content_arr[0] }}</p>
+                    <p>价格：{{ item.content_arr[1] }}元</p>
+                  </div>
+                </div>
+              </div>
+              <p class="detail-lists-content" v-else>{{item.content}}</p>
             </div>
           </li>
           
         </ul>
+
       </div>
     </div>
   </div>
@@ -41,9 +52,7 @@ export default {
   data() {
     return {
       content:'',
-      list: [
-        
-      ],
+      list: [],
       offset:0,//当前请求的第一条数据下标
       count:0,
       intoViewId:0,
@@ -66,7 +75,8 @@ export default {
 
   components: {},
 
-  computed: {},
+  computed: {
+  },
 
   created(){
     that=this;
@@ -98,7 +108,7 @@ export default {
       if(that.content===''){
         return
       }
-      this.getData('/wxemployee/talk/send/leave?two_man_id='+this.$route.query.customer_id+'&shop=2013714',{
+      this.getData('/wxemployee/talk/send/leave?two_man_id='+this.$route.query.customer_id,{
         type:'post',
         data:{
           content:that.content
@@ -107,12 +117,13 @@ export default {
           console.log('发送成功');
           that.content='';
           that.list=[];
+          that.offset=0;
           that.getContent();
         }
       })
     },
     getContent(successCallback,obj){
-      that.getData('/wxemployee/talk/send/leave?two_man_id='+this.$route.query.customer_id+'&shop=2013714&limit=20&offset='+that.offset,{
+      that.getData('/wxemployee/talk/send/leave?two_man_id='+this.$route.query.customer_id+'&limit=20&offset='+that.offset,{
         success(res){
           if(res.status==0){
             var newList=res.detail;
@@ -130,8 +141,14 @@ export default {
               
               let thisTime=that.moment(newList[i].create_time).format('YYYYMMDDHHmm');
               newList[i].new_create_time=thisTime;
+              //如果两条消息之间的时间间隔在5分钟以内，那么不显示时间
               if(thisTime-oldTime>5){
                 newList[i].showTime=true;
+              }
+
+              if(newList[i].mssage_type==2){
+                let content_arr=newList[i].content.split('&');
+                newList[i].content_arr=content_arr;
               }
             }
 
@@ -292,7 +309,7 @@ ul#scroll-view
       img 
        width 100%
        height 100%
-    p
+    .detail-lists-content
       display inline-block
       margin 0 10px
       padding 10px
@@ -302,6 +319,25 @@ ul#scroll-view
       word-break break-all
       border-radius 2px
       text-align justify
+    div.detail-lists-content
+      background #fff
+      h3  
+        margin-bottom 10px
+        padding-bottom 5px
+        font-size 16px
+        border-bottom 1px solid #eee
+      &>div 
+        display flex
+        align-items center
+        img 
+          width 60px
+        div 
+          flex 1
+          padding-left 10px
+          p 
+            line-height 1.4
+            &:nth-of-type(1) 
+              margin-bottom 5px
 .message-box
   position absolute
   left 0

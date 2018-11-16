@@ -12,10 +12,11 @@
       </div>
       <div class="card-main">
         <div class="edit" @click="navigator('/edit-card')"><span>编辑名片</span></div>
-        <div class="share" @click="navigator('/card-box',false,mineDetail)"><span>分享名片</span></div>
+        <div class="share" @click="navigator('/employee-statistics')"><span>个人统计</span></div>
       </div>
     </div>
 
+    <!-- 如果permissionId不等于3，那么是老板或者管理，跳转到对应的老板或者管理页面（两个页面不一样） -->
     <div class="employee-manage" v-if="permissionId!=3" @click="navigator(permissionId==5?'/employee-manage':'/employee-all',permissionId)">
       <div><img src="../../images/employee_manage.png" alt=""></div>
       <div>
@@ -63,9 +64,6 @@
           </ul>
       </div>
   </div>
-
-
-
 
   <tab></tab>
 </div>
@@ -143,7 +141,7 @@ export default {
     let that = this;
     //获取员工商品列表
     this.getData(
-      "/wxemployee/employee/product/list?shop=2013714&employee=2005503",
+      "/wxemployee/employee/product/list",
       {
         success(res) {
           that.productList = res.detail;
@@ -159,7 +157,7 @@ export default {
   methods: {
     getUser() {
       this.getData(
-        "/wxemployee/employee/detail?shop=2013714&employee=2005503",
+        "/wxemployee/employee/detail",
         {
           async: true,  //同步请求
           success(res) {
@@ -174,7 +172,8 @@ export default {
           }
         }
       );
-      this.getData('/wxapp/employee/permission?shop=2013714',{
+      //获取员工身份
+      this.getData('/wxapp/employee/permission',{
         async: true,  //同步请求
         successtext:'',
         success(res) {
@@ -214,7 +213,7 @@ export default {
     setShelve() {
       //上下架 接口
       this.getData(
-        "/wxemployee/employee/product/operate?shop=2013714&employee=2005503",
+        "/wxemployee/employee/product/operate",
         {
           type: "post",
           data: {
@@ -231,7 +230,7 @@ export default {
     setCommend() {
       //推荐与取消推荐 接口
       this.getData(
-        "/wxemployee/employee/product/recommend/operate?shop=2013714&employee=2005503",
+        "/wxemployee/employee/product/recommend/operate",
         {
           type: "post",
           data: {

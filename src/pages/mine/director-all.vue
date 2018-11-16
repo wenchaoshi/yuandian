@@ -63,7 +63,7 @@ export default {
 
   mounted: function () { 
     that.$store.commit('setEmployeeData',[])
-    this.getData('/wxapp/director/api?shop=2013714',{
+    this.getData('/wxapp/director/api',{
       success(res){
         console.log(res)
         that.$store.commit('setEmployeeData',res.detail)

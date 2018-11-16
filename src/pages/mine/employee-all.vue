@@ -4,7 +4,7 @@
       <div class="view">
           
             <employee-search></employee-search> 
-					 <employee-lists></employee-lists>
+					 <employee-lists :statistics="true"></employee-lists>
 
 					<!-- <div class="search">
 						<label for="search">

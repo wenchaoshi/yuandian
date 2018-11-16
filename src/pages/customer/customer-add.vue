@@ -38,15 +38,15 @@
                 </label>
             </div>
 
-            <h3>联系人</h3>
+            <!-- <h3>联系人</h3> -->
             <div class="menu-box">
-                <label>
+                <!-- <label>
                     <span class="must">姓名</span>
                     <input type="text" placeholder="请输入客户姓名" required v-model="options.customer_name">
-                </label>
+                </label> -->
                 <label>
                     <span class="must">手机</span>
-                    <input type="text" placeholder="请输入手机号" required v-model="options.customer_wx_phone">
+                    <input type="number" placeholder="请输入手机号" required v-model="options.customer_wx_phone">
                 </label>
                 <label class="select">
                     <span class="must">性别</span>
@@ -65,7 +65,12 @@
                 </label>
                 <label>
                     <span class="must">地址</span>
-                    <textarea placeholder="" required v-model="options.customer_address"></textarea>
+
+                    <div class="province">
+                         <select name="" id="province"></select>
+                        <select name="" id="city"></select>
+                    </div>
+                    <!-- <textarea placeholder="" required v-model="options.customer_address"></textarea> -->
                 </label>
             </div>
 
@@ -81,6 +86,14 @@
                 <i class="close" @click="close()">X</i>
             </div>
         </div>
+
+        <div class="toast" v-show="!isSuccessClose">
+            <div class="success" @click="close()">
+                <p>创建成功!</p>
+                <h3>关闭</h3>
+            </div>
+        </div>
+
       </div>
   </div>
 </template>
@@ -91,6 +104,7 @@ export default {
   data () {
     return {
         isClose:true,
+        isSuccessClose:true,
         options:{
             customer_name:'',
             customer_trading_state:'0',
@@ -100,7 +114,9 @@ export default {
             wx_number:'',
             age:'',
             remarks:''
-        }
+        },
+        customer_address_province:'',
+        customer_address_city:''
     };
   },
 
@@ -110,14 +126,23 @@ export default {
 
   mounted: function () { 
       that=this;
+      setMap2('北京市','朝阳区');
    },
 
   watch:{
+      'options.customer_wx_phone'(val){
+          let phone=val.replace(/\s+/g,""); 
+          if(phone.length>11){
+            phone=phone.substr(0,11)
+          }
+          this.options.customer_wx_phone=phone;
+      }
   },
 
   methods: {
       close(){
           this.isClose=true;
+          this.isSuccessClose=true;
       },
       addAgent(){
           let options=this.options;
@@ -126,11 +151,21 @@ export default {
                   delete options[key];
               }
           }
+          let address='';
+          $('.province select').each(function(){
+              address+=$(this).find('option:selected').text();
+          })
+          if(address==''){
+              return
+          }
+          options.customer_address=address;
+          
           this.getData('/wxapp/customer/entry/api',{
               type:'post',
               data:options,
               successtext:'创建成功',
               success(res){
+                  that.isSuccessClose=false;
                   console.log(res)
               },
               other(res){
@@ -147,14 +182,42 @@ export default {
   }
 }
 
+
+import maplist from '@/js/maplist.js'
+function setMap2(province, city) {
+    var pc=maplist.pc;
+    var pHtmlStr = '';
+    for (var name in pc) {
+        if (name == province) {
+            pHtmlStr = pHtmlStr + '<option selected>' + name + '</option>';
+        } else {
+            pHtmlStr = pHtmlStr + '<option>' + name + '</option>';
+        }
+
+    }
+    $("#province").html(pHtmlStr);
+    $("#province").change(function () {
+        var pname = $("#province option:selected").text();
+        var pHtmlStr = '';
+        var cityList = pc[pname];
+        for (var index in cityList) {
+            if (cityList[index] == city) {
+            pHtmlStr = pHtmlStr + '<option selected>' + cityList[index] + '</option>';
+        } else {
+            pHtmlStr = pHtmlStr + '<option>' + cityList[index] + '</option>';
+        }
+        }
+        $("#city").html(pHtmlStr);
+    });
+    $("#province").change();
+}
+
+
 </script>
 <style lang='stylus' scoped>
 .view 
     height 100%
     form 
-        position absolute
-        left 0
-        top 0
         width 100%
 h3 
     padding 0 20px
@@ -218,6 +281,18 @@ select
     border-top-color transparent 
     border-right-color transparent 
     transform rotate(-135deg)
+
+.province 
+    overflow hidden
+    padding 0 0 25px
+    select 
+        border-bottom 1px solid #ccc
+        border-radius 0
+        width 45%
+        margin 0 2.5%
+        float left
+        line-height 1.6
+        height 32px
 .submit
     padding 20px 0
     text-align center
@@ -271,4 +346,23 @@ select
             color #fff
             font-style normal
             font-size 20px
+    .success 
+        position relative
+        padding 15px 0 45px
+        background #fff
+        width 11em
+        border-radius 5px
+        text-align center
+        overflow hidden
+        h3 
+            position absolute
+            width 100%
+            line-height 30px
+            color #fff
+            background  #5179ac
+            left 0
+            bottom 0
+            
+
+
 </style>

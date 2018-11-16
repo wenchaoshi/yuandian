@@ -31,8 +31,8 @@ export default {
     position fixed
     z-index 99
     right 20px
-    bottom 135px
-    width 48px
-    height 48px
+    bottom 130px
+    width 70px
+    height 70px
     background url('../../../images/card-btn-icon.png') no-repeat 0 0/100% 100%
 </style>

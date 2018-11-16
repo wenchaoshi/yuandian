@@ -53,7 +53,7 @@ export default {
   methods: {
     getUser(){
       let that=this;
-      that.getData('/wxemployee/employee/detail?shop=2013714&employee=2005503',{
+      that.getData('/wxemployee/employee/detail',{
         successtext:'加载成功',
         success(res){
           that.global.mineDetail=res.detail;  //全局变量
@@ -69,7 +69,7 @@ export default {
     },
     submit(){
       let that=this;
-      that.getData('/wxemployee/employee/detail?shop=2013714&employee=2005503',{
+      that.getData('/wxemployee/employee/detail',{
         type:'POST',
         data:{
           image:that.mineDetail.image_url,

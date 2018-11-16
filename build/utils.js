@@ -48,7 +48,7 @@ exports.cssLoaders = function (options) {
       //  publicPath:'../../' ，相对路径下（打包后的本地环境）， 解决背景图片路径错误
       return ExtractTextPlugin.extract({
         use: loaders,
-        //publicPath:'../../',
+        // publicPath:'/static/wxapp/mobile/',
         fallback: 'vue-style-loader'
       })
     } else {

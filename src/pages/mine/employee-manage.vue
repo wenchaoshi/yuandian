@@ -23,7 +23,7 @@
               </li>
           </ul>
 
-          <employee-lists></employee-lists>
+          <employee-lists :statistics="true"></employee-lists>
       </div>
   </div>
 </template>
@@ -62,12 +62,6 @@ export default {
 
   mounted: function () { 
     this.$store.commit('searchInit')
-    // this.getData('/wxapp/employee/api?shop=2013714',{
-    //   success(res){
-    //     that.$store.commit('setEmployeeData',res.detail);
-    //     Object.assign(that.detail,res)
-    //   }
-    // })
     this.getEmployee()
   },
 
@@ -76,7 +70,7 @@ export default {
       this.$router.push({path:target,query:{'permission':permission}})
     },
     getEmployee(){
-      this.getData('/wxapp/employee/api?shop=2013714',{
+      this.getData('/wxapp/employee/api',{
         success(res){
           that.$store.commit('setEmployeeData',res.detail);
           that.$set(that.detail,'detail',res)
