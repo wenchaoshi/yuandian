@@ -76,7 +76,7 @@ export default {
       url='/wxapp/employee/api';
     }
     this.$store.commit('searchInit')
-    this.getData(url,{
+    this.request(url,{
       success(res){
         that.$store.commit('setEmployeeData',res.detail)
       }

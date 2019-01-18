@@ -7,14 +7,19 @@ input,textarea
   user-select text !important
 html 
   font-family "pingFangSC-Medium","Helvetica Neue", Helvetica, STHeiTi, Arial, sans-serif
-#app 
+  min-height 100% 
+  background #f1f1f1
+
+html,body,#app, #page, .view
   height 100%
+  overflow hidden
 
 #page 
-  height 100%
+  position relative
+  padding-bottom 0
 .view 
+  height 100%
   width 100%
-  height calc(100% - 50px)
   overflow-y auto
   background #f1f1f1
   -webkit-overflow-scrolling touch
@@ -25,6 +30,9 @@ img
 
 p, h1, h2, h3, h4, h5, h6 
   word-break break-all
+
+.align-center 
+  text-align center
 
 .load 
   display none

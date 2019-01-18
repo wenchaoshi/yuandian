@@ -14,7 +14,7 @@
               <h2>{{option.see_number}}次</h2>
               <p>浏览量</p>
           </li>
-          <li v-if="option.consultation_number">
+          <li v-if="typeof(option.consultation_number)!='undefined'">
               <h2>{{option.consultation_number}}次</h2>
               <p>咨询次数</p>
           </li>
@@ -61,6 +61,9 @@ export default {
         color RGBA(13, 13, 13, .5)
         background rgba(153,153,153,.2)
         border-radius 8px  8px  0px  0px  
+        white-space nowrap
+        overflow hidden
+        text-overflow ellipsis
         i
             display inline-block
             width 25px

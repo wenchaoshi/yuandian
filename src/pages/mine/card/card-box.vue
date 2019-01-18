@@ -78,7 +78,7 @@ export default {
             this.detail=this.global.mineDetail;
             this.share_card_canvas();
         }else {
-            this.getData(
+            this.request(
                 "/wxemployee/employee/detail",
                 {
                 async: true,  //同步请求
@@ -110,7 +110,7 @@ export default {
       preViewImg() {
         var base64=that.$store.state.card.card_imgs['img'+that.$store.state.card.cardIndex];
         base64=base64.substr(parseInt(base64.indexOf(','))+1);
-        this.getData('https://wx.yun.xuemei99.com/wxcompany/image/base',{
+        this.request('https://wx.yun.xuemei99.com/wxcompany/image/base',{
           data:{
             image_base:base64
           },

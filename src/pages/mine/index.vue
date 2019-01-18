@@ -1,7 +1,12 @@
 <!-- 我的   页面 -->
 <template>
 <div id="page">
-  <div class="view">
+  <scroll class="view" 
+    :isAll="false"
+    :options="{pullUpLoad:false,pullDownRefresh:false}"
+    ref="scroll"
+  >
+  <div>
     <div class="mine-card">
       <div class="card-center">
         <span class="img-box fl"><img :src="mineDetail.image_url" alt=""></span>
@@ -36,7 +41,8 @@
         </li>
       </ul>
     </div>
-  </div>
+    </div>
+  </scroll>
 
 
 <!-- 分享名片1 -->
@@ -70,7 +76,7 @@
 </template>
 
 <script>
-// import getData from '@/js/getData.js'
+// import request from '@/js/request.js'
 
 var that;
 export default {
@@ -91,7 +97,11 @@ export default {
   },
   props: [],
   components: {},
-
+  watch:{
+    $route(){
+      this.$refs.scroll.refresh()
+    }
+  },
   computed: {
     style30() {
       return $(window).height() * (30 / 667);
@@ -140,23 +150,25 @@ export default {
     this.getUser();
     let that = this;
     //获取员工商品列表
-    this.getData(
+    this.request(
       "/wxemployee/employee/product/list",
       {
         success(res) {
           that.productList = res.detail;
+          that.$nextTick(()=>{
+            that.$refs.scroll.refresh()
+          })
         },
         erro(res) {
           console.log("erro");
         }
       }
     );
-    this.share_card_canvas();
   },
 
   methods: {
     getUser() {
-      this.getData(
+      this.request(
         "/wxemployee/employee/detail",
         {
           async: true,  //同步请求
@@ -173,7 +185,7 @@ export default {
         }
       );
       //获取员工身份
-      this.getData('/wxapp/employee/permission',{
+      this.request('/wxapp/employee/permission',{
         async: true,  //同步请求
         successtext:'',
         success(res) {
@@ -212,7 +224,7 @@ export default {
     },
     setShelve() {
       //上下架 接口
-      this.getData(
+      this.request(
         "/wxemployee/employee/product/operate",
         {
           type: "post",
@@ -229,7 +241,7 @@ export default {
     },
     setCommend() {
       //推荐与取消推荐 接口
-      this.getData(
+      this.request(
         "/wxemployee/employee/product/recommend/operate",
         {
           type: "post",
@@ -247,6 +259,13 @@ export default {
   }
 };
 </script>
+<style lang="stylus" scoped>
+#page 
+  padding-bottom 50px
+.view 
+  overflow-y auto
+</style>
+
 <style lang='stylus'>
 .mine-card
   margin 10px
@@ -263,6 +282,7 @@ export default {
     div
       overflow hidden
       line-height 1
+
       h2
         margin-bottom 15px
         font-size 20px

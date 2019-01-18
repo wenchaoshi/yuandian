@@ -1,7 +1,12 @@
 <!-- 客户  页面 -->
 <template>
   <div id="page">
-    <div class="view" id="MiniRefresh">
+    <scroll class="view" id="MiniRefresh"
+    @pullingDown="pullingDown"
+    :isAll="false"
+    :options="{pullUpLoad:false}"
+    ref="scroll"
+    >
       <div class="follow-box">
         <div class="search">
           <form action="" @submit.prevent="searchSubmit()">
@@ -18,7 +23,7 @@
             <div class="customer-list" @click="toDetail(item.id,item.name)" v-for="(item,index) in potential.detail" :key="index">
               <div class="customer-img"><img :src="item.image!=''?item.image:'https://wx.yun.xuemei99.com/static/wxapp/img/default.png'" :alt="item.name"></div>
               <div class="customer-action">
-                  <i class="icon-new">新</i>
+                  <i class="icon-new" :class="item.customer_type!=1?'green':''">{{item.customer_type==1?'新':'微'}}</i>
                   <h2>{{item.name}}</h2>
               </div>
               <div class="customer-status">
@@ -36,7 +41,7 @@
             <p>客户（{{ normal.total_number==''?0:normal.total_number }}）</p>
           </div>
           <div class="content">
-            <div class="customer-list" @click="toDetail(item.id,item.name)" v-for="(item,index) in normal.detail" :key="index"
+            <div class="customer-list" @click="toDetail(item.id,item.name,item.customer_type==1)" v-for="(item,index) in normal.detail" :key="index"
                :style="{'transform':'translateX('+(touch.touchIndex==index?touchMove_cp:0)+'px)'}" @touchstart="s($event)" @touchmove="m($event)" :data-index="index">
 
               <div class="customer-img"><img :src="item.image!=''?item.image:'https://wx.yun.xuemei99.com/static/wxapp/img/default.png'" :alt="item.name"></div>
@@ -108,7 +113,7 @@
           </div>
         </div>
       </div> -->
-    </div>
+    </scroll>
     <tab></tab>
     <div class="add-btn" @click="navigator('/customer-add')">
       <span>新加客户</span>
@@ -190,12 +195,16 @@ export default {
   },
   mounted: function() {
     // this.getList();
-    this.miniRefresh()
+    // this.miniRefresh()
     this.getPotential()
     this.getNormal()
   },
 
-
+  watch:{
+    $route(){
+      this.$refs.scroll.refresh()
+    }
+  },
   methods: {
     s(e){
       this.touch.touchMove=0;
@@ -241,6 +250,7 @@ export default {
       }else{
         this.head2=!this.head2
       }
+      this.$refs.scroll.refresh()
     },
     searchSubmit(){
       this.$router.push({path:'/customer-search',query:{phone:this.search}})
@@ -254,17 +264,23 @@ export default {
     navigator(target){
       this.$router.push({path:target})
     },
-    toDetail(id,name) {
-      this.$router.push({ path: "/customer-detail",query:{customerId:id,name:name}});
+    toDetail(id,name,type) {
+      //type 为true的是时候， 是普通客户， 否则是潜在客户
+      if(type){
+        this.$router.push({ path: "/customer-detail-normal",query:{customerId:id,name:name}});
+      }else {
+        this.$router.push({ path: "/customer-detail",query:{customerId:id,name:name}});
+      }
     },
     getPotential(){
-      that.getData('/wxapp/potential/customer/api?page='+that.potentialPage,{
+      that.request('/wxapp/potential/customer/api?page='+that.potentialPage,{
         success(res){
           if(that.potential.detail.length){
             that.potential.detail.push(...res.detail)
             return 
           }
           that.potential=res;
+          that.$refs.scroll.finishPullDown()
         },
         error(){
 
@@ -272,13 +288,14 @@ export default {
       })
     },
     getNormal(){
-      that.getData('/wxapp/normal/customer/api?page='+that.normalPage,{
+      that.request('/wxapp/normal/customer/api?page='+that.normalPage,{
         success(res){
           if(that.normal.detail.length){
             that.normal.detail.push(...res.detail)
             return 
           }
           that.normal=res;
+          that.$refs.scroll.finishPullDown()
         },
         error(){
 
@@ -297,7 +314,7 @@ export default {
     },
 
     delNormal(id,index){
-      this.getData('/wxapp/customer/delete/api',{
+      this.request('/wxapp/customer/delete/api',{
         type:'post',
         data:{
           customer_id:id
@@ -311,7 +328,7 @@ export default {
 
     getList(successCallback){
       let that=this;
-      that.getData('/wxemployee/customer/own/list',{
+      that.request('/wxemployee/customer/own/list',{
         success(res){
           that.count=res.count
           that.list.push(...res.results);
@@ -322,6 +339,19 @@ export default {
 
         }
       })
+    },
+    pullingDown(){
+      that.potential.detail=[];
+      that.normal.detail=[];
+      that.potentialPage=1;
+      that.normalPage=1;
+
+      that.getPotential()
+      that.getNormal()
+      setTimeout(()=>{
+        that.$refs.scroll.finishPullDown()
+      },700)
+      
     },
     miniRefresh(){
       var miniRefresh = new MiniRefresh({
@@ -386,8 +416,11 @@ body
   background #f1f1f1
 </style>
 
+
 <style lang='stylus' scoped>
 @import '../../style/mixin.styl'
+#page 
+  padding-bottom 50px
 .view 
   background #f1f1f1
 .more 
@@ -483,8 +516,6 @@ ul.follow>li
   background #fff
   transition .4s
   border-1px(#EEEEEE)
-  &:hover
-    active()
   &>div 
     flex 1
   .del 

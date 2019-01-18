@@ -25,14 +25,46 @@
                   <img :src="item.content_arr[2]" :alt="item.content_arr[0]">
                   <div>
                     <p>产品：{{ item.content_arr[0] }}</p>
-                    <p>价格：{{ item.content_arr[1] }}元</p>
+                    <p>价格：{{ item.content_arr[1] /100 }}元</p>
                   </div>
                 </div>
               </div>
-              <p class="detail-lists-content" v-else>{{item.content}}</p>
+              <div class="detail-lists-content" v-if="item.mssage_type==3&&item.content_arr">
+                <h3>来自：{{ item.content_arr[3] }}</h3>
+                <div>
+                  <img :src="item.content_arr[2]" :alt="item.content_arr[0]">
+                  <div>
+                    <p>团购：{{ item.content_arr[0] }}</p>
+                    <p>价格：{{ item.content_arr[1] /100 }}元</p>
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="detail-lists-content" v-if="item.mssage_type==4&&item.content_arr">
+                <h3>来自：{{ item.content_arr[3] }}</h3>
+                <div>
+                  <img :src="item.content_arr[2]" :alt="item.content_arr[0]">
+                  <div>
+                    <p>秒杀：{{ item.content_arr[0] }}</p>
+                    <p>价格：{{ item.content_arr[1] /100 }}元</p>
+                  </div>
+                </div>
+              </div>
+              <div class="detail-lists-content" v-if="item.mssage_type==5&&item.content_arr">
+                <h3>来自：{{ item.content_arr[3] }}</h3>
+                <div>
+                  <img :src="item.content_arr[2]" :alt="item.content_arr[0]">
+                  <div>
+                    <p>砍价{{ item.content_arr[0] }}</p>
+                    <p>价格：{{ item.content_arr[1]/100 }}元</p>
+                  </div>
+                </div>
+              </div>
+              <p class="detail-lists-content"  v-if="item.mssage_type==0||item.mssage_type==1">{{item.content}}</p>
             </div>
           </li>
-          
         </ul>
 
       </div>
@@ -89,7 +121,7 @@ export default {
     let product_id=this.$route.query.product_id;
     if(product_id){
       that.product.isShow=true;
-      this.getData('/wxemployee/message/product/'+product_id+'?product_id='+product_id,{
+      this.request('/wxemployee/message/product/'+product_id+'?product_id='+product_id,{
         success(res){
           that.$set(that.product,'detail',res.detail)
         },
@@ -108,7 +140,7 @@ export default {
       if(that.content===''){
         return
       }
-      this.getData('/wxemployee/talk/send/leave?two_man_id='+this.$route.query.customer_id,{
+      this.request('/wxemployee/talk/send/leave?two_man_id='+this.$route.query.customer_id,{
         type:'post',
         data:{
           content:that.content
@@ -123,7 +155,7 @@ export default {
       })
     },
     getContent(successCallback,obj){
-      that.getData('/wxemployee/talk/send/leave?two_man_id='+this.$route.query.customer_id+'&limit=20&offset='+that.offset,{
+      that.request('/wxemployee/talk/send/leave?two_man_id='+this.$route.query.customer_id+'&limit=20&offset='+that.offset,{
         success(res){
           if(res.status==0){
             var newList=res.detail;
@@ -146,7 +178,7 @@ export default {
                 newList[i].showTime=true;
               }
 
-              if(newList[i].mssage_type==2){
+              if(newList[i].mssage_type!=1&&newList[i].mssage_type!=1){
                 let content_arr=newList[i].content.split('&');
                 newList[i].content_arr=content_arr;
               }
@@ -228,7 +260,6 @@ export default {
   }
 };
 </script>
-
 
 <style lang='stylus'>
 .detail .minirefresh-totop 
@@ -338,6 +369,7 @@ ul#scroll-view
             line-height 1.4
             &:nth-of-type(1) 
               margin-bottom 5px
+
 .message-box
   position absolute
   left 0

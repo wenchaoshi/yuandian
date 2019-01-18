@@ -60,7 +60,7 @@ export default {
     let id=this.$route.query.id;
     this.employee_id=id;
     that.$store.commit('searchInit')
-    this.getData('/wxapp/saleperson/customer/api?employee_id='+id,{
+    this.request('/wxapp/saleperson/customer/api?employee_id='+id,{
       success(res){
         that.$store.commit('setEmployeeData',res.detail)
         that.$set(that.idata,'detail',res)

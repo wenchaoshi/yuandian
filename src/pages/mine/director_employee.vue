@@ -55,7 +55,7 @@ export default {
   mounted: function () { 
     this.$store.commit('searchInit');
     let id=this.$route.query.id;
-    this.getData('/wxapp/director/saleperson/api'+(id?'?employee_id='+id:''),{
+    this.request('/wxapp/director/saleperson/api'+(id?'?employee_id='+id:''),{
       success(res){
         that.$store.commit('setEmployeeData',res.detail)
         that.$set(that.idata,'detail',res)

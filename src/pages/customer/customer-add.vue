@@ -160,7 +160,7 @@ export default {
           }
           options.customer_address=address;
           
-          this.getData('/wxapp/customer/entry/api',{
+          this.request('/wxapp/customer/entry/api',{
               type:'post',
               data:options,
               successtext:'创建成功',

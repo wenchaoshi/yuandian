@@ -1,23 +1,31 @@
 <!-- 商机  页面 -->
 <template>
   <div id="page">
-    <div class="view" id="MiniRefresh">
+    <scroll class="view" id="MiniRefresh"
+    @pullingUp="pullingUp"
+    @pullingDown="pullingDown"
+    :isAll="list.length>=count"
+    ref="scroll"
+    >
       <div class="business" id="scroll-view">
-        <div v-for='(items,index) in list' :key='index' :data-id="items.id" v-if="items.show_message!=''">
-
-          <div class="business-date business-lists">
-            <span>{{items.create_time | gmtDate}}</span>
-          </div>
-
-          <div :data-id='items.id' class="business-lists" @click="toDetail(items.customer_id,$event)">
-            <span class="img-box el-icon-info"><img :src="items.image_url" alt=""></span>
-            <p v-html='items.show_message'></p>
-          </div>
-
+        <div class="head">
+            <span @click="navigator('/card-box')"><img src="@/images/information-head1.png" alt=""></span>
+            <span @click="navigator('/poster')"><img src="@/images/information-head2.png" alt=""></span>
         </div>
+        <template v-for='(items,index) in list'>
+          <div :key='index' :data-id="items.id" v-if="items.show_message!=''">
+            <div class="business-date business-lists">
+              <span>{{items.create_time | gmtDate}}</span>
+            </div>
+            <div :data-id='items.id' class="business-lists" @click="toDetail(items.customer_id,$event)">
+              <span class="img-box"><img :src="items.image_url" alt=""></span>
+              <p v-html='items.show_message'></p>
+            </div>
+          </div>
+        </template>
         
       </div>
-    </div>
+    </scroll>
 
     <Card-btn-icon></Card-btn-icon>
 
@@ -54,13 +62,35 @@ export default {
   },
   mounted: function() {
     let that=this;
-    this.getList()
-    this.miniRefresh(this);
+    this.getList();
   },
-
+  watch:{
+  },
   methods: {
     navigator(target){
       this.$router.push({path:target})
+    },
+    pullingDown(){
+      that.list=[];
+      that.offset=0;//当前请求的第一条数据下标
+      that.getList(()=>{
+          this.$refs.scroll.finishPullDown()
+      })
+    },
+    pullingUp(scroll){
+      if(that.upOff){
+        if(that.list.length>=that.count){
+          this.$refs.scroll.finishPullUp()
+          return
+        }
+        that.upOff=false;
+        that.offset+=20;
+        that.getList(()=>{
+          // miniRefresh.scrollTo(top||0, 0);
+          that.upOff=true;
+          that.$refs.scroll.finishPullUp()
+        })
+      }
     },
     miniRefresh(that) {
       //下拉刷新
@@ -123,7 +153,7 @@ export default {
       this.$router.push({ path: "/information-detail" , query:{customer_id:customer_id,product_id:product_id}});
     },
     getList(successCallback){
-      that.getData('/wxemployee/business/list?limit=20&offset='+that.offset,{
+      that.request('/wxemployee/business/list?limit=20&offset='+that.offset,{
         success(res){
           //that.$set(that.mydata,'list',res.detail)
           that.count=res.count;
@@ -140,6 +170,20 @@ export default {
   }
 };
 </script>
+<style lang="stylus" scoped>
+#page 
+  padding-bottom 50px
+.head 
+  display flex
+  background #fff
+  padding 20px 5px
+  span 
+    flex 1
+    padding 0 5px
+    img 
+      width 100%
+</style>
+
 <style lang='stylus'>
 .business
   display flex
@@ -175,8 +219,6 @@ export default {
       right 10px
       top calc(50% - 5px)
       background url('../../images/Triangle_3.png') 0 / 100% 100%
-    &:hover
-      active()
 
 
 #scroll-view 
@@ -190,12 +232,12 @@ export default {
   .img-box
     display inline-block
     float left
-    width 0.4rem
+    width 40px
     height auto
     margin-right 0.1rem
     background #000
   img
-    width 100%
+    width 40px
     height 40px
   p
     overflow hidden

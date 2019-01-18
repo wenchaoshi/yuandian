@@ -78,7 +78,7 @@ export default {
         },1000)
         return
       }
-      this.getData('/wxapp/customer/search/api?phone='+phone,{
+      this.request('/wxapp/customer/search/api?phone='+phone,{
         success(res){
           that.normal.detail=res.detail
         }

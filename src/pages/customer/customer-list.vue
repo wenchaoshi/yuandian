@@ -43,7 +43,7 @@ export default {
     },
     getList(){
       let that=this;
-      that.getData('/web/Zhushoulogin',{
+      that.request('/web/Zhushoulogin',{
         success(res){
           console.log(res)
           that.list=res.results;

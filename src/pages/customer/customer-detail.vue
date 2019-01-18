@@ -212,7 +212,7 @@ export default {
     },
     product_count(){
       //获取查看商品列表的接口
-      that.getData('/wxapp/roll/message?customer_id='+that.customerId+that.employee_id,{
+      that.request('/wxapp/roll/message?customer_id='+that.customerId+that.employee_id,{
         success(res){
           that.productCount.push(...res.detail);
           that.productCuontFn(res.detail.length);
@@ -256,7 +256,7 @@ export default {
     },
     get_customerDetail(){
       //获取顾客详情，（预计成交率和实际跟进进度）
-      that.getData('/wxemployee/customer/detail?customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
+      that.request('/wxemployee/customer/detail?customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
         success(res){
           console.log(res)
           that.customerDetail=res.detail;
@@ -269,7 +269,7 @@ export default {
     
     get_tag_list(){
       //获取总标签（店铺标签）
-      that.getData('/wxemployee/company/tag/list?customer='+this.customerId+'&customer_id='+that.customerId+that.employee_id,{
+      that.request('/wxemployee/company/tag/list?customer='+this.customerId+'&customer_id='+that.customerId+that.employee_id,{
         success(res){
           that.tagList=res.detail;
           for(var i=0;i<that.tagList.length;i++){
@@ -281,7 +281,7 @@ export default {
     },
     get_now_tag_list(){
       //获取顾客的标签
-      that.getData('/wxemployee/customer/tag/operate?customer='+this.customerId+'&customer_id='+that.customerId+that.employee_id,{
+      that.request('/wxemployee/customer/tag/operate?customer='+this.customerId+'&customer_id='+that.customerId+that.employee_id,{
         success(res){
           that.nowTag.nowTagList=res.detail
           for(var i=0;i<res.detail.length;i++){
@@ -305,7 +305,7 @@ export default {
         }
       }
       let activeTagList=arr.join('*');
-      that.getData('/wxemployee/customer/tag/operate?tag=2006468&customer='+this.customerId+'&customer_id='+that.customerId+that.employee_id,{
+      that.request('/wxemployee/customer/tag/operate?tag=2006468&customer='+this.customerId+'&customer_id='+that.customerId+that.employee_id,{
         type:'post',
         data:{
           ids:activeTagList
@@ -323,7 +323,7 @@ export default {
         let theVlaue = e.target.dataset.value;
         //可获取事件委托中，响应事件的元素
         
-        that.getData('/wxemployee/customer/fact/follow?customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
+        that.request('/wxemployee/customer/fact/follow?customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
           type:'post',
           data:{
             group_id:index
@@ -338,7 +338,7 @@ export default {
     },
     get_talkcount(){
       //获取沟通次数（总和周）
-      that.getData('/wxapp/customer/talkcount?customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
+      that.request('/wxapp/customer/talkcount?customer='+that.customerId+'&customer_id='+that.customerId+that.employee_id,{
         success(res){
           that.talkCount.talkCount=res.detail;
           that.talkCount.total_talkcount_week=res.total_talkcount_week
@@ -351,6 +351,11 @@ export default {
   }
 };
 </script>
+<style lang="stylus" scoped>
+#page 
+  padding-bottom 50px
+</style>
+
 <style lang='stylus'>
 .view.customerDetail
   background #fff

@@ -1,9 +1,10 @@
 <template>
   <div id="app">
+    <router-view></router-view>
     <!-- keep-alive  缓存组件。需要在单文件组件中定义name -->
-    <keep-alive :include="['business','customer','information','mine']">
+    <!-- <keep-alive :include="['business','customer','information','mine']">
       <router-view></router-view>
-    </keep-alive>
+    </keep-alive> -->
     <div class="load">正在加载...</div>
   </div>
 </template>
@@ -15,13 +16,36 @@ export default {
   created() {},
   mounted: function() {
     this.wxConfig();
+    this.getUser()
+  },
+  watch:{
   },
   methods: {
+    getUser(){
+      let that=this;
+      if(!this.global.mineDetail){
+        this.request(
+              "/wxemployee/employee/detail",
+              {
+              async: true,  //同步请求
+              success(res) {
+                  that.base.setCookie("mineDetail", res.detail);
+                  that.global.mineDetail = res.detail;
+                  console.log("获取用户信息成功");
+                  console.log(that.global.mineDetail);
+              },
+              error(res) {
+                  console.log("获取用户信息失败");
+              }
+              }
+          )
+      }
+    },
     wxConfig() {
       var config;
       var url = location.href;
       $.ajax({
-        url: "https://wx.yun.xuemei99.com/wxapp/share/config?url=" + url,
+        url: "/wxapp/share/config?url=" + url,
         success: function(res) {
           config = res.detail;
           wxfn();
@@ -82,7 +106,7 @@ export default {
         wx.error(function(res) {
           // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
           $.ajax({
-            url: "https://wx.yun.xuemei99.com/wxapp/share/config",
+            url: "/wxapp/share/config",
             type: "post",
             data: {
               erro: res,

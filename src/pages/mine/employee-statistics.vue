@@ -1,4 +1,4 @@
-<!-- employee-statistics -->
+<!-- 个人统计 -->
 <template>
   <div id="page">
       <div class="view">
@@ -10,6 +10,13 @@
           <template v-for="(item,index) in detail">
             <statistics-list :option='item' :key="index"></statistics-list>
           </template>
+          <template v-for="(value,key,index) in active_info">
+            <div :key="'parent'+index">
+            <template v-for="(item,index) in value">
+              <statistics-list :option='item' :key="index"></statistics-list>
+            </template>
+            </div>
+          </template>
       </div>
   </div>
 </template>
@@ -20,7 +27,7 @@ let that;
 export default {
   data () {
     return {
-      statistics_menu:['昨天','近7天','近30天'],
+      statistics_menu:['今天','近7天','近30天'],
       statistics_menu_index:0,
      company_option:{
       //  title:'官网',
@@ -38,7 +45,8 @@ export default {
       //  card_see_number:'',
       //  card_forward_number:''
      },
-     detail:[]
+     detail:[],
+     active_info:{}
     };
   },
 
@@ -79,7 +87,7 @@ export default {
       if(id){
         data.employee_id=id;
       }
-      this.getData('/wxapp/employee/information/statistics/api',{
+      this.request('/wxapp/employee/information/statistics/api',{
         data:data,
         success(res){
           company_option.title='官网';
@@ -118,6 +126,26 @@ export default {
           })
           that.detail=[];
           that.detail.push(...res.detail)
+
+          let active_info=res.active_info
+          for(let key in active_info){
+            active_info[key].map(item=>{
+                if(!icon){
+                  item.icon=2;
+                  icon=1
+                }else{
+                  item.icon=3;
+                  icon=0
+                }
+                item.see_number=item.act_fangwen_number;  //浏览量
+                item.forward_number=item.act_fenxiang_number;  //转发次数
+                item.visitor_number=item.act_fangke_number; //访客量
+                item.consultation_number=item.act_zixun_number  //item.product_consultation_number //咨询量
+            })
+          }
+
+          that.active_info={...active_info}
+
         }
       })
     }
@@ -126,9 +154,12 @@ export default {
 
 </script>
 <style lang='stylus' scoped>
+#page 
+  padding-bottom 0
   .view 
     height 100%
     background #fff
+    overflow-y auto
     .statistics-menu 
       margin 10px 15px
       display flex

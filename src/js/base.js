@@ -5,7 +5,7 @@ export default {
         bool=bool||true;
         obj.get(0).scrollIntoView(bool)
     },
-    getData,
+    request,
     uploadImg,
     getCookie,
     setCookie
@@ -33,7 +33,7 @@ function getCookie(name)
 
 //   MH1ocoxyws9DSGLwlj2rme3PRlbfc2JtFU8zFvYlxKAeTaHEJ5TXA7QM3nqxVUkZ
 
-function getData(url, option){
+function request(url, option){
 
     var that=this;
     // if(!that.global.mineDetail){
@@ -66,15 +66,16 @@ function getData(url, option){
         let token=getCookie('csrftoken');
         //let token='LeEnp9QrGqaWMeUpGC4ar0H25NskKlKVOnxn4r6v4Mx9WwmA5LmNHkMaJ2WGEDAZ';
         // let _url=''+url+'?csrfmiddlewaretoken='+token
-        let _url=''+url
+        // url='/myapi'+url      //测试用
         let ajaxTimeOut=$.ajax({
-            url: _url,
+            url: url,
             type: type,
             async:option.async?option.async:false,
             timeout:2000,
             data: option.data?option.data:{},
             beforeSend: function (req) {
                 req.setRequestHeader("X-CSRFToken", token);
+                // req.setRequestHeader('Authorization', 'Token 7ac9b03fc20cb1ffbd22c384efc9e87937f04680')
             },
             success: function (data) {
                 if(!data.status==0){
@@ -97,7 +98,6 @@ function getData(url, option){
                         $('#app .load').removeClass('active success');
                     },200)
                 }
-                
             },
             error: function (data) {
                 if(option.error){

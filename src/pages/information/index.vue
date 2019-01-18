@@ -1,16 +1,23 @@
 <!-- 消息  页面 -->
 <template>
   <div id="page" class="information-index">
-    <div class="view" id="MiniRefresh">
+    <scroll class="view" id="MiniRefresh"
+    @pullingUp="pullingUp"
+    @pullingDown="pullingDown"
+    :isAll="informationLists.length>=count"
+    ref="scroll"
+    >
       <div class="MiniRefresh-box">
+        
         <div class="information">
           <div class="information-view">
 
             <div v-for='(item,index) in informationLists' :key='index' class="information-list" @click="toDetail(item.customer_id)">
-              <span class="information-img el-icon-info"><img :src="item.customer_image" alt=""></span>
+              <span class="information-img"><img :src="item.customer_image" alt=""></span>
               <div class="information-action">
+                <!-- <h1>{{ JSON.stringify(item) }}</h1> -->
                   <h2>{{item.customer_name}}</h2>
-                  <p>{{item.mssage_type==2?'[我要咨询产品]':item.content}}</p>
+                  <p>{{item.message_type==2?'[我要咨询产品]':item.content}}</p>
                   <span>{{item.create_time | gmtDate}}</span>
               </div>
             </div>
@@ -18,7 +25,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </scroll>
     <tab></tab>
   </div>
 </template>
@@ -48,16 +55,76 @@ export default {
   },
   mounted: function() {
     that.getList();
-    this.miniRefresh(this);
-  },
+    // this.miniRefresh(this);
+    //  scroll= new that.BScroll('.view',{
+    //     scrollY: true,
+    //     click: true,
+    //     pullDownRefresh:{
+    //       threshold: 50,
+    //       stop: 20
+    //     },
+    //     pullUpLoad:{
+    //       threshold: 50
+    //     }
+    // })
+    // // // this.miniRefresh(this);
+    // scroll.on('pullingDown',function(){
+    //   that.informationLists=[];
+    //   that.offset=0;
+    //   that.getList(
+    //     function(){
+    //       scroll.finishPullDown()
+    //       that.$nextTick(()=>{
+    //         scroll.refresh()
+    //       })
+          
+    //     }
+    //   )
+    // })
 
+    // scroll.on('pullingUp',function(){
+    //   if(that.informationLists.length>=that.count){
+    //     scroll.finishPullUp()
+    //     return
+    //   }
+    //   that.offset+=20;
+    //   that.getList(()=>{
+    //     scroll.finishPullUp()
+    //     that.$nextTick(()=>{
+    //       scroll.refresh()
+    //     })
+    //   })
+    // })
+  },
+  watch:{
+    $route(){
+      this.$refs.scroll.refresh()
+    }
+  },
   methods: {
+    pullingDown(){
+      that.informationLists=[];
+      that.offset=0;
+      that.getList(()=>{
+          this.$refs.scroll.finishPullDown()
+      })
+    },
+    pullingUp(){
+      if(that.informationLists.length>=that.count){
+        this.$refs.scroll.finishPullUp()
+        return
+      }
+      that.offset+=20;
+      that.getList(()=>{
+        this.$refs.scroll.finishPullUp()
+      })
+    },
     toDetail(customer_id) {
       //console.log(this.item)
       this.$router.push({ path: "/information-detail" , query:{customer_id:customer_id}});
     },
     getList(successFn){
-      that.getData('/wxemployee/customer/leave/list?limit=20&offset='+that.offset,{
+      that.request('/wxemployee/customer/leave/list?limit=20&offset='+that.offset,{
         type:'get',
         success(res){
           that.count=res.count;
@@ -109,6 +176,7 @@ export default {
             
             if(that.informationLists.length>=that.count){
               miniRefresh.endUpLoading(true);
+              $('html').removeClass('scroll')
               return
             }
             that.offset+=20;
@@ -123,11 +191,17 @@ export default {
   }
 };
 </script>
+<style lang="stylus" scoped>
+#page 
+  padding-bottom 50px
+.view 
+    -webkit-overflow-scrolling none
+</style>
+
 <style lang='stylus'>
 @import '../../style/mixin.styl'
 .information-index .MiniRefresh-box 
   position relative
-  padding-bottom 30px
 .information
   background #f1f1f1
   min-height 35px
@@ -144,8 +218,6 @@ export default {
   cursor pointer
   &:after
     top 0
-  &:hover
-    active()
   .information-img
     float left
     width 50px

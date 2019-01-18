@@ -1,7 +1,12 @@
 <!-- 编辑名片 -->
 <template>
   <div id="page">
-      <div class="view edit-card">
+    <scroll class="view edit-card"
+    :isAll="false"
+    :options="{pullUpLoad:false,pullDownRefresh:false}"
+    ref="scroll"
+    >
+    <div>
           <div class="head-portrait">
               <a :href="mineDetail.image_url" :download="mineDetail.name"><img :src="mineDetail.image_url" alt="" id="img-view"></a>
               <input style="display:none" type="file"  accept="image/*" id="upImg" @change="upImg($event)">
@@ -19,11 +24,11 @@
                   <li class="clearfix"><span>个人描述</span><input type="text" id="desc" v-model="mineDetail.desc" placeholder="请输入个人描述"></li>
               </ul>
           </div>
-
-          <div class="save-btn">
-              <button @click="submit">完成</button>
-          </div>
-      </div>
+    </div>
+    </scroll>
+    <div class="save-btn">
+        <button @click="submit">完成</button>
+    </div>
   </div>
 </template>
 
@@ -40,6 +45,11 @@ export default {
 
   computed: {},
 
+  watch:{
+    $route(){
+      this.$refs.scroll.refresh()
+    }
+  },
   mounted: function() {
     
     if(this.global.mineDetail){
@@ -53,12 +63,12 @@ export default {
   methods: {
     getUser(){
       let that=this;
-      that.getData('/wxemployee/employee/detail',{
+      that.request('/wxemployee/employee/detail',{
         successtext:'加载成功',
         success(res){
           that.global.mineDetail=res.detail;  //全局变量
           that.mineDetail=that.global.mineDetail;  //当前页面数据
-          
+          that.$refs.scroll.finishPullDown()
           console.log('获取用户信息成功')
           console.log(that.global.mineDetail)
         },
@@ -69,7 +79,7 @@ export default {
     },
     submit(){
       let that=this;
-      that.getData('/wxemployee/employee/detail',{
+      that.request('/wxemployee/employee/detail',{
         type:'POST',
         data:{
           image:that.mineDetail.image_url,
@@ -97,10 +107,12 @@ export default {
   }
 };
 </script>
+<style lang="stylus" scoped>
+#page 
+  padding-bottom 75px
+</style>
 
 <style lang='stylus'>
-.view.edit-card
-  height calc(100% - 75px)
 .head-portrait
   position relative
   width 100%
@@ -146,6 +158,7 @@ export default {
     color #999
 .edit-lists
   margin-top 30px
+  padding 1px
   &>p
     margin-bottom 20px
     text-align center

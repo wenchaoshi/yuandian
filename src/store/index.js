@@ -13,7 +13,9 @@ const state={
     card:{
         cardIndex:0,
         card_imgs:{}
-    }
+    },
+    scroll:0,
+    posterImg:''
 }
 const actions={
 

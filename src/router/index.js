@@ -1,8 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '../store'
 
 // const Business = res => require(['@pages/business'],res)
 import Business from '@pages/business'
+import Poster from '@pages/business/poster/poster'
+import PosterMenu from '@pages/business/poster/poster-menu'
+import PosterEdit from '@pages/business/poster/poster-edit'
+
+
 // const Information = res => require(['@pages/information'],res)
 import Information from '@pages/information'
 // import informationDetail from '@pages/information/information-detail'
@@ -10,6 +16,12 @@ const informationDetail = res => require(['@pages/information/information-detail
 // const Customer = res => require(['@pages/customer'],res)
 import Customer from '@pages/customer'
 import customerDetail from '@pages/customer/customer-detail.vue'
+
+const customerDetailNormal = res => require(['@pages/customer/customer-detail-normal.vue'],res)
+const AddEvolve = res => require(['@pages/customer/add-evolve.vue'],res)
+const EvolveDetail = res => require(['@pages/customer/evolve-detail.vue'],res)
+
+
 // import Customerinformation from '@pages/customer/customer-information.vue'
 // const customerDetail = res => require(['@pages/customer/customer-detail.vue'],res)
 const Customerinformation = res => require(['@pages/customer/customer-information.vue'],res)
@@ -42,6 +54,9 @@ const EmployeeCustomer = res => require(['@pages/mine/employee-customer'],res)
 
 
 
+import demo from '@/pages/demo'
+
+
 Vue.use(Router)
 
 
@@ -51,11 +66,43 @@ const router=new Router({
       redirect: '/business'
     },
     {
+      path: '/demo',
+      name: 'demo',
+      component: demo,
+      meta: {
+        title: '测试'
+      }
+    },
+    {
       path: '/business',
       name: 'business',
       component: Business,
       meta: {
         title: '商机'
+      }
+    },
+    {
+      path: '/poster',
+      name: 'poster',
+      component: Poster,
+      meta: {
+        title: '海报获客'
+      }
+    },
+    {
+      path: '/poster-menu',
+      name: 'poster-menu',
+      component: PosterMenu,
+      meta: {
+        title: '海报获客'
+      }
+    },
+    {
+      path: '/poster-edit',
+      name: 'poster-edit',
+      component: PosterEdit,
+      meta: {
+        title: '编辑文字'
       }
     },
     {
@@ -89,24 +136,31 @@ const router=new Router({
       meta: {
         title: '客户详情'
       }
-      // children:[
-      //   {
-      //     path: 'customer-tab1',
-      //     name: 'customerTab1',
-      //     component: customerTab1,
-      //   },
-      //   {
-      //     path: 'customer-tab2',
-      //     name: 'customerTab2',
-      //     component: customerTab2,
-      //   },
-      //   {
-      //     path: '',
-      //     redirect: 'customer-tab1',
-      //   }
-      // ]
     },
-
+    {
+      path: '/customer-detail-normal',
+      name: 'customer-detail-normal',
+      component: customerDetailNormal,
+      meta: {
+        title: '普通客户详情'
+      }
+    },
+    {
+      path: '/add-evolve',
+      name: 'add-evolve',
+      component: AddEvolve,
+      meta: {
+        title: '添加客户跟进'
+      }
+    },
+    {
+      path: '/evolve-detail',
+      name: 'evolve-detail',
+      component: EvolveDetail,
+      meta: {
+        title: '添加客户跟进'
+      }
+    },
     {
       path: '/customer-information',
       name: 'customer-information',
@@ -210,6 +264,11 @@ router.beforeEach((to, from, next) => {
   if (to.meta.title) {//如果设置标题，拦截后设置标题
     document.title = to.meta.title
   }
+  // if(to.name=='business'||to.name=='information'||to.name=='information-detail'){
+  //   $('html').addClass('scroll')
+  // }else {
+  //   $('html').removeClass('scroll')
+  // }
   next()
 })
 

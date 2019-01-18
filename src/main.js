@@ -2,6 +2,8 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 import $ from 'jquery'
 import '@/style/base.css'
 import '@/style/components.styl'
@@ -10,7 +12,7 @@ import base from '@/js/base.js'
 import global from '@/components/global.js'
 import moment from 'moment'
 import FastClick from 'fastclick'
-
+import BScroll from 'better-scroll'
 
 if ('addEventListener' in document) {
   document.addEventListener('DOMContentLoaded', function() {
@@ -22,6 +24,7 @@ if ('addEventListener' in document) {
 import MiniRefreshTools from 'minirefresh'
 import 'minirefresh/dist/debug/minirefresh.css'
 
+
 Vue.config.productionTip = false
 Vue.config.devtools = true;
 Vue.config.debug = true;
@@ -30,12 +33,16 @@ Vue.config.debug = true;
 // import viewHead from '@components/view-head/index'
 // Vue.component('view-head', viewHead)
 import Tab from "@components/tab/tab"
+import Scroll from "@components/scroll"
 Vue.component('tab', Tab)
+Vue.component('scroll', Scroll)
+Vue.use(ElementUI);
 
 Vue.prototype.global = global.global;  //全局的公用数据
 Vue.prototype.base = base;
-Vue.prototype.getData = base.getData; //全局定义的公用方法
+Vue.prototype.request = base.request; //全局定义的公用方法
 Vue.prototype.moment = moment; //全局定义的公用方法
+Vue.prototype.BScroll=BScroll;
 
 //转换时间的全局过滤器
 Vue.filter("gmtDate",function(value,type){

@@ -56,7 +56,7 @@ export default {
   methods: {
     get_customerDetail(){
       //获取顾客详情，（预计成交率和实际跟进进度）
-      that.getData('/wxemployee/customer/detail?customer='+that.customerId,{
+      that.request('/wxemployee/customer/detail?customer='+that.customerId,{
         success(res,token){
           console.log(res)
           that.$set(that.customerDetail,'customer',res.detail.customer);
@@ -77,7 +77,7 @@ export default {
         },500)
         return 
       }
-      that.getData('/wxemployee/customer/detail?customer='+this.customerId,{
+      that.request('/wxemployee/customer/detail?customer='+this.customerId,{
         type:'POST',
         data:{
           name:customer.name,

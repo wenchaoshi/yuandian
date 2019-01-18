@@ -70,7 +70,7 @@ export default {
       this.$router.push({path:target,query:{'permission':permission}})
     },
     getEmployee(){
-      this.getData('/wxapp/employee/api',{
+      this.request('/wxapp/employee/api',{
         success(res){
           that.$store.commit('setEmployeeData',res.detail);
           that.$set(that.detail,'detail',res)
