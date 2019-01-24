@@ -66,7 +66,7 @@ function request(url, option){
         let token=getCookie('csrftoken');
         //let token='LeEnp9QrGqaWMeUpGC4ar0H25NskKlKVOnxn4r6v4Mx9WwmA5LmNHkMaJ2WGEDAZ';
         // let _url=''+url+'?csrfmiddlewaretoken='+token
-        // url='/myapi'+url      //测试用
+        url='/myapi'+url      //测试用
         let ajaxTimeOut=$.ajax({
             url: url,
             type: type,
@@ -75,7 +75,7 @@ function request(url, option){
             data: option.data?option.data:{},
             beforeSend: function (req) {
                 req.setRequestHeader("X-CSRFToken", token);
-                // req.setRequestHeader('Authorization', 'Token 7ac9b03fc20cb1ffbd22c384efc9e87937f04680')
+                req.setRequestHeader('Authorization', 'Token 7ac9b03fc20cb1ffbd22c384efc9e87937f04680')
             },
             success: function (data) {
                 if(!data.status==0){
